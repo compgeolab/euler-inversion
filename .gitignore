@@ -6,3 +6,4 @@ manuscript/output/*
 manuscript/*.aux
 .env
 code/.ipynb_checkpoints/
+*.bak
