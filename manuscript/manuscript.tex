@@ -21,7 +21,7 @@
 \begin{document}
 
 \title{
-Implicit models in geophysical inverse problems
+    Implicit models in geophysical inverse problems
 }
 \author{
     Leonardo Uieda$^{1}$
@@ -63,18 +63,61 @@ Cite things using \citet{tikhonov1977} or \citep{tikhonov1977}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Implicit models in geodesy}
+\section{Classical theory of implicit models (old stuff)}
 
 Show the basic derivation of the combined adjustment in Krakiwsky's lecture
 notes:
 \url{http://www2.unb.ca/gge/Pubs/LN42.pdf} and
 \url{http://www2.unb.ca/gge/Pubs/LN18.pdf}.
 
+Derive equations for the combined adjustment with and without $\delta^T\delta$.
 
-\section{Improvements and regularization}
+Note that the observed data $\mathbf{l}$
+are only included
+as the initial estimate
+for the predicted data $\mathbf{d}^0$.
+So after the first iteration
+the observed data are not present
+in any of the equations.
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Adaptations (need better name for this) (new stuff)}
+
+Formulate the adjustment using $r^Tr$.
+Show that the Gauss-Newton method
+for non-linear problems
+is a particular case of $B = -I$.
+Show that the linear problem
+is a particular case of $A$ not depending on $p$
+and $p^0 = 0$.
+
+Formulate the adjustment with $\delta^T\delta$
+and show that the method of Marquardt
+is a particular case of this.
+
+
+
+\subsection{Regularization}
+
+Add Tikhonov regularization to the combined adjustment derived above.
+
+
+
+\subsection{Calculating synthetic data}
+
+Show how to use Newton's root finding method to calculate predicted data from a
+given $p$. Only valid when $L = N$.
+
+Show least squares solution for under- and over-determined problems using
+$f^tf$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implicit models in geophysics}
+
+Give examples here of implicit models.
+If only one example
 
 
 \subsubsection{Heat flow  at the base of the crust}
