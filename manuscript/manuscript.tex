@@ -1,4 +1,4 @@
-\documentclass[twocolumn]{article}
+\documentclass[onecolumn]{article}
 
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -20,22 +20,17 @@
 
 \begin{document}
 
-\title{
-    Implicit models in geophysical inverse problems
-}
+\title{Implicit models in geophysical inverse problems}
 \author{
     Leonardo Uieda$^{1}$
     and
     Vanderlei C. Oliveira Jr.$^{2}$
     \\\\
-    {\small
-        $^1$Universidade do Estado do Rio de Janeiro, Rio de Janeiro, Brazil.
-        e-mail: leouieda@gmail.com
-    }
+    {\small $^1$Universidade do Estado do Rio de Janeiro, Rio de Janeiro, Brazil.
+        e-mail: leouieda@gmail.com}
     \\
-    {\small
-        $^2$Observatório Nacional, Rio de Janeiro, Brazil.
-    }
+    {\small $^2$Observatório Nacional, Rio de Janeiro, Brazil.
+        e-mail: vandscoelho@gmail.com}
 }
 
 
@@ -70,6 +65,8 @@ notes:
 \url{http://www2.unb.ca/gge/Pubs/LN42.pdf} and
 \url{http://www2.unb.ca/gge/Pubs/LN18.pdf}.
 
+Following \citet{vanicek1986}.
+
 Derive equations for the combined adjustment with and without $\delta^T\delta$.
 
 Note that the observed data $\mathbf{l}$
@@ -80,7 +77,77 @@ So after the first iteration
 the observed data are not present
 in any of the equations.
 
+Definitions:
+$\mathbf{d}$ is the $N$-dimensional vector of predicted data,
+$\mathbf{l}$ is the $N$-dimensional vector of observed data,
+$\mathbf{p}$ is the $M$-dimensional vector of model parameters,
 
+In traditional geophysical inversion theory,
+we assume that there is a functional relation between
+the model parameters $\mathbf{p}$
+and the predicted data $\mathbf{d}$
+
+\begin{equation}
+    \mathbf{d} = \mathbf{f}(\mathbf{p}),
+    \label{eq:parametric}
+\end{equation}
+
+\noindent
+in which $\mathbf{f}$ is a vector representing the $L = N$ functions
+$f_1, f_2, \ldots, f_L$.
+Equation~\ref{eq:parametric} represents a parametric model.
+
+\todo{Write the whole solution? (Misfit + Gauss-Newton solution)}
+
+
+Sometimes it is impossible to separate the data from the model parameters.
+In such cases,
+we must use an implicit mathematical model
+
+\begin{equation}
+    \mathbf{f}(\mathbf{p}, \mathbf{d}) = \mathbf{0}.
+    \label{eq:implicit}
+\end{equation}
+
+$\mathbf{f}$ is a vector of $L$ equations.
+
+We must estimate both the model parameters and the predicted data.
+
+First, we linearize Equation~\ref{eq:implicit} by expanding it to first order
+in a Taylor series around $\mathbf{p}^0$ and $\mathbf{d}^0$
+
+\begin{equation}
+    \mathbf{f}^0 + \mathbf{A}\mathbf{\delta} + \mathbf{B}\mathbf{v} =
+    \mathbf{0},
+    \label{eq:implicit-taylor}
+\end{equation}
+
+\noindent
+in which
+$\mathbf{f}^0 = \mathbf{f}(\mathbf{p}^0, \mathbf{d}^0)$,
+$\mathbf{\delta} = \mathbf{p} - \mathbf{p}^0$,
+$\mathbf{v} = \mathbf{d} - \mathbf{d}^0$,
+$\mathbf{A}$ is
+the $L \times M$ dimensional Jacobian matrix of $\mathbf{f}$
+with respect to $\mathbf{p}$,
+and
+$\mathbf{B}$ is
+the $L \times N$ dimensional Jacobian matrix of $\mathbf{f}$
+with respect to $\mathbf{d}$.
+The element $A_{ij}$ of matrix $\mathbf{A}$ is
+
+\begin{equation}
+    A_{ij} = \dfrac{\partial f_i}{\partial p_j},
+    \label{eq:A}
+\end{equation}
+
+\noindent
+and the element $B_{ij}$ of matrix $\mathbf{B}$ is
+
+\begin{equation}
+    B_{ij} = \dfrac{\partial f_i}{\partial d_j}.
+    \label{eq:B}
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Adaptations (need better name for this) (new stuff)}
