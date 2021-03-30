@@ -1,9 +1,9 @@
-# Implicit models in geophysical inverse problems
+# Euler inversion: a new method for least-squares fitting of Euler's homogeneity equation
 
 by
-[Leonardo Uieda](http://www.leouieda.com)
+[Leonardo Uieda](https://www.leouieda.com)
 and
-[Vanderlei C. Oliveira Jr.](http://www.pinga-lab.org/people/oliveira-jr.html)
+[Vanderlei C. Oliveira Jr.](https://www.pinga-lab.org/people/oliveira-jr.html)
 
 This paper has been submitted for publication in *Some Journal*.
 
