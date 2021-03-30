@@ -12,3 +12,5 @@ dependencies:
     - harmonica
     - pooch
     - verde
+    - black
+    - flake8
