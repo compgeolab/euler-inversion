@@ -1,14 +1,9 @@
-# Source code for producing the results and figures
+# Source code used this study
 
-Describe your code briefly here.
+This folder houses all of the code used to generate the results presented in
+the paper.
 
-List the notebooks here with links to each on nbviewer:
-
-* [example.ipynb](http://nbviewer.jupyter.org/github/pinga-lab/paper-template/blob/master/code/example.ipynb):
-  What this notebook does.
-
-The `Makefile` has a rule to convert all notebooks to PDF.
-To convert, run the following in this directory:
-
-    make
-
+* Python modules (`.py` files) contain the implementation of the methodology
+  and common utilities used in the notebooks.
+* Jupyter notebooks (`.ipynb` files) are named with a numbering scheme in order
+  that they need to be executed (e.g., `02-synthetic-test-complex.ipynb`).

@@ -1,0 +1,271 @@
+% Template for an EarthArXiv preprint of the manuscript.
+% Includes the standard disclaimers and formatting that is required.
+%
+% This is the document structure. The actual content is written in:
+% * abstract.tex: The abstract.
+% * abstract-plain.tex: A plain language version of the abstract.
+% * content.tex: The actual manuscript text (minus the abstract).
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set a class and general configuration
+\documentclass[onecolumn,10pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set variables with the title, authors, etc.
+\newcommand{\Title}{Euler inversion: Locating sources of potential-field data through a total least-squares solution to Euler's homogeneity equation}
+\newcommand{\TitleShort}{Euler inversion}
+
+\newcommand{\Year}{2023}
+\newcommand{\SubmittedOn}{2023/02/28}
+\newcommand{\PublishedOn}{2023/02/28}
+
+\newcommand{\AuthorShort}{Uieda}
+\newcommand{\Authors}{%
+  Leonardo Uieda\textsuperscript{1}
+}
+\newcommand{\Email}{contact-email@university.org}
+\newcommand{\Corresponding}{%
+  Corresponding author: Leonardo Uieda <\href{mailto:\Email}{\Email}>
+}
+\newcommand{\Affiliations}{%
+  \textsuperscript{1} Universidade de São Paulo, Brazil;
+}
+
+\newcommand{\Journal}{Geochemistry, Geophysics, Geosystems}
+\newcommand{\JournalDOI}{YYYYY/YYYYYYY}
+\newcommand{\PreprintDOI}{XXXXX/XXXXXXX}
+\newcommand{\ArchiveDOI}{DOI_FOR_THE_REPO_ARCHIVE}
+\newcommand{\GitHubRepository}{compgeolab/paper-template}
+
+\newcommand{\Keywords}{%
+  keyword1; keyword2; keyword3;
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Import the required packages
+\usepackage[utf8]{inputenc}
+\usepackage[TU]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{orcidlink}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{siunitx}
+% To customize the title page
+\usepackage{titling}
+% For adding multiple authors
+\usepackage{authblk}
+% improved urls with proper hyphenation
+\usepackage{xurl}
+% Tweak the look of captions
+\usepackage{caption}
+% To control the style of section titles
+\usepackage{titlesec}
+% Import natbib and doi packages
+\usepackage[round,authoryear,sort]{natbib}
+% show dois as links on references
+\usepackage{doi}
+% Remove extra space between references
+\usepackage{natbibspacing}
+% Use a different font
+\usepackage[scaled=1.1]{notomath}
+% Icons and fonts (requires using xelatex or luatex)
+\usepackage{fontawesome5}
+\usepackage{academicons}
+% Control the font size
+\usepackage{anyfontsize}
+\usepackage{setspace}
+% To get the number of pages in the document
+\usepackage{lastpage}
+\usepackage{lipsum}
+\usepackage{ragged2e}
+\usepackage{mdframed}
+% To define custom environments
+\usepackage{environ}
+% To control hyphenation for individual blocks of text
+\usepackage{hyphenat}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Configuration of the document
+
+\geometry{%
+  left=25mm,
+  right=25mm,
+  top=18mm,
+  bottom=15mm,
+  headsep=0mm,
+  headheight=0mm,
+  footskip=7mm,
+  includehead=true,
+  includefoot=true
+}
+
+% Control line and table row spacing
+\onehalfspacing
+\renewcommand{\arraystretch}{1.5}
+
+% Set the spacing between bibliography entries (requires natbib)
+\setlength{\bibsep}{0pt}
+
+% Custom colors
+\definecolor{darkgray}{gray}{0.4}
+\definecolor{mediumgray}{gray}{0.5}
+\definecolor{lightgray}{gray}{0.9}
+\definecolor{mediumblue}{HTML}{2060c2}
+\definecolor{lightblue}{HTML}{f7faff}
+
+% Configure captions
+\captionsetup[table]{position=below,skip=0pt}
+\captionsetup{labelfont=bf,font={small,color=darkgray},skip=10pt}
+
+% Make urls use the same font as every other text
+\urlstyle{same}
+
+% Configure hyperref and add PDF metadata
+\hypersetup{
+    colorlinks,
+    allcolors=mediumblue,
+    pdftitle={\Title},
+    pdfauthor={\AuthorShort},
+    breaklinks=true,
+}
+
+% Configure header and footer
+% Inspired by LaPreprint: https://github.com/roaldarbol/LaPreprint
+\newcommand{\Separator}{\hspace{3pt}|\hspace{3pt}}
+\newcommand{\FooterFont}{\footnotesize\color{mediumgray}}
+\pagestyle{fancy}
+\fancyhf{}
+\lfoot{%
+  \FooterFont{}
+  \AuthorShort{} (\Year)
+  \Separator{}
+  \TitleShort
+}
+\rfoot{%
+  \FooterFont{}
+  EarthArXiv
+  \Separator{}
+  \thepage\space of\space \pageref*{LastPage}
+}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{1pt}
+\preto{\footrule}{\color{lightgray}}
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \lfoot{%
+    \FooterFont{}
+    \faCreativeCommons\faCreativeCommonsBy
+    \Separator{}
+    \textcopyright{} \Year{} The Authors
+  }
+  \rfoot{%
+    \FooterFont{}
+    doi:\href{https://doi.org/\PreprintDOI}{\PreprintDOI}
+    \Separator{}
+    EarthArXiv
+    \Separator{}
+    \thepage\space of\space \pageref*{LastPage}
+  }
+}
+
+% Define fancy text boxes
+\NewEnviron{summarybox}{%
+  \mdfdefinestyle{summarybox_}{%
+    leftline=true,
+    rightline=false,
+    topline=false,
+    bottomline=false,
+    linewidth=2pt,
+    linecolor=mediumblue,
+    backgroundcolor=lightblue,
+    innertopmargin=12pt,
+    innerbottommargin=12pt,
+    innerleftmargin=12pt,
+    innerrightmargin=12pt,
+    skipbelow=5pt,
+    skipabove=5pt,
+  }
+  \newmdenv[style=summarybox_]{summarybox_}
+  \begin{summarybox_}
+    \footnotesize
+    \BODY
+  \end{summarybox_}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\thispagestyle{plain}
+\begin{FlushLeft}
+  \begin{spacing}{2}
+    {\LARGE\bfseries \Title}
+  \end{spacing}
+  {\color{lightgray}\hrule height 1.5pt}
+  \vspace{0.3cm}
+  \Authors
+  \\[0.2cm]
+  {\footnotesize \Affiliations}
+  \newline
+  {\footnotesize \Corresponding}
+  \\[0.2cm]
+  {\footnotesize
+    Received in original form on \SubmittedOn.
+    %Published in final form on \PublishedOn.
+  }
+\end{FlushLeft}
+
+\begin{summarybox}
+  \noindent
+  \textbf{Disclaimer:}
+  %This is a non-peer reviewed preprint of an article submitted for publication
+  %in \textit{\Journal{}}. It is available from EarthArXiv at
+  %\url{https://doi.org/\PreprintDOI}.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Comment the above and uncomment below after publication in a journal
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  This is a peer-reviewed author-produced postprint of the article
+  ``\AuthorShort{} (\Year). \Title. \textit{\Journal}.
+  doi:\href{https://doi.org/\JournalDOI}{\JournalDOI}''.
+  The postprint is available from EarthArXiv at
+  \url{https://doi.org/\PreprintDOI}.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \\[0.25cm]
+  \noindent
+  \textbf{Open research:}
+  The source code used to generate all of the results presented in this
+  research can be freely accessed and reused under the terms of an open license.
+  You can find it at \url{https://doi.org/\ArchiveDOI} and
+  \url{https://github.com/\GitHubRepository}.
+  \\[0.25cm]
+  \noindent
+  \textbf{Keywords:} \Keywords{}
+  \\[0.25cm]
+  \noindent
+  \textbf{\textcopyright{} \Year{} The Authors.}
+  Available under the \href{https://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International License}
+  \faCreativeCommons\faCreativeCommonsBy{}.
+\end{summarybox}
+
+\section*{\normalsize Plain language summary}
+\begingroup
+  \setstretch{1.1} \small \input{abstract-plain} \par
+\endgroup
+
+\section*{\normalsize Abstract}
+\begingroup
+  \setstretch{1.1} \small \input{abstract} \par
+\endgroup
+
+\input{content.tex}
+
+\bibliographystyle{apalike-doi}
+\bibliography{references}
+
+\end{document}

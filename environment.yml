@@ -1,17 +1,26 @@
 name: euler-inversion
+channels:
+  - conda-forge
+  - defaults
 dependencies:
-    - python==3.10
-    - pip
-    - numpy
-    - scipy
-    - xarray
-    - matplotlib
-    - numba
-    - jupyter
-    - jupyterlab
-    - harmonica
-    - verde
-    - ensaio
-    - pooch
-    - black
-    - flake8
+  # Should be on every project
+  - python==3.10.*
+  - pip
+  - numpy
+  - scipy
+  - matplotlib
+  - jupyterlab
+  - black
+  - flake8
+  # For building latex documents
+  - make
+  - tectonic
+  # Project specific dependencies
+  - xarray
+  - netcdf4
+  - numba
+  # Fatiando
+  - harmonica
+  - verde
+  - ensaio
+  - pooch
