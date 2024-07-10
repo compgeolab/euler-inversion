@@ -4,7 +4,7 @@ channels:
   - defaults
 dependencies:
   # Should be on every project
-  - python==3.10.*
+  - python==3.12.*
   - pip
   - numpy
   - scipy
@@ -20,7 +20,7 @@ dependencies:
   - netcdf4
   - numba
   # Fatiando
-  - harmonica
   - verde
-  - ensaio
   - pooch
+  - pip:
+    - git+https://github.com/fatiando/harmonica
