@@ -68,7 +68,7 @@ class EulerDeconvolution:
 
 class EulerInversion:
 
-    def __init__(self, structural_index, max_iterations=50, tol=1e-1):
+    def __init__(self, structural_index, max_iterations=20, tol=0.1):
         self.structural_index = structural_index
         self.max_iterations = max_iterations
         self.tol = tol
@@ -85,6 +85,7 @@ class EulerInversion:
         """
         Generator of the Euler Inversion iterations
         """
+        balance = 0.1
         n_data = data[0].size
         # The data are organized into a single vector because of the maths
         data_observed = np.concatenate(data)
@@ -94,7 +95,7 @@ class EulerInversion:
         # Keep track of the way these three functions vary with iteration
         self.euler_misfit_ = [np.linalg.norm(euler)]
         self.data_misfit_ = [np.linalg.norm(data_observed - data_predicted)]
-        self.merit_ = [self.data_misfit_[-1] + 0.01 * self.euler_misfit_[-1]]
+        self.merit_ = [self.data_misfit_[-1] + balance * self.euler_misfit_[-1]]
         self.predicted_field_ = data_predicted[:n_data]
         self.predicted_deriv_east_ = data_predicted[n_data : 2 * n_data]
         self.predicted_deriv_north_ = data_predicted[2 * n_data : 3 * n_data]
@@ -115,7 +116,7 @@ class EulerInversion:
             euler = self._eulers_equation(coordinates, data_predicted, parameters)
             self.euler_misfit_.append(np.linalg.norm(euler))
             self.data_misfit_.append(np.linalg.norm(data_observed - data_predicted))
-            self.merit_.append(self.data_misfit_[-1] + 0.01 * self.euler_misfit_[-1])
+            self.merit_.append(self.data_misfit_[-1] + balance * self.euler_misfit_[-1])
             merit_change = abs((self.merit_[-2] - self.merit_[-1]) / self.merit_[-2])
             if self.merit_[-1] > self.merit_[-2]:
                 self.merit_.pop()
