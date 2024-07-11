@@ -91,10 +91,18 @@ class EulerInversion:
         data_observed = np.concatenate(data)
         data_predicted = self._initial_data(coordinates, data)
         parameters = self._initial_parameters(coordinates)
+        # Data weights
+        weights = np.ones_like(data_predicted)
+        weights[:n_data] /= np.linalg.norm(data[0])
+        weights[n_data:2 * n_data] /= np.linalg.norm(data[1]) * 10
+        weights[2 * n_data:3 * n_data] /= np.linalg.norm(data[2]) * 10
+        weights[3 * n_data:4 * n_data] /= np.linalg.norm(data[3]) * 20
+        weights /= weights.max()
+        Wd_inv = sp.sparse.diags(1 / weights, format="csc")
         euler = self._eulers_equation(coordinates, data_predicted, parameters)
         # Keep track of the way these three functions vary with iteration
         self.euler_misfit_ = [np.linalg.norm(euler)]
-        self.data_misfit_ = [np.linalg.norm(data_observed - data_predicted)]
+        self.data_misfit_ = [np.linalg.norm((data_observed - data_predicted) * weights)]
         self.merit_ = [self.data_misfit_[-1] + balance * self.euler_misfit_[-1]]
         self.predicted_field_ = data_predicted[:n_data]
         self.predicted_deriv_east_ = data_predicted[n_data : 2 * n_data]
@@ -110,12 +118,13 @@ class EulerInversion:
                 data_predicted,
                 parameters,
                 euler,
+                Wd_inv,
             )
             parameters += parameter_step
             data_predicted += data_step
             euler = self._eulers_equation(coordinates, data_predicted, parameters)
             self.euler_misfit_.append(np.linalg.norm(euler))
-            self.data_misfit_.append(np.linalg.norm(data_observed - data_predicted))
+            self.data_misfit_.append(np.linalg.norm((data_observed - data_predicted) * weights))
             self.merit_.append(self.data_misfit_[-1] + balance * self.euler_misfit_[-1])
             merit_change = abs((self.merit_[-2] - self.merit_[-1]) / self.merit_[-2])
             if self.merit_[-1] > self.merit_[-2]:
@@ -134,6 +143,28 @@ class EulerInversion:
             if merit_change < self.tol:
                 self.stopping_reason_ = f"Merit change ({merit_change:.2e}) below tolerance ({self.tol:.2e})"
                 break
+
+    def _newton_step(
+        self, coordinates, data_observed, data_predicted, parameters, euler, Wd_inv
+    ):
+        """
+        Calculate the step in parameters and data in the Gauss-Newton iteration
+        """
+        # Weights don't seem to make a difference
+        east, north, up = coordinates
+        field, deriv_east, deriv_north, deriv_up = np.split(data_predicted, 4)
+        xo, yo, zo, base_level = parameters
+        A = self._parameter_jacobian(deriv_east, deriv_north, deriv_up)
+        B = self._data_jacobian(coordinates, parameters[:3])
+        residuals = data_observed - data_predicted
+        Q = B @ Wd_inv @ B.T
+        Q_inv = sp.sparse.linalg.inv(Q)
+        ATQ = A.T @ Q_inv
+        BTQ = Wd_inv @ B.T @ Q_inv
+        Br = B @ residuals
+        parameter_step = sp.linalg.solve(ATQ @ A, -ATQ @ (euler + Br), assume_a="pos")
+        data_step = residuals - BTQ @ Br - BTQ @ (euler + A @ parameter_step)
+        return parameter_step, data_step
 
     def fit_grid(
         self,
@@ -208,28 +239,6 @@ class EulerInversion:
             ]
         )
         return parameters
-
-    def _newton_step(
-        self, coordinates, data_observed, data_predicted, parameters, euler
-    ):
-        """
-        Calculate the step in parameters and data in the Gauss-Newton iteration
-        """
-        # Weights don't seem to make a difference
-        east, north, up = coordinates
-        field, deriv_east, deriv_north, deriv_up = np.split(data_predicted, 4)
-        xo, yo, zo, base_level = parameters
-        A = self._parameter_jacobian(deriv_east, deriv_north, deriv_up)
-        B = self._data_jacobian(coordinates, parameters[:3])
-        residuals = data_observed - data_predicted
-        Q = B @ B.T
-        Q_inv = sp.sparse.linalg.inv(Q)
-        ATQ = A.T @ Q_inv
-        BTQ = B.T @ Q_inv
-        Br = B @ residuals
-        parameter_step = sp.linalg.solve(ATQ @ A, -ATQ @ (euler + Br), assume_a="pos")
-        data_step = residuals - BTQ @ Br - BTQ @ (euler + A @ parameter_step)
-        return parameter_step, data_step
 
     def _parameter_jacobian(
         self,
