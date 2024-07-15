@@ -2,6 +2,7 @@
 Quick implementation of Euler inversion
 """
 
+import concurrent.futures
 import numpy as np
 import scipy as sp
 import verde as vd
@@ -333,39 +334,39 @@ class EulerInversionWindowed:
             spacing=self.window_step,
             adjust="region",
         )
-        self.solutions_ = []
         if self.structural_index is None:
             structural_indices = [1, 2, 3]
         else:
             structural_indices = [self.structural_index]
+        pool = concurrent.futures.ProcessPoolExecutor()
+        futures = []
         for window in windows.ravel():
             window_coordinates = [c[window[0]] for c in coordinates]
             window_data = [d[window[0]] for d in data]
-            window_region = vd.get_region(window_coordinates)
-            candidates = []
-            for si in structural_indices:
-                ei = EulerInversion(
-                    si,
+            future = pool.submit(
+                fit_window,
+                window_coordinates,
+                window_data,
+                weights,
+                self.max_variance,
+                structural_indices,
+                dict(
                     tol=self.tol,
                     max_iterations=self.max_iterations,
                     euler_misfit_balance=self.euler_misfit_balance,
-                )
-                ei.fit(window_coordinates, window_data, weights)
-                inside_window = vd.inside(ei.location_, window_region)
-                if not inside_window:
-                    break
-                candidates.append(ei)
-            else:
-                ei = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
-                small_variance = (
-                    np.sqrt(ei.covariance_[2, 2]) < self.max_variance * np.abs(ei.location_[2])
-                )
-                inside_window = vd.inside(ei.location_, window_region)
-                if small_variance and inside_window:
-                    self.solutions_.append(ei)
+                ),
+            )
+            futures.append(future)
+        self.solutions_ = []
+        for future in concurrent.futures.as_completed(futures):
+            model = future.result()
+            if model is not None:
+                self.solutions_.append(model)
         self.locations_ = np.transpose([ei.location_ for ei in self.solutions_])
         self.base_levels_ = np.array([ei.base_level_ for ei in self.solutions_])
-        self.structural_indices_ = np.array([ei.structural_index for ei in self.solutions_])
+        self.structural_indices_ = np.array(
+            [ei.structural_index for ei in self.solutions_]
+        )
         return self
 
     def fit_grid(
@@ -384,3 +385,27 @@ class EulerInversionWindowed:
         data = [np.asarray(table[n]) for n in data_names]
         self.fit(coordinates, data, weights)
         return self
+
+
+def fit_window(
+    window_coordinates, window_data, weights, max_variance, structural_indices, kwargs
+):
+    solution = None
+    window_region = vd.get_region(window_coordinates)
+    candidates = []
+    for si in structural_indices:
+        ei = EulerInversion(si, **kwargs)
+        ei.fit(window_coordinates, window_data, weights)
+        inside_window = vd.inside(ei.location_, window_region)
+        if not inside_window:
+            break
+        candidates.append(ei)
+    else:
+        ei = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
+        small_variance = np.sqrt(ei.covariance_[2, 2]) < max_variance * np.abs(
+            ei.location_[2]
+        )
+        inside_window = vd.inside(ei.location_, window_region)
+        if small_variance and inside_window:
+            solution = ei
+    return solution
