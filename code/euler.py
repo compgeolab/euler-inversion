@@ -66,7 +66,12 @@ class EulerDeconvolutionWindowed:
         self.window_step = window_step
 
     def fit(self, coordinates, data):
-        _, windows = vd.rolling_window(coordinates, size=self.window_size, spacing=self.window_step, adjust="region")
+        _, windows = vd.rolling_window(
+            coordinates,
+            size=self.window_size,
+            spacing=self.window_step,
+            adjust="region",
+        )
         self.solutions_ = []
         for window in windows.ravel():
             ed = EulerDeconvolution(self.structural_index)
@@ -75,7 +80,9 @@ class EulerDeconvolutionWindowed:
                 window_coordinates,
                 [d[window[0]] for d in data],
             )
-            small_variance = np.sqrt(ed.covariance_[2, 2]) < np.abs(ed.location_[2]) / 10
+            small_variance = (
+                np.sqrt(ed.covariance_[2, 2]) < np.abs(ed.location_[2]) / 10
+            )
             inside_window = vd.inside(ed.location_, vd.get_region(window_coordinates))
             if small_variance and inside_window:
                 self.solutions_.append(ed)
@@ -98,6 +105,7 @@ class EulerDeconvolutionWindowed:
         data = [table[n] for n in data_names]
         self.fit(coordinates, data)
         return self
+
 
 class EulerInversion:
 
@@ -155,7 +163,7 @@ class EulerInversion:
         residuals = data_observed - data_predicted
         # Keep track of the way these things vary with iteration
         self.euler_misfit_ = [np.linalg.norm(euler)]
-        self.data_misfit_ = [np.linalg.norm(residuals*data_weights)]
+        self.data_misfit_ = [np.linalg.norm(residuals * data_weights)]
         self.merit_ = [
             self.data_misfit_[-1] + self.euler_misfit_balance * self.euler_misfit_[-1]
         ]
@@ -226,7 +234,7 @@ class EulerInversion:
         BTQ = Wd_inv @ B.T @ Q_inv
         Br = B @ residuals
         cofactor_step = sp.linalg.inv(ATQ @ A)
-        parameter_step = - cofactor_step @ ATQ @ (euler + Br)
+        parameter_step = -cofactor_step @ ATQ @ (euler + Br)
         data_step = residuals - BTQ @ Br - BTQ @ (euler + A @ parameter_step)
         return parameter_step, data_step, cofactor_step
 
@@ -301,8 +309,14 @@ class EulerInversion:
 class EulerInversionWindowed:
 
     def __init__(
-        self, window_size, window_step, structural_index=None,
-            max_iterations=20, tol=0.1, euler_misfit_balance=0.1
+        self,
+        window_size,
+        window_step,
+        structural_index=None,
+        max_variance=0.1,
+        max_iterations=20,
+        tol=0.1,
+        euler_misfit_balance=0.1,
     ):
         self.structural_index = structural_index
         self.window_size = window_size
@@ -310,24 +324,48 @@ class EulerInversionWindowed:
         self.max_iterations = max_iterations
         self.tol = tol
         self.euler_misfit_balance = euler_misfit_balance
+        self.max_variance = max_variance
 
     def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
-        _, windows = vd.rolling_window(coordinates, size=self.window_size, spacing=self.window_step, adjust="region")
+        _, windows = vd.rolling_window(
+            coordinates,
+            size=self.window_size,
+            spacing=self.window_step,
+            adjust="region",
+        )
         self.solutions_ = []
+        if self.structural_index is None:
+            structural_indices = [1, 2, 3]
+        else:
+            structural_indices = [self.structural_index]
         for window in windows.ravel():
-            ei = EulerInversion(self.structural_index, tol=self.tol, max_iterations=self.max_iterations, euler_misfit_balance=self.euler_misfit_balance)
             window_coordinates = [c[window[0]] for c in coordinates]
-            ei.fit(
-                window_coordinates,
-                [d[window[0]] for d in data],
-                weights,
-            )
-            small_variance = np.sqrt(ei.covariance_[2, 2]) < np.abs(ei.location_[2]) / 10
-            inside_window = vd.inside(ei.location_, vd.get_region(window_coordinates))
-            if small_variance and inside_window:
-                self.solutions_.append(ei)
+            window_data = [d[window[0]] for d in data]
+            window_region = vd.get_region(window_coordinates)
+            candidates = []
+            for si in structural_indices:
+                ei = EulerInversion(
+                    si,
+                    tol=self.tol,
+                    max_iterations=self.max_iterations,
+                    euler_misfit_balance=self.euler_misfit_balance,
+                )
+                ei.fit(window_coordinates, window_data, weights)
+                inside_window = vd.inside(ei.location_, window_region)
+                if not inside_window:
+                    break
+                candidates.append(ei)
+            else:
+                ei = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
+                small_variance = (
+                    np.sqrt(ei.covariance_[2, 2]) < self.max_variance * np.abs(ei.location_[2])
+                )
+                inside_window = vd.inside(ei.location_, window_region)
+                if small_variance and inside_window:
+                    self.solutions_.append(ei)
         self.locations_ = np.transpose([ei.location_ for ei in self.solutions_])
         self.base_levels_ = np.array([ei.base_level_ for ei in self.solutions_])
+        self.structural_indices_ = np.array([ei.structural_index for ei in self.solutions_])
         return self
 
     def fit_grid(
