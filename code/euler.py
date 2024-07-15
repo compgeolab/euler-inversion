@@ -31,10 +31,12 @@ class EulerDeconvolution:
             + self.structural_index * field
         )
         hessian = jacobian.T @ jacobian
-        parameters = sp.linalg.solve(hessian, jacobian.T @ pseudo_data, assume_a="pos")
+        cofactor = sp.linalg.inv(hessian)
+        parameters = cofactor @ jacobian.T @ pseudo_data
         pseudo_residuals = pseudo_data - jacobian @ parameters
         chi_squared = np.sum(pseudo_residuals**2) / (pseudo_data.size - parameters.size)
-        self.covariance_ = chi_squared * sp.linalg.inv(hessian)
+        self.cofactor_ = cofactor
+        self.covariance_ = chi_squared * cofactor
         self.location_ = parameters[:3]
         self.base_level_ = parameters[-1]
         return self
@@ -55,6 +57,47 @@ class EulerDeconvolution:
         self.fit(coordinates, data)
         return self
 
+
+class EulerDeconvolutionWindowed:
+
+    def __init__(self, window_size, window_step, structural_index):
+        self.structural_index = structural_index
+        self.window_size = window_size
+        self.window_step = window_step
+
+    def fit(self, coordinates, data):
+        _, windows = vd.rolling_window(coordinates, size=self.window_size, spacing=self.window_step, adjust="region")
+        self.solutions_ = []
+        for window in windows.ravel():
+            ed = EulerDeconvolution(self.structural_index)
+            window_coordinates = [c[window[0]] for c in coordinates]
+            ed.fit(
+                window_coordinates,
+                [d[window[0]] for d in data],
+            )
+            small_variance = np.sqrt(ed.covariance_[2, 2]) < np.abs(ed.location_[2]) / 10
+            inside_window = vd.inside(ed.location_, vd.get_region(window_coordinates))
+            if small_variance and inside_window:
+                self.solutions_.append(ed)
+        self.locations_ = np.transpose([ed.location_ for ed in self.solutions_])
+        self.base_levels_ = np.array([ed.base_level_ for ed in self.solutions_])
+        return self
+
+    def fit_grid(
+        self,
+        grid,
+        data_names=("field", "deriv_east", "deriv_north", "deriv_up"),
+        coordinate_names=("easting", "northing", "height"),
+    ):
+        """
+        Perform Euler Deconvolution on data on a regular grid
+        """
+        shape = grid[data_names[0]].shape
+        table = vd.grid_to_table(grid)
+        coordinates = [table[n] for n in coordinate_names]
+        data = [table[n] for n in data_names]
+        self.fit(coordinates, data)
+        return self
 
 class EulerInversion:
 
@@ -100,7 +143,7 @@ class EulerInversion:
         # The data are organized into a single vector because of the maths
         data_observed = np.concatenate(data)
         data_predicted = self._initial_data(coordinates, data)
-        parameters = self._initial_parameters(coordinates, data)
+        parameters, cofactor = self._initial_parameters(coordinates, data)
         # Data weights
         data_weights = np.empty_like(data_predicted)
         data_weights[:n_data] = weights[0]
@@ -109,18 +152,17 @@ class EulerInversion:
         data_weights[3 * n_data : 4 * n_data] = weights[3]
         Wd_inv = sp.sparse.diags(1 / data_weights, format="csc")
         euler = self._eulers_equation(coordinates, data_predicted, parameters)
+        residuals = data_observed - data_predicted
         # Keep track of the way these things vary with iteration
         self.euler_misfit_ = [np.linalg.norm(euler)]
-        self.data_misfit_ = [
-            np.linalg.norm((data_observed - data_predicted) * data_weights)
-        ]
+        self.data_misfit_ = [np.linalg.norm(residuals*data_weights)]
         self.merit_ = [
             self.data_misfit_[-1] + self.euler_misfit_balance * self.euler_misfit_[-1]
         ]
         self.location_per_iteration_ = [parameters[:3].copy()]
         self.base_level_per_iteration_ = [parameters[3]]
         for iteration in range(self.max_iterations):
-            parameter_step, data_step = self._newton_step(
+            parameter_step, data_step, cofactor_step = self._newton_step(
                 coordinates,
                 data_observed,
                 data_predicted,
@@ -130,12 +172,12 @@ class EulerInversion:
             )
             parameters += parameter_step
             data_predicted += data_step
+            cofactor += cofactor_step
             euler = self._eulers_equation(coordinates, data_predicted, parameters)
+            residuals = data_observed - data_predicted
             # Check stopping criteria
             new_euler_misfit = np.linalg.norm(euler)
-            new_data_misfit = np.linalg.norm(
-                (data_observed - data_predicted) * data_weights
-            )
+            new_data_misfit = np.linalg.norm(residuals * data_weights)
             new_merit = new_data_misfit + self.euler_misfit_balance * new_euler_misfit
             if new_merit > self.merit_[-1]:
                 data_predicted -= data_step
@@ -161,6 +203,8 @@ class EulerInversion:
         self.predicted_deriv_up_ = data_predicted[3 * n_data :]
         self.location_ = parameters[:3]
         self.base_level_ = parameters[3]
+        chi_squared = np.sum(residuals**2) / (residuals.size - parameters.size)
+        self.covariance_ = chi_squared * cofactor
         return self
 
     def _newton_step(
@@ -181,9 +225,10 @@ class EulerInversion:
         ATQ = A.T @ Q_inv
         BTQ = Wd_inv @ B.T @ Q_inv
         Br = B @ residuals
-        parameter_step = sp.linalg.solve(ATQ @ A, -ATQ @ (euler + Br), assume_a="pos")
+        cofactor_step = sp.linalg.inv(ATQ @ A)
+        parameter_step = - cofactor_step @ ATQ @ (euler + Br)
         data_step = residuals - BTQ @ Br - BTQ @ (euler + A @ parameter_step)
-        return parameter_step, data_step
+        return parameter_step, data_step, cofactor_step
 
     def _initial_data(self, coordinates, data):
         # Initial estimate for the predicted data is close to the observed
@@ -200,7 +245,7 @@ class EulerInversion:
         parameters = np.empty(4)
         parameters[:3] = euler_deconv.location_
         parameters[3] = euler_deconv.base_level_
-        return parameters
+        return parameters, euler_deconv.cofactor_
 
     def _parameter_jacobian(
         self,
@@ -251,3 +296,53 @@ class EulerInversion:
             + self.structural_index * (field - base_level)
         )
         return euler
+
+
+class EulerInversionWindowed:
+
+    def __init__(
+        self, window_size, window_step, structural_index=None,
+            max_iterations=20, tol=0.1, euler_misfit_balance=0.1
+    ):
+        self.structural_index = structural_index
+        self.window_size = window_size
+        self.window_step = window_step
+        self.max_iterations = max_iterations
+        self.tol = tol
+        self.euler_misfit_balance = euler_misfit_balance
+
+    def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
+        _, windows = vd.rolling_window(coordinates, size=self.window_size, spacing=self.window_step, adjust="region")
+        self.solutions_ = []
+        for window in windows.ravel():
+            ei = EulerInversion(self.structural_index, tol=self.tol, max_iterations=self.max_iterations, euler_misfit_balance=self.euler_misfit_balance)
+            window_coordinates = [c[window[0]] for c in coordinates]
+            ei.fit(
+                window_coordinates,
+                [d[window[0]] for d in data],
+                weights,
+            )
+            small_variance = np.sqrt(ei.covariance_[2, 2]) < np.abs(ei.location_[2]) / 10
+            inside_window = vd.inside(ei.location_, vd.get_region(window_coordinates))
+            if small_variance and inside_window:
+                self.solutions_.append(ei)
+        self.locations_ = np.transpose([ei.location_ for ei in self.solutions_])
+        self.base_levels_ = np.array([ei.base_level_ for ei in self.solutions_])
+        return self
+
+    def fit_grid(
+        self,
+        grid,
+        weights=(1, 0.1, 0.1, 0.05),
+        data_names=("field", "deriv_east", "deriv_north", "deriv_up"),
+        coordinate_names=("easting", "northing", "height"),
+    ):
+        """
+        Perform Euler Deconvolution on data on a regular grid
+        """
+        shape = grid[data_names[0]].shape
+        table = vd.grid_to_table(grid)
+        coordinates = [np.asarray(table[n]) for n in coordinate_names]
+        data = [np.asarray(table[n]) for n in data_names]
+        self.fit(coordinates, data, weights)
+        return self
