@@ -7,6 +7,7 @@ import numpy as np
 import scipy as sp
 import verde as vd
 import xarray as xr
+import rich.progress
 
 
 class EulerDeconvolution:
@@ -111,12 +112,14 @@ class EulerDeconvolutionWindowed:
 class EulerInversion:
 
     def __init__(
-        self, structural_index, max_iterations=20, tol=0.1, euler_misfit_balance=0.1
+        self, structural_index, max_iterations=20, tol=0.1, euler_misfit_balance=0.1, initial=None, initial_covariance=None,
     ):
         self.structural_index = structural_index
         self.max_iterations = max_iterations
         self.tol = tol
         self.euler_misfit_balance = euler_misfit_balance
+        self.initial = initial
+        self.initial_covariance = initial_covariance
 
     def fit_grid(
         self,
@@ -152,7 +155,14 @@ class EulerInversion:
         # The data are organized into a single vector because of the maths
         data_observed = np.concatenate(data)
         data_predicted = self._initial_data(coordinates, data)
-        parameters, cofactor = self._initial_parameters(coordinates, data)
+        if self.initial is None:
+            parameters, cofactor = self._initial_parameters(coordinates, data)
+        else:
+            parameters = np.concatenate([self.initial, 0])
+            if self.initial_covariance is None:
+                cofactor = np.eye(4)
+            else:
+                cofactor = self.initial_covariance
         # Data weights
         data_weights = np.empty_like(data_predicted)
         data_weights[:n_data] = weights[0]
@@ -254,7 +264,7 @@ class EulerInversion:
         parameters = np.empty(4)
         parameters[:3] = euler_deconv.location_
         parameters[3] = euler_deconv.base_level_
-        return parameters, euler_deconv.cofactor_
+        return parameters, euler_deconv.covariance_
 
     def _parameter_jacobian(
         self,
@@ -318,6 +328,9 @@ class EulerInversionWindowed:
         max_iterations=20,
         tol=0.1,
         euler_misfit_balance=0.1,
+        initial=None,
+        initial_covariance=None,
+        progress=True,
     ):
         self.structural_index = structural_index
         self.window_size = window_size
@@ -326,6 +339,7 @@ class EulerInversionWindowed:
         self.tol = tol
         self.euler_misfit_balance = euler_misfit_balance
         self.max_variance = max_variance
+        self.progress = progress
 
     def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
         _, windows = vd.rolling_window(
@@ -358,7 +372,10 @@ class EulerInversionWindowed:
             )
             futures.append(future)
         self.solutions_ = []
-        for future in concurrent.futures.as_completed(futures):
+        future_iterator = concurrent.futures.as_completed(futures)
+        if self.progress:
+            future_iterator = rich.progress.track(future_iterator, description="Processing windows:", total=windows.size)
+        for future in future_iterator:
             model = future.result()
             if model is not None:
                 self.solutions_.append(model)
@@ -390,22 +407,20 @@ class EulerInversionWindowed:
 def fit_window(
     window_coordinates, window_data, weights, max_variance, structural_indices, kwargs
 ):
-    solution = None
     window_region = vd.get_region(window_coordinates)
     candidates = []
     for si in structural_indices:
         ei = EulerInversion(si, **kwargs)
         ei.fit(window_coordinates, window_data, weights)
-        inside_window = vd.inside(ei.location_, window_region)
-        if not inside_window:
-            break
         candidates.append(ei)
+    best = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
+    small_variance = (
+                      np.sqrt(best.covariance_[2, 2]) < max_variance * np.abs(
+        best.location_[2]
+    ))
+    inside_window = vd.inside(best.location_, window_region)
+    if small_variance and inside_window:
+        solution = best
     else:
-        ei = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
-        small_variance = np.sqrt(ei.covariance_[2, 2]) < max_variance * np.abs(
-            ei.location_[2]
-        )
-        inside_window = vd.inside(ei.location_, window_region)
-        if small_variance and inside_window:
-            solution = ei
+        solution = None
     return solution

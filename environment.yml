@@ -19,6 +19,8 @@ dependencies:
   - xarray
   - netcdf4
   - numba
+  - rich
+  - ipywidgets
   # Fatiando
   - verde
   - pooch
