@@ -87,12 +87,8 @@ class EulerDeconvolutionWindowed:
                 window_coordinates,
                 [d[window[0]] for d in data],
             )
-            small_variance = (
-                np.sqrt(ed.covariance_[2, 2])
-                < np.abs(ed.location_[2]) * self.max_variance
-            )
             inside_window = vd.inside(ed.location_, vd.get_region(window_coordinates))
-            if small_variance and inside_window:
+            if inside_window:
                 solutions.append(ed)
         variances = [np.sum(np.diag(ed.covariance_)[:3]) for ed in solutions]
         keep = int(self.keep * n_windows)
@@ -448,11 +444,8 @@ def fit_window(
             ei.fit(window_coordinates, window_data, weights)
             candidates.append(ei)
         best = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
-        small_variance = np.sqrt(best.covariance_[2, 2]) < max_variance * np.abs(
-            best.location_[2]
-        )
         inside_window = vd.inside(best.location_, window_region)
-        if small_variance and inside_window:
+        if inside_window:
             solution = best
         else:
             solution = None
