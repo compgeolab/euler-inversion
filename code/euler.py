@@ -37,8 +37,8 @@ class EulerDeconvolution:
         parameters = cofactor @ jacobian.T @ pseudo_data
         pseudo_residuals = pseudo_data - jacobian @ parameters
         chi_squared = np.sum(pseudo_residuals**2) / (pseudo_data.size - parameters.size)
-        self.cofactor_ = cofactor
         self.covariance_ = chi_squared * cofactor
+        self.parameters_ = parameters
         self.location_ = parameters[:3]
         self.base_level_ = parameters[-1]
         return self
@@ -62,10 +62,14 @@ class EulerDeconvolution:
 
 class EulerDeconvolutionWindowed:
 
-    def __init__(self, window_size, window_step, structural_index):
+    def __init__(
+        self, window_size, window_step, structural_index, keep=0.15, max_variance=0.3
+    ):
         self.structural_index = structural_index
         self.window_size = window_size
         self.window_step = window_step
+        self.keep = keep
+        self.max_variance = max_variance
 
     def fit(self, coordinates, data):
         _, windows = vd.rolling_window(
@@ -74,7 +78,8 @@ class EulerDeconvolutionWindowed:
             spacing=self.window_step,
             adjust="region",
         )
-        self.solutions_ = []
+        n_windows = windows.size
+        solutions = []
         for window in windows.ravel():
             ed = EulerDeconvolution(self.structural_index)
             window_coordinates = [c[window[0]] for c in coordinates]
@@ -83,11 +88,15 @@ class EulerDeconvolutionWindowed:
                 [d[window[0]] for d in data],
             )
             small_variance = (
-                np.sqrt(ed.covariance_[2, 2]) < np.abs(ed.location_[2]) / 10
+                np.sqrt(ed.covariance_[2, 2])
+                < np.abs(ed.location_[2]) * self.max_variance
             )
             inside_window = vd.inside(ed.location_, vd.get_region(window_coordinates))
             if small_variance and inside_window:
-                self.solutions_.append(ed)
+                solutions.append(ed)
+        variances = [np.sum(np.diag(ed.covariance_)[:3]) for ed in solutions]
+        keep = int(self.keep * n_windows)
+        self.solutions_ = [solutions[i] for i in np.argsort(variances)[:keep]]
         self.locations_ = np.transpose([ed.location_ for ed in self.solutions_])
         self.base_levels_ = np.array([ed.base_level_ for ed in self.solutions_])
         return self
@@ -112,7 +121,13 @@ class EulerDeconvolutionWindowed:
 class EulerInversion:
 
     def __init__(
-        self, structural_index, max_iterations=20, tol=0.1, euler_misfit_balance=0.1, initial=None, initial_covariance=None,
+        self,
+        structural_index,
+        max_iterations=20,
+        tol=0.1,
+        euler_misfit_balance=0.1,
+        initial=None,
+        initial_covariance=None,
     ):
         self.structural_index = structural_index
         self.max_iterations = max_iterations
@@ -158,11 +173,11 @@ class EulerInversion:
         if self.initial is None:
             parameters, cofactor = self._initial_parameters(coordinates, data)
         else:
-            parameters = np.concatenate([self.initial, 0])
+            parameters = self.initial.copy()
             if self.initial_covariance is None:
                 cofactor = np.eye(4)
             else:
-                cofactor = self.initial_covariance
+                cofactor = self.initial_covariance.copy()
         # Data weights
         data_weights = np.empty_like(data_predicted)
         data_weights[:n_data] = weights[0]
@@ -324,12 +339,11 @@ class EulerInversionWindowed:
         window_size,
         window_step,
         structural_index=None,
-        max_variance=0.1,
+        max_variance=0.3,
+        keep=0.1,
         max_iterations=20,
         tol=0.1,
         euler_misfit_balance=0.1,
-        initial=None,
-        initial_covariance=None,
         progress=True,
     ):
         self.structural_index = structural_index
@@ -340,6 +354,7 @@ class EulerInversionWindowed:
         self.euler_misfit_balance = euler_misfit_balance
         self.max_variance = max_variance
         self.progress = progress
+        self.keep = keep
 
     def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
         _, windows = vd.rolling_window(
@@ -348,6 +363,7 @@ class EulerInversionWindowed:
             spacing=self.window_step,
             adjust="region",
         )
+        n_windows = windows.size
         if self.structural_index is None:
             structural_indices = [1, 2, 3]
         else:
@@ -371,14 +387,23 @@ class EulerInversionWindowed:
                 ),
             )
             futures.append(future)
-        self.solutions_ = []
         future_iterator = concurrent.futures.as_completed(futures)
         if self.progress:
-            future_iterator = rich.progress.track(future_iterator, description="Processing windows:", total=windows.size)
+            future_iterator = rich.progress.track(
+                future_iterator, description="Processing windows:", total=windows.size
+            )
+        solutions = {si: [] for si in structural_indices}
         for future in future_iterator:
             model = future.result()
             if model is not None:
-                self.solutions_.append(model)
+                solutions[model.structural_index].append(model)
+        # Filter per SI value since their covariances can't be compared against
+        # each other
+        keep = int(self.keep * n_windows)
+        for si in structural_indices:
+            variances = [np.sum(np.diag(ei.covariance_)[:3]) for ei in solutions[si]]
+            solutions[si] = [solutions[si][i] for i in np.argsort(variances)[:keep]]
+        self.solutions_ = sum((solutions[si] for si in structural_indices), start=[])
         self.locations_ = np.transpose([ei.location_ for ei in self.solutions_])
         self.base_levels_ = np.array([ei.base_level_ for ei in self.solutions_])
         self.structural_indices_ = np.array(
@@ -408,19 +433,27 @@ def fit_window(
     window_coordinates, window_data, weights, max_variance, structural_indices, kwargs
 ):
     window_region = vd.get_region(window_coordinates)
-    candidates = []
+    deconvolutions = []
     for si in structural_indices:
-        ei = EulerInversion(si, **kwargs)
-        ei.fit(window_coordinates, window_data, weights)
-        candidates.append(ei)
-    best = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
-    small_variance = (
-                      np.sqrt(best.covariance_[2, 2]) < max_variance * np.abs(
-        best.location_[2]
-    ))
-    inside_window = vd.inside(best.location_, window_region)
-    if small_variance and inside_window:
-        solution = best
-    else:
+        ed = EulerDeconvolution(si).fit(window_coordinates, window_data)
+        deconvolutions.append(ed)
+    if all([not vd.inside(ed.location_, window_region) for ed in deconvolutions]):
         solution = None
+    else:
+        candidates = []
+        for si, ed in zip(structural_indices, deconvolutions):
+            ei = EulerInversion(
+                si, initial=ed.parameters_, initial_covariance=ed.covariance_, **kwargs
+            )
+            ei.fit(window_coordinates, window_data, weights)
+            candidates.append(ei)
+        best = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
+        small_variance = np.sqrt(best.covariance_[2, 2]) < max_variance * np.abs(
+            best.location_[2]
+        )
+        inside_window = vd.inside(best.location_, window_region)
+        if small_variance and inside_window:
+            solution = best
+        else:
+            solution = None
     return solution
