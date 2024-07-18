@@ -8,6 +8,7 @@ import scipy as sp
 import verde as vd
 import xarray as xr
 import rich.progress
+import line_profiler
 
 
 class EulerDeconvolution:
@@ -158,6 +159,7 @@ class EulerInversion:
         )
         return self
 
+    @line_profiler.profile
     def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
         """
         Perform Euler Inversion on a single window spanning the entire data
@@ -237,6 +239,7 @@ class EulerInversion:
         self.covariance_ = chi_squared * cofactor
         return self
 
+    @line_profiler.profile
     def _newton_step(
         self, coordinates, data_observed, data_predicted, parameters, euler, Wd_inv
     ):
@@ -450,3 +453,46 @@ def fit_window(
         else:
             solution = None
     return solution
+
+
+if __name__ == "__main__":
+    import harmonica as hm
+    import xrft
+
+    region = [0, 25e3, 0, 20e3]
+    coordinates = vd.grid_coordinates(region, spacing=300, extra_coords=800)
+    inclination, declination = -30, 15
+    base_level = 100
+    true_coordinates = (15e3, 11e3, -5e3)
+    magnetic_field = hm.dipole_magnetic(
+        coordinates,
+        dipoles=true_coordinates,
+        magnetic_moments=hm.magnetic_angles_to_vec(2e12, inclination, declination),
+        field="b",
+    )
+    main_field = hm.magnetic_angles_to_vec(1, inclination, declination)
+    magnetic_anomaly = sum(b * f for b, f in zip(magnetic_field, main_field))
+
+    # Add noise and the base level
+    magnetic_anomaly += np.random.default_rng(42).normal(0, 10, size=magnetic_anomaly.shape)
+    magnetic_anomaly += base_level
+
+    print(f"Number of data: {magnetic_anomaly.size}")
+
+    # Make a grid and calculate derivatives
+    # Can't have the height as a coordinate because of a problem with xrft
+    data = vd.make_xarray_grid(coordinates[:2], (magnetic_anomaly, coordinates[-1]), data_names=["field", "height"])
+    data["deriv_east"] = hm.derivative_easting(data.field)
+    data["deriv_north"] = hm.derivative_northing(data.field)
+    pad_width = {
+        "easting": data.easting.size // 3,
+        "northing": data.northing.size // 3,
+    }
+    padded = xrft.pad(data.field, pad_width, mode="linear_ramp", constant_values=None)
+    data["deriv_up"] = xrft.unpad(hm.derivative_upward(padded), pad_width)
+    # Add back the height
+    data = data.assign_coords(height=data.height)
+
+    # Run the inversion
+    ei = EulerInversion(structural_index=3).fit_grid(data)
+

@@ -26,3 +26,4 @@ dependencies:
   - pooch
   - pip:
     - git+https://github.com/fatiando/harmonica
+    - line_profiler
