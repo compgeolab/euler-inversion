@@ -8,7 +8,6 @@ import scipy as sp
 import verde as vd
 import xarray as xr
 import rich.progress
-import line_profiler
 
 
 class EulerDeconvolution:
@@ -159,7 +158,6 @@ class EulerInversion:
         )
         return self
 
-    @line_profiler.profile
     def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
         """
         Perform Euler Inversion on a single window spanning the entire data
@@ -182,7 +180,7 @@ class EulerInversion:
         data_weights[n_data : 2 * n_data] = weights[1]
         data_weights[2 * n_data : 3 * n_data] = weights[2]
         data_weights[3 * n_data : 4 * n_data] = weights[3]
-        Wd_inv = sp.sparse.diags(1 / data_weights, format="csc")
+        Wd_inv = [np.full(n_data, 1 / w) for w in weights]
         euler = self._eulers_equation(coordinates, data_predicted, parameters)
         residuals = data_observed - data_predicted
         # Keep track of the way these things vary with iteration
@@ -239,7 +237,6 @@ class EulerInversion:
         self.covariance_ = chi_squared * cofactor
         return self
 
-    @line_profiler.profile
     def _newton_step(
         self, coordinates, data_observed, data_predicted, parameters, euler, Wd_inv
     ):
@@ -251,12 +248,14 @@ class EulerInversion:
         field, deriv_east, deriv_north, deriv_up = np.split(data_predicted, 4)
         xo, yo, zo, base_level = parameters
         A = self._parameter_jacobian(deriv_east, deriv_north, deriv_up)
-        B = self._data_jacobian(coordinates, parameters[:3])
+        B_diags = self._data_jacobian_diagonals(coordinates, parameters[:3])
+        B = sp.sparse.hstack([sp.sparse.diags(b) for b in B_diags])
+        WBT = sp.sparse.hstack([sp.sparse.diags(w*b) for b, w in zip(B_diags, Wd_inv)]).T
         residuals = data_observed - data_predicted
-        Q = B @ Wd_inv @ B.T
-        Q_inv = sp.sparse.linalg.inv(Q)
+        # Q = B @ Wd_inv @ B.T
+        Q_inv = sp.sparse.diags(1 / sum([b**2 * w for b, w in zip(B_diags, Wd_inv)]))
         ATQ = A.T @ Q_inv
-        BTQ = Wd_inv @ B.T @ Q_inv
+        BTQ = WBT @ Q_inv
         Br = B @ residuals
         cofactor_step = sp.linalg.inv(ATQ @ A)
         parameter_step = -cofactor_step @ ATQ @ (euler + Br)
@@ -296,23 +295,20 @@ class EulerInversion:
         jacobian[:, 3] = -self.structural_index
         return jacobian
 
-    def _data_jacobian(self, coordinates, source_location):
+    def _data_jacobian_diagonals(self, coordinates, source_location):
         """
         Calculate the data Jacobian for Euler Inversion
         """
         east, north, up = coordinates
         east_s, north_s, up_s = source_location
         nequations = east.size
-        jacobian = sp.sparse.hstack(
-            [
-                sp.sparse.diags(np.full(nequations, self.structural_index)),
-                sp.sparse.diags(east - east_s),
-                sp.sparse.diags(north - north_s),
-                sp.sparse.diags(up - up_s),
-            ],
-            format="csc",
-        )
-        return jacobian
+        diagonals = [
+                np.full(nequations, self.structural_index),
+                east - east_s,
+                north - north_s,
+                up - up_s,
+            ]
+        return diagonals
 
     def _eulers_equation(self, coordinates, data, parameters):
         """
@@ -453,46 +449,3 @@ def fit_window(
         else:
             solution = None
     return solution
-
-
-if __name__ == "__main__":
-    import harmonica as hm
-    import xrft
-
-    region = [0, 25e3, 0, 20e3]
-    coordinates = vd.grid_coordinates(region, spacing=300, extra_coords=800)
-    inclination, declination = -30, 15
-    base_level = 100
-    true_coordinates = (15e3, 11e3, -5e3)
-    magnetic_field = hm.dipole_magnetic(
-        coordinates,
-        dipoles=true_coordinates,
-        magnetic_moments=hm.magnetic_angles_to_vec(2e12, inclination, declination),
-        field="b",
-    )
-    main_field = hm.magnetic_angles_to_vec(1, inclination, declination)
-    magnetic_anomaly = sum(b * f for b, f in zip(magnetic_field, main_field))
-
-    # Add noise and the base level
-    magnetic_anomaly += np.random.default_rng(42).normal(0, 10, size=magnetic_anomaly.shape)
-    magnetic_anomaly += base_level
-
-    print(f"Number of data: {magnetic_anomaly.size}")
-
-    # Make a grid and calculate derivatives
-    # Can't have the height as a coordinate because of a problem with xrft
-    data = vd.make_xarray_grid(coordinates[:2], (magnetic_anomaly, coordinates[-1]), data_names=["field", "height"])
-    data["deriv_east"] = hm.derivative_easting(data.field)
-    data["deriv_north"] = hm.derivative_northing(data.field)
-    pad_width = {
-        "easting": data.easting.size // 3,
-        "northing": data.northing.size // 3,
-    }
-    padded = xrft.pad(data.field, pad_width, mode="linear_ramp", constant_values=None)
-    data["deriv_up"] = xrft.unpad(hm.derivative_upward(padded), pad_width)
-    # Add back the height
-    data = data.assign_coords(height=data.height)
-
-    # Run the inversion
-    ei = EulerInversion(structural_index=3).fit_grid(data)
-
