@@ -42,8 +42,9 @@ estimate the parameter vector
 \subsection{Euler deconvolution}
 
 Euler deconvolution starts by rearranging Equation~\ref{eq:euler} to place the
-parameters on the left-hand side and all other terms on the right-hand side,
-forming an $N \times 4$ equation system
+parameters on the left-hand side and all other terms on the right-hand side.
+This is an attempt to form a \textit{parametric model} which results in the
+$N \times 4$ equation system
 
 \begin{equation}
   \begin{aligned}
@@ -117,8 +118,200 @@ been widely explored in the literature [CITATION NEEDED].
 
 \subsection{Euler inversion}
 
+Euler inversion starts by assigning a $4N \times 1$ \textit{data vector}
+which contains all of the observations of $f$ and its gradient
 
-Starting values for p and d.
+\begin{equation}
+  \mathbf{d} =
+  \begin{bmatrix}
+    f_1 & \cdots & f_N &
+    \partial_x f_1 & \cdots & \partial_x f_N &
+    \partial_y f_1 & \cdots & \partial_y f_N &
+    \partial_z f_1 & \cdots & \partial_z f_N
+  \end{bmatrix}^T.
+  \label{eq:d}
+\end{equation}
+
+\noindent
+We can the formulate the $N \times 4$ equation system from Euler's equation as
+a non-linear function of parameters and data
+
+\begin{equation}
+  \mathbf{e}(\mathbf{p}, \mathbf{d}) = \mathbf{0}
+  \ ,
+  \label{eq:e}
+\end{equation}
+
+\noindent
+which is known in geodesy as an \textit{implicit model} [CITATION NEEDED].
+
+We then wish to solve the following constrained optimization problem with
+non-linear equality constraints to estimate both the parameters and the
+predicted data simultaneously
+
+\begin{equation}
+  \begin{aligned}
+    \min_{\mathbf{p}, \mathbf{d}} \quad &
+      \phi(\mathbf{d}) =
+      \left[\mathbf{d}^o - \mathbf{d}\right]^T \mathbf{W}
+      \left[\mathbf{d}^o - \mathbf{d}\right]
+    \\
+    \textrm{subject to} \quad &
+      \mathbf{e}(\mathbf{p}, \mathbf{d}) = \mathbf{0}
+    \ ,
+  \end{aligned}
+  \label{eq:constrained}
+\end{equation}
+
+\noindent
+in which $\mathbf{d}^o$ is the \textit{observed data vector} which contains all
+of the $4N$ observations of $f$ and its gradient,
+$\mathbf{d}$ is the \textit{predicted data vector} from Equation~\ref{eq:d},
+and $\mathbf{W}$ is a $4N \times 4N$ diagonal weight matrix.
+
+The constrained problem in Equation~\ref{eq:constrained} can be transformed
+into an unconstrained problem by using the Lagrangian
+
+\begin{equation}
+  \Lagr(\mathbf{p}, \mathbf{d}, \mathbf{\lambda}) =
+    \left[\mathbf{d}^o - \mathbf{d}\right]^T \mathbf{W}
+    \left[\mathbf{d}^o - \mathbf{d}\right]
+    +
+    2 \mathbf{\lambda}^T \mathbf{e}
+  \ ,
+  \label{eq:lagrangian}
+\end{equation}
+
+\noindent
+in which $\mathbf{\lambda}$ is an $N \times 1$ vector of Lagrange multipliers.
+
+The non-linear Lagrangian can be minimized through Newton's method by starting
+with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then iterating
+with the corrections to these values through the solution of the linear system
+
+\begin{equation}
+  \underbrace{
+    \begin{bmatrix}
+      \mathbf{H}^{dd}_k & \mathbf{H}^{d\lambda}_k & \mathbf{H}^{dp}_k \\
+      \mathbf{H}^{\lambda d}_k & \mathbf{H}^{\lambda\lambda}_k & \mathbf{H}^{\lambda p}_k \\
+      \mathbf{H}^{pd}_k & \mathbf{H}^{p\lambda}_k & \mathbf{H}^{pp}_k
+    \end{bmatrix}
+  }_{\text{Hessian of }\Lagr}
+  \begin{bmatrix}
+    \mathbf{\Delta d}_k \\
+    \mathbf{\Delta \lambda}_k \\
+    \mathbf{\Delta p}_k
+  \end{bmatrix}
+  = -
+  \underbrace{
+    \begin{bmatrix}
+      \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) \\
+      \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) \\
+      \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k)
+    \end{bmatrix}
+  }_{\substack{\text{gradient}\\ \text{of }\Lagr}}
+  \ ,
+\end{equation}
+
+\noindent
+in which $\mathbf{\nabla}_\alpha$ is the gradient operator with respect to
+variable $\alpha$ and
+$\mathbf{H}^{\alpha\beta}$ is the Hessian matrix of $\Lagr$ with respect to
+variables $\alpha$ and $\beta$.
+Since the order of derivation can be swapped in the Hessian matrices, the above
+equation can be simplified to
+
+\begin{equation}
+    \begin{bmatrix}
+      \mathbf{H}^{dd}_k & \mathbf{H}^{d\lambda}_k & \mathbf{H}^{dp}_k \\
+      {\mathbf{H}^{d\lambda}_k}^T & \mathbf{H}^{\lambda\lambda}_k & \mathbf{H}^{\lambda p}_k \\
+      {\mathbf{H}^{dp}_k}^T & {\mathbf{H}^{\lambda p}_k}^T & \mathbf{H}^{pp}_k
+    \end{bmatrix}
+  \begin{bmatrix}
+    \mathbf{\Delta d}_k \\
+    \mathbf{\Delta \lambda}_k \\
+    \mathbf{\Delta p}_k
+  \end{bmatrix}
+  = -
+    \begin{bmatrix}
+      \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) \\
+      \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) \\
+      \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k)
+    \end{bmatrix}
+  \ .
+  \label{eq:newton}
+\end{equation}
+
+Now, we must derive the three gradient vectors and six Hessian matrices in
+Equation~\ref{eq:newton}.
+We will start with the gradient vectors.
+
+\begin{equation}
+  \begin{aligned}
+    \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) &=
+      -2\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_k\right]
+      + 2\mathbf{B}_k^T\mathbf{\lambda}_k
+    \ ,
+    \\
+    \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) &=
+      2\mathbf{e}_k
+    \ ,
+    \\
+    \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) &=
+      2\mathbf{A}_k^T\mathbf{\lambda}_k
+    \ ,
+  \end{aligned}
+\end{equation}
+
+\noindent
+in which $\mathbf{e}_k = \mathbf{e}(\mathbf{p}_k,\mathbf{d}_k)$, $\mathbf{A}$
+is the $N \times 4$ \textit{parameter Jacobian} matrix of Euler's equation
+(Equation~\ref{eq:deconv-system}), and $\mathbf{B}$ is the $N \times 4N$
+\textit{data Jacobian} of Euler's equation which is composed of four diagonal
+matrices
+
+\begin{equation}
+  \begin{gathered}
+  \mathbf{B} =
+  \begin{bmatrix}
+    \mathbf{B}^f &
+    \mathbf{B}^x &
+    \mathbf{B}^y &
+    \mathbf{B}^z
+  \end{bmatrix}
+  , \quad
+  \mathbf{B}^f =
+  \begin{bmatrix}
+    \eta & \cdots & 0 \\
+    \vdots & \ddots & \vdots \\
+    0 & \cdots & \eta
+  \end{bmatrix}
+  ,
+  \\
+  \mathbf{B}^x =
+  \begin{bmatrix}
+    x_1 - x_o & \cdots & 0 \\
+    \vdots & \ddots & \vdots \\
+    0 & \cdots & x_N - x_o
+  \end{bmatrix}
+  , \quad
+  \mathbf{B}^y =
+  \begin{bmatrix}
+    y_1 - y_o & \cdots & 0 \\
+    \vdots & \ddots & \vdots \\
+    0 & \cdots & y_N - y_o
+  \end{bmatrix}
+  , \quad
+  \mathbf{B}^z =
+  \begin{bmatrix}
+    z_1 - z_o & \cdots & 0 \\
+    \vdots & \ddots & \vdots \\
+    0 & \cdots & z_N - z_o
+  \end{bmatrix}
+  \end{gathered}
+  \ .
+\end{equation}
+
 
 \subsection{Estimating the structural index}
 
