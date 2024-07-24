@@ -10,8 +10,6 @@ dependencies:
   - scipy
   - matplotlib
   - jupyterlab
-  - black
-  - flake8
   # For building latex documents
   - make
   - tectonic
@@ -27,3 +25,4 @@ dependencies:
   - pip:
     - git+https://github.com/fatiando/harmonica
     - line_profiler
+    - black[jupyter]
