@@ -4,23 +4,39 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methodology}
 
-This is Euler's homogeneity equation
+We start with Euler's homogeneity equation \citep{Thompson1982,Reid1990}
 
 \begin{equation}
-  \label{eq_euler_homogeneity}
-  (x - x_c)\partial_x f + (y - y_c)\partial_y f + (z - z_c)\partial_z f
-  = (b - f)\eta
+  (x - x_o)\partial_x f + (y - y_o)\partial_y f + (z - z_o)\partial_z f
+  + \eta(f - b)
   \ ,
+  \label{eq:euler}
 \end{equation}
 
 \noindent
-in which $(x_c, y_c, z_c)$ are the coordinates of the magnetic field source,
-$b$ is the base level representing a constant shift in the signal, and $\eta$
-is the structural index corresponding to the nature of the source. You can
-reference the equation in the text like this:
-Equation~\ref{eq_euler_homogeneity}.
+in which $f$ is a homogeneous function (in this case, a potential-field),
+$(x, y, z)$ are the coordinates of the observation point,
+$(x_o, y_o, z_o)$ are the coordinates of the field source,
+$b$ is the base level representing a constant shift in the field,
+and $\eta$ is the structural index, which is related to the nature of the
+source and how its potential-field values decay with distance.
+Starting with \citet{Thompson1982} and \citet{Reid1990}, Euler's equation has
+been used to estimate the source positions of gravity and magnetic data.
+In this section, we will review the solution of Equation~\ref{eq:euler} for
+$(x_o, y_o, z_o)$ by Euler Deconvolution and then present a new method, called
+Euler Inversion, for solving Euler's equation using total least-squares.
+
+\subsection{Euler deconvolution}
 
 
+\subsection{Euler inversion}
+
+
+Starting values for p and d.
+
+\subsection{Estimating the structural index}
+
+\subsection{Windowing procedure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
