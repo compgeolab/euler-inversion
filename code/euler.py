@@ -7,7 +7,6 @@ import numpy as np
 import scipy as sp
 import verde as vd
 import xarray as xr
-import rich.progress
 
 
 class EulerDeconvolution:
@@ -63,13 +62,16 @@ class EulerDeconvolution:
 class EulerDeconvolutionWindowed:
 
     def __init__(
-        self, window_size, window_step, structural_index, keep=0.15, max_variance=0.3
+        self,
+        window_size,
+        window_step,
+        structural_index,
+        keep=0.15,
     ):
         self.structural_index = structural_index
         self.window_size = window_size
         self.window_step = window_step
         self.keep = keep
-        self.max_variance = max_variance
 
     def fit(self, coordinates, data):
         _, windows = vd.rolling_window(
@@ -250,7 +252,9 @@ class EulerInversion:
         A = self._parameter_jacobian(deriv_east, deriv_north, deriv_up)
         B_diags = self._data_jacobian_diagonals(coordinates, parameters[:3])
         B = sp.sparse.hstack([sp.sparse.diags(b) for b in B_diags])
-        WBT = sp.sparse.hstack([sp.sparse.diags(w*b) for b, w in zip(B_diags, Wd_inv)]).T
+        WBT = sp.sparse.hstack(
+            [sp.sparse.diags(w * b) for b, w in zip(B_diags, Wd_inv)]
+        ).T
         residuals = data_observed - data_predicted
         # Q = B @ Wd_inv @ B.T
         Q_inv = sp.sparse.diags(1 / sum([b**2 * w for b, w in zip(B_diags, Wd_inv)]))
@@ -303,11 +307,11 @@ class EulerInversion:
         east_s, north_s, up_s = source_location
         nequations = east.size
         diagonals = [
-                np.full(nequations, self.structural_index),
-                east - east_s,
-                north - north_s,
-                up - up_s,
-            ]
+            np.full(nequations, self.structural_index),
+            east - east_s,
+            north - north_s,
+            up - up_s,
+        ]
         return diagonals
 
     def _eulers_equation(self, coordinates, data, parameters):
@@ -334,12 +338,10 @@ class EulerInversionWindowed:
         window_size,
         window_step,
         structural_index=None,
-        max_variance=0.3,
-        keep=0.1,
+        keep=0.15,
         max_iterations=20,
         tol=0.1,
         euler_misfit_balance=0.1,
-        progress=True,
     ):
         self.structural_index = structural_index
         self.window_size = window_size
@@ -347,8 +349,6 @@ class EulerInversionWindowed:
         self.max_iterations = max_iterations
         self.tol = tol
         self.euler_misfit_balance = euler_misfit_balance
-        self.max_variance = max_variance
-        self.progress = progress
         self.keep = keep
 
     def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
@@ -373,7 +373,6 @@ class EulerInversionWindowed:
                 window_coordinates,
                 window_data,
                 weights,
-                self.max_variance,
                 structural_indices,
                 dict(
                     tol=self.tol,
@@ -382,13 +381,8 @@ class EulerInversionWindowed:
                 ),
             )
             futures.append(future)
-        future_iterator = concurrent.futures.as_completed(futures)
-        if self.progress:
-            future_iterator = rich.progress.track(
-                future_iterator, description="Processing windows:", total=windows.size
-            )
         solutions = {si: [] for si in structural_indices}
-        for future in future_iterator:
+        for future in concurrent.futures.as_completed(futures):
             model = future.result()
             if model is not None:
                 solutions[model.structural_index].append(model)
@@ -424,9 +418,7 @@ class EulerInversionWindowed:
         return self
 
 
-def fit_window(
-    window_coordinates, window_data, weights, max_variance, structural_indices, kwargs
-):
+def fit_window(window_coordinates, window_data, weights, structural_indices, kwargs):
     window_region = vd.get_region(window_coordinates)
     deconvolutions = []
     for si in structural_indices:
