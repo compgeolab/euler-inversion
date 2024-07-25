@@ -168,7 +168,6 @@ in which $\mathbf{d}^o$ is the \textit{observed data vector} which contains all
 of the $4N$ observations of $f$ and its gradient,
 $\mathbf{d}$ is the \textit{predicted data vector} from Equation~\ref{eq:d},
 and $\mathbf{W}$ is a $4N \times 4N$ diagonal weight matrix.
-
 The constrained problem in Equation~\ref{eq:constrained} can be transformed
 into an unconstrained problem by using the Lagrangian
 
@@ -184,8 +183,7 @@ into an unconstrained problem by using the Lagrangian
 
 \noindent
 in which $\mathbf{\lambda}$ is an $N \times 1$ vector of Lagrange multipliers.
-
-The non-linear Lagrangian can be minimized through Newton's method by starting
+The non-linear Lagrangian is then minimized through Newton's method by starting
 with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then iterating
 with the corrections to these values through the solution of the linear system
 
@@ -249,8 +247,8 @@ We will start with the gradient vectors.
 \begin{equation}
   \begin{aligned}
     \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) &=
-      -2\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_k\right]
-      + 2\mathbf{B}_k^T\mathbf{\lambda}_k
+      2\left(-\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_k\right]
+      + \mathbf{B}_k^T\mathbf{\lambda}_k\right)
     \ ,
     \\
     \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) &=
@@ -261,26 +259,28 @@ We will start with the gradient vectors.
       2\mathbf{A}_k^T\mathbf{\lambda}_k
     \ ,
   \end{aligned}
+  \label{eq:grad}
 \end{equation}
 
 \noindent
-in which $\mathbf{e}_k = \mathbf{e}(\mathbf{p}_k,\mathbf{d}_k)$, $\mathbf{A}$
+in which $\mathbf{e}_k = \mathbf{e}(\mathbf{p}_k,\mathbf{d}_k)$, $\mathbf{A}_k$
 is the $N \times 4$ \textit{parameter Jacobian} matrix of Euler's equation
-(Equation~\ref{eq:deconv-system}), and $\mathbf{B}$ is the $N \times 4N$
-\textit{data Jacobian} of Euler's equation which is composed of four diagonal
-matrices
+(Equation~\ref{eq:deconv-system}) evaluated on $(\mathbf{p}_k,\mathbf{d}_k)$,
+and $\mathbf{B}_k$ is the $N \times 4N$ \textit{data Jacobian} of Euler's
+equation, also evaluated on $(\mathbf{p}_k,\mathbf{d}_k)$. The data Jacobian
+$\mathbf{B}_k$ is composed of four diagonal matrices
 
 \begin{equation}
   \begin{gathered}
-  \mathbf{B} =
+  \mathbf{B}_k =
   \begin{bmatrix}
-    \mathbf{B}^f &
-    \mathbf{B}^x &
-    \mathbf{B}^y &
-    \mathbf{B}^z
+    \mathbf{B}^f_k &
+    \mathbf{B}^x_k &
+    \mathbf{B}^y_k &
+    \mathbf{B}^z_k
   \end{bmatrix}
   , \quad
-  \mathbf{B}^f =
+  \mathbf{B}^f_k =
   \begin{bmatrix}
     \eta & \cdots & 0 \\
     \vdots & \ddots & \vdots \\
@@ -288,28 +288,105 @@ matrices
   \end{bmatrix}
   ,
   \\
-  \mathbf{B}^x =
+  \mathbf{B}^x_k =
   \begin{bmatrix}
-    x_1 - x_o & \cdots & 0 \\
+    x_1 - {x_o}_k & \cdots & 0 \\
     \vdots & \ddots & \vdots \\
-    0 & \cdots & x_N - x_o
+    0 & \cdots & x_N - {x_o}_k
   \end{bmatrix}
   , \quad
-  \mathbf{B}^y =
+  \mathbf{B}^y_k =
   \begin{bmatrix}
-    y_1 - y_o & \cdots & 0 \\
+    y_1 - {y_o}_k & \cdots & 0 \\
     \vdots & \ddots & \vdots \\
-    0 & \cdots & y_N - y_o
+    0 & \cdots & y_N - {y_o}_k
   \end{bmatrix}
   , \quad
-  \mathbf{B}^z =
+  \mathbf{B}^z_k =
   \begin{bmatrix}
-    z_1 - z_o & \cdots & 0 \\
+    z_1 - {z_o}_k & \cdots & 0 \\
     \vdots & \ddots & \vdots \\
-    0 & \cdots & z_N - z_o
+    0 & \cdots & z_N - {z_o}_k
   \end{bmatrix}
   \end{gathered}
   \ .
+  \label{eq:B}
+\end{equation}
+
+The Hessian matrices are calculated using a Gauss-Newton approximation
+disregarding second-order derivatives. The six independent Hessians are given
+by
+
+\begin{equation}
+  \begin{aligned}
+    \mathbf{H}^{dd}_k &\approx -2\mathbf{W} \ , &
+    \mathbf{H}^{\lambda\lambda}_k &= \mathbf{0} \ , &
+    \mathbf{H}^{pp}_k &\approx \mathbf{0} \ ,
+    \\
+    \mathbf{H}^{d\lambda}_k &= 2\mathbf{B}^T \ , &
+    \mathbf{H}^{\lambda p}_k &= 2\mathbf{A} \ , &
+    \mathbf{H}^{dp}_k &\approx \mathbf{0} \ .
+  \end{aligned}
+  \label{eq:hess}
+\end{equation}
+
+\noindent
+Substituting the gradients (Equation~\ref{eq:grad}) and Hessians
+(Equation~\ref{eq:hess}) into the linear system in Equation~\ref{eq:newton} we
+arrive at
+
+\begin{equation}
+    \begin{bmatrix}
+      -\mathbf{W} & \mathbf{B}_k^T & \mathbf{0} \\
+      \mathbf{B}_k & \mathbf{0} & \mathbf{A}_k \\
+      \mathbf{0} & \mathbf{A}_k^T & \mathbf{0}
+    \end{bmatrix}
+  \begin{bmatrix}
+    \mathbf{\Delta d}_k \\
+    \mathbf{\Delta \lambda}_k \\
+    \mathbf{\Delta p}_k
+  \end{bmatrix}
+  = -
+    \begin{bmatrix}
+      -\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_k\right] + \mathbf{B}_k^T\mathbf{\lambda}_k
+      \\
+      \mathbf{e}_k
+      \\
+      \mathbf{A}_k^T\mathbf{\lambda}_k
+    \end{bmatrix}
+  \ .
+  \label{eq:normal}
+\end{equation}
+
+Since the data weight matrix $\mathbf{W}$ is diagonal and invertible, we can
+use the following identity to eliminate one equation from the equation system
+above
+
+\begin{equation}
+    \begin{bmatrix}
+      \mathbf{C} & \mathbf{D} \\
+      \mathbf{E} & \mathbf{F}
+    \end{bmatrix}
+    \begin{bmatrix}
+      \mathbf{g} \\
+      \mathbf{h}
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      \mathbf{t}
+      \\
+      \mathbf{v}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      \mathbf{0}
+      \\
+      \mathbf{0}
+    \end{bmatrix}
+    \ \Rightarrow \
+    \left[\mathbf{F} - \mathbf{E}\mathbf{C}^{-1}\mathbf{D}\right]\mathbf{h}
+    - \mathbf{E}\mathbf{C}^{-1}\mathbf{t} = \mathbf{0}
+  \label{eq:identity}
 \end{equation}
 
 
