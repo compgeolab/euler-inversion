@@ -22,29 +22,49 @@ We start with Euler's homogeneity equation
 
 \noindent
 in which $f$ is a homogeneous function (in this case, a potential-field),
+$\partial_\alpha$ is the derivative operator in the $\alpha$ dimension,
 $(x, y, z)$ are the coordinates of the observation point,
 $(x_o, y_o, z_o)$ are the coordinates of the field source,
 $b$ is the base level representing a constant shift in the field,
 and $\eta$ is the structural index, which is related to the nature of the
 source and how its potential-field values decay with distance \citep{Reid2014}.
-Equation~\ref{eq:euler} relates the coordinates of the source with the observed
-potential field and its gradient.
+Equation~\ref{eq:euler} relates the coordinates of the source with the
+potential field and its gradient observed at the point $(x, y, z)$.
 
 Given $N$ observations points in which we have measured $f$ and its gradient
-(for a total $4N$ data), both Euler deconvolution and Euler inversion aim to
-estimate the parameter vector
+(for a total $4N$ data), we can define the system of $N$ equations and $4$
+unknowns
+
+\begin{equation}
+  \begin{aligned}
+    (x_1-x_o)\partial_x f_1 + (y_1-y_o)\partial_y f_1 + (z_1-z_o)\partial_z f_1 + \eta(f_1-b) &= 0
+    \\
+    (x_2-x_o)\partial_x f_2 + (y_2-y_o)\partial_y f_2 + (z_2-z_o)\partial_z f_2 + \eta(f_2-b) &= 0
+    \\
+    \vdots
+    \\
+    (x_N-x_o)\partial_x f_N + (y_N-y_o)\partial_y f_N + (z_N-z_o)\partial_z f_N + \eta(f_N-b) &= 0
+  \end{aligned}
+  \ .
+  \label{eq:euler-system}
+\end{equation}
+
+\noindent
+Both Euler deconvolution and Euler inversion aim to solve the equation system
+above to estimate the parameter vector
 
 \begin{equation}
   \mathbf{p} = \begin{bmatrix}x_o & y_o & z_o & b \end{bmatrix}^T.
   \label{eq:p}
 \end{equation}
 
+
 \subsection{Euler deconvolution}
 
-Euler deconvolution starts by rearranging Equation~\ref{eq:euler} to place the
-parameters on the left-hand side and all other terms on the right-hand side.
-This is an attempt to form a \textit{parametric model} which results in the
-$N \times 4$ equation system
+Euler deconvolution starts by rearranging Equation~\ref{eq:euler-system} to
+place the parameters on the left-hand side and all other terms on the
+right-hand side. This is an attempt to form a \textit{parametric model} which
+results in the equation system
 
 \begin{equation}
   \begin{aligned}
@@ -116,25 +136,39 @@ This presents a problem, particularly for the estimation of $z_o$, which has
 been widely explored in the literature [CITATION NEEDED].
 
 
-\subsection{Euler inversion}
+\subsection{Euler inversion: Formulation}
 
-Euler inversion starts by assigning a $4N \times 1$ \textit{data vector}
-which contains all of the observations of $f$ and its gradient
+Euler inversion starts by assigning the potential-field $f$ to a $N \times 1$
+vector
+
+\begin{equation}
+  \mathbf{f} =
+  \begin{bmatrix}
+    f_1 & f_2 & \cdots & f_N
+  \end{bmatrix}^T.
+\end{equation}
+
+\noindent
+We can then define a $4N \times 1$ \textit{data vector} which contains all of
+the values of $f$ and its gradient
 
 \begin{equation}
   \mathbf{d} =
   \begin{bmatrix}
-    f_1 & \cdots & f_N &
-    \partial_x f_1 & \cdots & \partial_x f_N &
-    \partial_y f_1 & \cdots & \partial_y f_N &
-    \partial_z f_1 & \cdots & \partial_z f_N
+    \mathbf{f}^T
+    & \mathbf{\nabla}_x\mathbf{f}^T
+    & \mathbf{\nabla}_y\mathbf{f}^T
+    & \mathbf{\nabla}_z\mathbf{f}^T
   \end{bmatrix}^T.
   \label{eq:d}
 \end{equation}
 
 \noindent
-We can the formulate the $N \times 4$ equation system from Euler's equation as
-a non-linear function of parameters and data
+in which $\mathbf{\nabla}_\alpha$ is the gradient operator in the $\alpha$
+dimension.
+
+Next, we formulate the $N \times 4$ equation system from Euler's equation as a
+non-linear function of parameters and data
 
 \begin{equation}
   \mathbf{e}(\mathbf{p}, \mathbf{d}) = \mathbf{0}
@@ -172,17 +206,17 @@ The constrained problem in Equation~\ref{eq:constrained} can be transformed
 into an unconstrained problem by using the Lagrangian
 
 \begin{equation}
-  \Lagr(\mathbf{p}, \mathbf{d}, \mathbf{\lambda}) =
+  \Lagr(\mathbf{p}, \mathbf{d}, \boldsymbol{\lambda}) =
     \left[\mathbf{d}^o - \mathbf{d}\right]^T \mathbf{W}
     \left[\mathbf{d}^o - \mathbf{d}\right]
     +
-    2 \mathbf{\lambda}^T \mathbf{e}
+    2 \boldsymbol{\lambda}^T \mathbf{e}
   \ ,
   \label{eq:lagrangian}
 \end{equation}
 
 \noindent
-in which $\mathbf{\lambda}$ is an $N \times 1$ vector of Lagrange multipliers.
+in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange multipliers.
 The non-linear Lagrangian is then minimized through Newton's method by starting
 with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then iterating
 with the corrections to these values through the solution of the linear system
@@ -197,15 +231,15 @@ with the corrections to these values through the solution of the linear system
   }_{\text{Hessian of }\Lagr}
   \begin{bmatrix}
     \mathbf{\Delta d}_k \\
-    \mathbf{\Delta \lambda}_k \\
+    \boldsymbol{\Delta\lambda}_k \\
     \mathbf{\Delta p}_k
   \end{bmatrix}
   = -
   \underbrace{
     \begin{bmatrix}
-      \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) \\
-      \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) \\
-      \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k)
+      \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k) \\
+      \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k) \\
+      \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k)
     \end{bmatrix}
   }_{\substack{\text{gradient}\\ \text{of }\Lagr}}
   \ ,
@@ -227,14 +261,14 @@ equation can be simplified to
     \end{bmatrix}
   \begin{bmatrix}
     \mathbf{\Delta d}_k \\
-    \mathbf{\Delta \lambda}_k \\
+    \boldsymbol{\Delta\lambda}_k \\
     \mathbf{\Delta p}_k
   \end{bmatrix}
   = -
     \begin{bmatrix}
-      \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) \\
-      \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) \\
-      \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k)
+      \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k) \\
+      \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k) \\
+      \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k)
     \end{bmatrix}
   \ .
   \label{eq:newton}
@@ -246,17 +280,17 @@ We will start with the gradient vectors.
 
 \begin{equation}
   \begin{aligned}
-    \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) &=
+    \mathbf{\nabla}_d\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k) &=
       2\left(-\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_k\right]
-      + \mathbf{B}_k^T\mathbf{\lambda}_k\right)
+      + \mathbf{B}_k^T\boldsymbol{\lambda}_k\right)
     \ ,
     \\
-    \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) &=
+    \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k) &=
       2\mathbf{e}_k
     \ ,
     \\
-    \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\mathbf{\lambda}_k) &=
-      2\mathbf{A}_k^T\mathbf{\lambda}_k
+    \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k) &=
+      2\mathbf{A}_k^T\boldsymbol{\lambda}_k
     \ ,
   \end{aligned}
   \label{eq:grad}
@@ -272,44 +306,45 @@ $\mathbf{B}_k$ is composed of four diagonal matrices
 
 \begin{equation}
   \begin{gathered}
-  \mathbf{B}_k =
-  \begin{bmatrix}
-    \mathbf{B}^f_k &
-    \mathbf{B}^x_k &
-    \mathbf{B}^y_k &
-    \mathbf{B}^z_k
-  \end{bmatrix}
-  , \quad
-  \mathbf{B}^f_k =
-  \begin{bmatrix}
-    \eta & \cdots & 0 \\
-    \vdots & \ddots & \vdots \\
-    0 & \cdots & \eta
-  \end{bmatrix}
-  ,
-  \\
-  \mathbf{B}^x_k =
-  \begin{bmatrix}
-    x_1 - {x_o}_k & \cdots & 0 \\
-    \vdots & \ddots & \vdots \\
-    0 & \cdots & x_N - {x_o}_k
-  \end{bmatrix}
-  , \quad
-  \mathbf{B}^y_k =
-  \begin{bmatrix}
-    y_1 - {y_o}_k & \cdots & 0 \\
-    \vdots & \ddots & \vdots \\
-    0 & \cdots & y_N - {y_o}_k
-  \end{bmatrix}
-  , \quad
-  \mathbf{B}^z_k =
-  \begin{bmatrix}
-    z_1 - {z_o}_k & \cdots & 0 \\
-    \vdots & \ddots & \vdots \\
-    0 & \cdots & z_N - {z_o}_k
-  \end{bmatrix}
+    \mathbf{B}_k =
+    \begin{bmatrix}
+      \mathbf{B}^f_k &
+      \mathbf{B}^x_k &
+      \mathbf{B}^y_k &
+      \mathbf{B}^z_k
+    \end{bmatrix}
+    ,
+    \\
+    B}^f_k =
+    \begin{bmatrix}
+      \eta & \cdots & 0 \\
+      \vdots & \ddots & \vdots \\
+      0 & \cdots & \eta
+    \end{bmatrix}
+    , \quad
+    \mathbf{B}^x_k =
+    \begin{bmatrix}
+      x_1 - {x_o}_k & \cdots & 0 \\
+      \vdots & \ddots & \vdots \\
+      0 & \cdots & x_N - {x_o}_k
+    \end{bmatrix}
+    , \quad
+    \\
+    \mathbf{B}^y_k =
+    \begin{bmatrix}
+      y_1 - {y_o}_k & \cdots & 0 \\
+      \vdots & \ddots & \vdots \\
+      0 & \cdots & y_N - {y_o}_k
+    \end{bmatrix}
+    , \quad
+    \mathbf{B}^z_k =
+    \begin{bmatrix}
+      z_1 - {z_o}_k & \cdots & 0 \\
+      \vdots & \ddots & \vdots \\
+      0 & \cdots & z_N - {z_o}_k
+    \end{bmatrix}
+    \ .
   \end{gathered}
-  \ .
   \label{eq:B}
 \end{equation}
 
@@ -343,16 +378,16 @@ arrive at
     \end{bmatrix}
   \begin{bmatrix}
     \mathbf{\Delta d}_k \\
-    \mathbf{\Delta \lambda}_k \\
+    \boldsymbol{\Delta\lambda}_k \\
     \mathbf{\Delta p}_k
   \end{bmatrix}
   = -
     \begin{bmatrix}
-      -\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_k\right] + \mathbf{B}_k^T\mathbf{\lambda}_k
+      -\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_k\right] + \mathbf{B}_k^T\boldsymbol{\lambda}_k
       \\
       \mathbf{e}_k
       \\
-      \mathbf{A}_k^T\mathbf{\lambda}_k
+      \mathbf{A}_k^T\boldsymbol{\lambda}_k
     \end{bmatrix}
   \ .
   \label{eq:normal}
@@ -392,7 +427,7 @@ above
 
 Applying the identity to Equation~\ref{eq:normal} with
 $\mathbf{g} = \mathbf{\Delta d}_k$ and
-$\mathbf{h} = \left[\mathbf{\Delta\lambda}_k \quad \mathbf{\Delta p}_k\right]^T$
+$\mathbf{h} = \left[\boldsymbol{\Delta\lambda}_k \quad \mathbf{\Delta p}_k\right]^T$
 leads to
 
 \begin{equation}
@@ -401,15 +436,15 @@ leads to
     \mathbf{A}_k^T & \mathbf{0}
   \end{bmatrix}
   \begin{bmatrix}
-    \mathbf{\Delta \lambda}_k \\
+    \boldsymbol{\Delta\lambda}_k \\
     \mathbf{\Delta p}_k
   \end{bmatrix}
   +
   \begin{bmatrix}
     \mathbf{e}_k + \mathbf{B}_k\left[\mathbf{d}^o - \mathbf{d}_k\right]
-    - \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T \mathbf{\lambda}_k
+    - \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T \boldsymbol{\lambda}_k
     \\
-    \mathbf{A}_k^T\mathbf{\lambda}_k
+    \mathbf{A}_k^T\boldsymbol{\lambda}_k
   \end{bmatrix}
   =
   \begin{bmatrix}
@@ -437,14 +472,14 @@ for the parameter step vector
   \label{eq:deltap}
 \end{equation}
 
-We can obtain an expression for $\mathbf{\Delta\lambda}_k$ as a function of
+We can obtain an expression for $\boldsymbol{\Delta\lambda}_k$ as a function of
 $\hat{\mathbf{\Delta p}}_k$ from Equation~\ref{eq:normal2}, which results in
 
 \begin{equation}
-  \hat{\mathbf{\Delta \lambda}}_k =
+  \hat{\boldsymbol{\Delta\lambda}}_k =
   \mathbf{Q}_k^{-1}
   \left[\mathbf{A}_k^T\mathbf{\Delta p}_k + \mathbf{B}_k\mathbf{r}_k + \mathbf{e}_k\right]
-  -\mathbf{\lambda}_k
+  -\boldsymbol{\lambda}_k
   \ .
   \label{eq:deltalambda}
 \end{equation}
@@ -462,11 +497,6 @@ of $\hat{\mathbf{\Delta p}}_k$
   \ .
   \label{eq:deltad}
 \end{equation}
-
-\noindent
-Notice that the equation above does not depend on $\mathbf{\lambda}_k$ or
-$\mathbf{\Delta \lambda}_k$.
-Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
 
 The covariance matrix of $\mathbf{p}$ is used to rank and filter solutions
 during the moving window procedure.
@@ -489,6 +519,8 @@ is the reduced chi-squared statistic of the Euler deconvolution,
 ${\hat{\sigma}^2} = \|\mathbf{d}^0 - \mathbf{d}_L\|^2 / (4N - 4)$ is the
 reduced chi-squared statistic of the Euler inversion.
 
+\subsection{Euler inversion: Practical implementation}
+
 Unlike a traditional Gauss-Newton inversion of a parametric model, the Euler
 inversion procedure estimates corrections to both the parameter vector
 $\mathbf{p}$ and the predicted data vector $\mathbf{d}$ at each iteration.
@@ -503,7 +535,7 @@ We found that in practice a reasonably fast convergence is achieved by
 assigning $\mathbf{d}_0 = 0.9\ \mathbf{d}^o$.
 
 Convergence of the solution cannot be evaluated by the value of the Lagrangian
-(Equation~\ref{eq:lagrangian}) directly because values $\mathbf{\lambda}$ are
+(Equation~\ref{eq:lagrangian}) directly because values $\boldsymbol{\lambda}$ are
 not calculated.
 Instead, we specify a \textit{merit function} $\Merit$ which combines the data
 misfit as well as the adherence to the constraints
@@ -527,10 +559,12 @@ reached, the merit function increases, or when the change in its value drops
 below a given threshold.
 
 An outline of the entire Euler inversion procedure is given in
-Algorithm~\ref{alg}.
+Algorithm~\ref{alg:ei}.
+Notice that Equations~\ref{eq:deltap}~and~\ref{eq:deltad} above does not depend
+on $\boldsymbol{\lambda}_k$ or $\boldsymbol{\Delta\lambda}_k$. Thus,
+Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
 
 \begin{algorithm}[!h]
-  %\DontPrintSemicolon
   \setstretch{1.5}
   Set
   $\mathbf{p}_0 = \left[\mathbf{A}^T\mathbf{A}\right]^{-1}\mathbf{A}^T\mathbf{c}$,
@@ -570,13 +604,39 @@ Algorithm~\ref{alg}.
   \BlankLine
   \setstretch{1}
   \caption{The Euler inversion Gauss-Newton optimization method.}
-  \label{alg}
+  \label{alg:ei}
+\end{algorithm}
+
+An advantage of Euler inversion of Euler deconvolution is its ability to obtain
+predicted values of the potential field and its gradient.
+In Section~\ref{sec:si}, we demonstrate that the \textit{weighted root
+mean-squared error} $\text{WRMSE} = \mathbf{r}_L^T\mathbf{W}\mathbf{r}_L$
+appears to be smallest when the correct structural index $\eta$ is used.
+Given this observation, we can estimate the optimal value of $\eta$ by running
+the Euler inversion in a given data window for different values of $\eta$ and
+choosing the one that produces the smallest WRMSE. This procedure is summarized
+in Algorithm~\ref{alg:si}.
+
+\begin{algorithm}[!h]
+  \setstretch{1.5}
+  \For{ $\eta = \eta_{min}$ \KwTo $\eta_{max}$ }{
+    Run Algorithm~\ref{alg:ei} to estimate $\mathbf{p}_{\eta}$ and $\mathbf{d}_{\eta}$
+    \;
+    Calculate the $\text{WRMSE}(\eta) = \left[\mathbf{d}^o - \mathbf{d}_\eta\right]^T\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_\eta\right]$
+    for the estimated $\mathbf{d}_{\eta}$
+    \;
+  }
+  Choose optimal $\eta = \underset{\eta}{\text{argmin}}\ \text{WRMSE}(\eta)$ and the corresponding
+  $\mathbf{p}_{\eta}$ and $\mathbf{d}_{\eta}$
+  \;
+  \BlankLine
+  \setstretch{1}
+  \caption{Structural index estimation through Euler inversion.}
+  \label{alg:si}
 \end{algorithm}
 
 
-\subsection{Estimating the structural index}
-
-\subsection{Windowing procedure}
+Windowing procedure and another algorithm.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -606,6 +666,7 @@ Algorithm~\ref{alg}.
 \label{fig:noise}
 \end{figure}
 
+\label{sec:si}
 \subsection{Effect of SI on multiple sources}
 
 \begin{figure}[tb!]
