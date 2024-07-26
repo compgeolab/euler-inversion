@@ -220,6 +220,7 @@ in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange multiplier
 The non-linear Lagrangian is then minimized through Newton's method by starting
 with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then iterating
 with the corrections to these values through the solution of the linear system
+\citep{Aster2018}
 
 \begin{equation}
   \underbrace{
@@ -594,8 +595,8 @@ mean-squared error} $\text{WRMSE} = \mathbf{r}_L^T\mathbf{W}\mathbf{r}_L$
 appears to be smallest when the correct structural index $\eta$ is used.
 Given this observation, we can estimate the optimal value of $\eta$ by running
 the Euler inversion in a given data window for different values of $\eta$ and
-choosing the one that produces the smallest WRMSE. This procedure is summarized
-in Algorithm~\ref{alg:si}.
+choosing the one that produces the smallest WRMSE.
+This procedure is summarized in Algorithm~\ref{alg:si}.
 
 \begin{algorithm}[!h]
   \setstretch{1.5}
@@ -615,8 +616,42 @@ in Algorithm~\ref{alg:si}.
   \label{alg:si}
 \end{algorithm}
 
+For cases with multiple sources in a given dataset, we adopt a moving window
+procedure similar to the classic Euler deconvolution.
+We divide the data region into $M$ overlapping windows.
+For each window, we run Algorithm~\ref{alg:si} to obtain an estimate of the
+parameters and the structural index $\eta$.
+This procedure leads to spurious solutions, much like standard Euler
+deconvolution, in cases where there are no sources inside windows or when
+sources are heavily truncated.
+To filter out spurious sources, we rank the solutions for each structural index
+separately by the variance of the $z_o$ estimate (from Equation~\ref{eq:cov})
+and keep only a percentage of the ones with smallest variance.
+This procedure is summarized in Algorithm~\ref{alg:window}.
 
-Windowing procedure and another algorithm.
+\begin{algorithm}[!h]
+  \setstretch{1.5}
+  Divide the data region into $M$ overlapping windows with a defined degree of
+  overlap
+  \;
+  Define a ratio $\gamma$ of estimates to keep
+  \;
+  \For{ $l = 1$ \KwTo $M$ }{
+    Run Algorithm~\ref{alg:si} on the data from window $l$ to estimate $\mathbf{p}$, $\mathbf{d}$, $\mathbf{C}_p$, and $\eta$
+    \;
+  }
+  \For{ $\eta = \eta_{min}$ \KwTo $\eta_{max}$ }{
+    Sort the $M_\eta$ solutions that estimated SI $\eta$ by the estimated
+    variance of $z_o$ in increasing order
+    \;
+    Keep the first $\gamma M_\eta$ solutions and discard the remainder
+    \;
+  }
+  \BlankLine
+  \setstretch{1}
+  \caption{Moving window procedure for Euler inversion.}
+  \label{alg:window}
+\end{algorithm}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
