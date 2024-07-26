@@ -319,7 +319,7 @@ by
 
 \begin{equation}
   \begin{aligned}
-    \mathbf{H}^{dd}_k &\approx -2\mathbf{W} \ , &
+    \mathbf{H}^{dd}_k &\approx 2\mathbf{W} \ , &
     \mathbf{H}^{\lambda\lambda}_k &= \mathbf{0} \ , &
     \mathbf{H}^{pp}_k &\approx \mathbf{0} \ ,
     \\
@@ -337,7 +337,7 @@ arrive at
 
 \begin{equation}
     \begin{bmatrix}
-      -\mathbf{W} & \mathbf{B}_k^T & \mathbf{0} \\
+      \mathbf{W} & \mathbf{B}_k^T & \mathbf{0} \\
       \mathbf{B}_k & \mathbf{0} & \mathbf{A}_k \\
       \mathbf{0} & \mathbf{A}_k^T & \mathbf{0}
     \end{bmatrix}
@@ -385,9 +385,193 @@ above
     \end{bmatrix}
     \ \Rightarrow \
     \left[\mathbf{F} - \mathbf{E}\mathbf{C}^{-1}\mathbf{D}\right]\mathbf{h}
-    - \mathbf{E}\mathbf{C}^{-1}\mathbf{t} = \mathbf{0}
+    + \mathbf{v} - \mathbf{E}\mathbf{C}^{-1}\mathbf{t} = \mathbf{0}
+  \ .
   \label{eq:identity}
 \end{equation}
+
+Applying the identity to Equation~\ref{eq:normal} with
+$\mathbf{g} = \mathbf{\Delta d}_k$ and
+$\mathbf{h} = \left[\mathbf{\Delta\lambda}_k \quad \mathbf{\Delta p}_k\right]^T$
+leads to
+
+\begin{equation}
+  \begin{bmatrix}
+    -\mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T & \mathbf{A}_k \\
+    \mathbf{A}_k^T & \mathbf{0}
+  \end{bmatrix}
+  \begin{bmatrix}
+    \mathbf{\Delta \lambda}_k \\
+    \mathbf{\Delta p}_k
+  \end{bmatrix}
+  +
+  \begin{bmatrix}
+    \mathbf{e}_k + \mathbf{B}_k\left[\mathbf{d}^o - \mathbf{d}_k\right]
+    - \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T \mathbf{\lambda}_k
+    \\
+    \mathbf{A}_k^T\mathbf{\lambda}_k
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    \mathbf{0}
+    \\
+    \mathbf{0}
+  \end{bmatrix}
+  \label{eq:normal2}
+  \ .
+\end{equation}
+
+\noindent
+Now applying the identity once more to the equation system above and
+introducing matrix $\mathbf{Q}_k = \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T$
+and the residual vector
+$\mathbf{r}_k = \left[\mathbf{d}^o - \mathbf{d}_k\right]$ leads to a solution
+for the parameter step vector
+
+\begin{equation}
+  \hat{\mathbf{\Delta p}}_k =
+  -\left[\mathbf{A}_k^T\mathbf{Q}_k^{-1}\mathbf{A}_k\right]^{-1}
+  \mathbf{A}_k^T\mathbf{Q}_k^{-1}
+  \left[\mathbf{B}_k\mathbf{r}_k + \mathbf{e}_k\right]
+  \ .
+  \label{eq:deltap}
+\end{equation}
+
+We can obtain an expression for $\mathbf{\Delta\lambda}_k$ as a function of
+$\hat{\mathbf{\Delta p}}_k$ from Equation~\ref{eq:normal2}, which results in
+
+\begin{equation}
+  \hat{\mathbf{\Delta \lambda}}_k =
+  \mathbf{Q}_k^{-1}
+  \left[\mathbf{A}_k^T\mathbf{\Delta p}_k + \mathbf{B}_k\mathbf{r}_k + \mathbf{e}_k\right]
+  -\mathbf{\lambda}_k
+  \ .
+  \label{eq:deltalambda}
+\end{equation}
+
+\noindent
+Finally, we can substitute the expression above into the first equation of the
+linear system in Equation~\ref{eq:normal} to obtain the data step as a function
+of $\hat{\mathbf{\Delta p}}_k$
+
+\begin{equation}
+  \hat{\mathbf{\Delta d}}_k =
+  \mathbf{r}_k -
+  \mathbf{W}^{-1}\mathbf{B}_k^T\mathbf{Q}_k^{-1}
+  \left[\mathbf{A}_k^T\mathbf{\Delta p}_k + \mathbf{B}_k\mathbf{r}_k + \mathbf{e}_k\right]
+  \ .
+  \label{eq:deltad}
+\end{equation}
+
+\noindent
+Notice that the equation above does not depend on $\mathbf{\lambda}_k$ or
+$\mathbf{\Delta \lambda}_k$.
+Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
+
+The covariance matrix of $\mathbf{p}$ is used to rank and filter solutions
+during the moving window procedure.
+It can be calculated by propagating uncertainties from the observed data to the
+parameter step.
+Since $\mathbf{p} = \mathbf{p}_0 + \sum_{k=0}^{L-1} \mathbf{\Delta p}_k$,
+the parameter covariance matrix is
+
+\begin{equation}
+  \mathbf{C}_{p} = \hat{\sigma}_0^2\left[\mathbf{A}^T\mathbf{A}\right]^{-1}
+    + \hat{\sigma}^2\sum\limits_{i=0}^{L-1}
+    \left[\mathbf{A}_k^T\mathbf{Q}_k^{-1}\mathbf{A}_k\right]^{-1}
+  \label{eq:cov}
+\end{equation}
+
+\noindent
+in which
+${\hat{\sigma}_0^2} = \|\mathbf{c} - \mathbf{A}\mathbf{p}_0\|^2 / (N - 4)$
+is the reduced chi-squared statistic of the Euler deconvolution,
+${\hat{\sigma}^2} = \|\mathbf{d}^0 - \mathbf{d}_L\|^2 / (4N - 4)$ is the
+reduced chi-squared statistic of the Euler inversion.
+
+Unlike a traditional Gauss-Newton inversion of a parametric model, the Euler
+inversion procedure estimates corrections to both the parameter vector
+$\mathbf{p}$ and the predicted data vector $\mathbf{d}$ at each iteration.
+Hence, the optimization requires initial values for both the parameters and the
+predicted data.
+The initial value of the parameters is taken as the solution of
+traditional Euler deconvolution
+$\mathbf{p}_0 = \left[\mathbf{A}^T\mathbf{A}\right]^{-1}\mathbf{A}^T\mathbf{c}$
+(Equation~\ref{eq:deconv-p}).
+The initial value for the predicted data should be close to the observed data.
+We found that in practice a reasonably fast convergence is achieved by
+assigning $\mathbf{d}_0 = 0.9\ \mathbf{d}^o$.
+
+Convergence of the solution cannot be evaluated by the value of the Lagrangian
+(Equation~\ref{eq:lagrangian}) directly because values $\mathbf{\lambda}$ are
+not calculated.
+Instead, we specify a \textit{merit function} $\Merit$ which combines the data
+misfit as well as the adherence to the constraints
+
+\begin{equation}
+  \Merit_k(\mathbf{p}_k, \mathbf{d}_k) =
+  \mathbf{r}_k^T\mathbf{W}\mathbf{r}_k
+  + \nu\ \mathbf{e}_k^T\mathbf{e}_k
+  \ .
+  \label{eq:merit}
+\end{equation}
+
+\noindent
+in which $\nu$ is a trade-off parameter that balances fitting the data and
+strict adherence to the constraints.
+In practice, we have found that a value of $\nu=0.1$ works well in all of our
+synthetic data tests and our field data application.
+The merit function is evaluated at every iteration.
+The non-linear optimization stops when a given maximum number of iterations is
+reached, the merit function increases, or when the change in its value drops
+below a given threshold.
+
+An outline of the entire Euler inversion procedure is given in
+Algorithm~\ref{alg}.
+
+\begin{algorithm}[!h]
+  %\DontPrintSemicolon
+  \setstretch{1.5}
+  Set
+  $\mathbf{p}_0 = \left[\mathbf{A}^T\mathbf{A}\right]^{-1}\mathbf{A}^T\mathbf{c}$,
+  $\mathbf{d}_0 = 0.9\ \mathbf{d}^o$,
+  and $\mathbf{K}_0 = \mathbf{0}$
+  \;
+  Evaluate $\Merit_0(\mathbf{p}_0, \mathbf{d}_0)$
+  \;
+  \For{ $k = 0$ \KwTo $L - 1$ }{
+    Calculate the parameter step $\mathbf{\Delta p}_k$ using
+    Equation~\ref{eq:deltap}
+    \;
+    Calculate the predicted data step $\mathbf{\Delta d}_k$ using
+    Equation~\ref{eq:deltad}
+    \;
+    Update $\mathbf{p}_{k+1} = \mathbf{p}_k + \mathbf{\Delta p}_k$
+    and $\mathbf{d}_{k+1} = \mathbf{d}_k + \mathbf{\Delta d}_k$
+    \;
+    Update $\mathbf{K}_{k+1} = \mathbf{K}_k + \left[\mathbf{A}_k^T\mathbf{Q}_k^{-1}\mathbf{A}_k\right]^{-1}$
+    \;
+    Evaluate $\Merit_{k+1}(\mathbf{p}_{k+1}, \mathbf{d}_{k+1})$
+    \;
+    \If{ $\Merit_{k+1} > \Merit_k$ }{
+      Undo the previous update of $\mathbf{p}$, $\mathbf{d}$, and $\mathbf{K}$
+      \;
+      Exit
+      \;
+    }
+    \If{ $|\Merit_{k+1} - \Merit_k| / \Merit_k < \delta$ }{
+      Exit
+      \;
+    }
+  }
+  Calculate
+  $\mathbf{C}_p = \hat{\sigma}_0^2\left[\mathbf{A}^T\mathbf{A}\right]^{-1} + \hat{\sigma}^2\mathbf{K}_L$
+  \;
+  \BlankLine
+  \setstretch{1}
+  \caption{The Euler inversion Gauss-Newton optimization method.}
+  \label{alg}
+\end{algorithm}
 
 
 \subsection{Estimating the structural index}
