@@ -1,5 +1,5 @@
 """
-Quick implementation of Euler inversion
+Quick implementation of Euler inversion and Euler deconvolution
 """
 
 import concurrent.futures
@@ -263,7 +263,7 @@ class EulerInversion:
         Br = B @ residuals
         cofactor_step = sp.linalg.inv(ATQ @ A)
         parameter_step = -cofactor_step @ ATQ @ (euler + Br)
-        data_step = residuals - BTQ @ Br - BTQ @ (euler + A @ parameter_step)
+        data_step = residuals - BTQ @ (Br + euler + A @ parameter_step)
         return parameter_step, data_step, cofactor_step
 
     def _initial_data(self, coordinates, data):

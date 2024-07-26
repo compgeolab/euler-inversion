@@ -18,3 +18,8 @@ show: $(PDF)
 
 clean:
 	rm -f $(PDF)
+
+paper/figures/%.png: code/%.ipynb code/euler.py
+	jupyter execute --inplace --kernel_name=python3 $<
+	# Because jupyter execute modifies the notebook last
+	touch $@
