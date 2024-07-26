@@ -305,47 +305,27 @@ equation, also evaluated on $(\mathbf{p}_k,\mathbf{d}_k)$. The data Jacobian
 $\mathbf{B}_k$ is composed of four diagonal matrices
 
 \begin{equation}
-  \begin{gathered}
-    \mathbf{B}_k =
-    \begin{bmatrix}
-      \mathbf{B}^f_k &
-      \mathbf{B}^x_k &
-      \mathbf{B}^y_k &
-      \mathbf{B}^z_k
-    \end{bmatrix}
-    ,
-    \\
-    B}^f_k =
-    \begin{bmatrix}
-      \eta & \cdots & 0 \\
-      \vdots & \ddots & \vdots \\
-      0 & \cdots & \eta
-    \end{bmatrix}
-    , \quad
-    \mathbf{B}^x_k =
-    \begin{bmatrix}
-      x_1 - {x_o}_k & \cdots & 0 \\
-      \vdots & \ddots & \vdots \\
-      0 & \cdots & x_N - {x_o}_k
-    \end{bmatrix}
-    , \quad
-    \\
-    \mathbf{B}^y_k =
-    \begin{bmatrix}
-      y_1 - {y_o}_k & \cdots & 0 \\
-      \vdots & \ddots & \vdots \\
-      0 & \cdots & y_N - {y_o}_k
-    \end{bmatrix}
-    , \quad
-    \mathbf{B}^z_k =
-    \begin{bmatrix}
-      z_1 - {z_o}_k & \cdots & 0 \\
-      \vdots & \ddots & \vdots \\
-      0 & \cdots & z_N - {z_o}_k
-    \end{bmatrix}
-    \ .
-  \end{gathered}
+  \mathbf{B}_k =
+  \begin{bmatrix}
+    \mathbf{B}^f_k &
+    \mathbf{B}^x_k &
+    \mathbf{B}^y_k &
+    \mathbf{B}^z_k
+  \end{bmatrix}
+  \ .
   \label{eq:B}
+\end{equation}
+
+\noindent
+The diagonal elements of each of the four matrices are
+
+\begin{equation}
+  \begin{aligned}
+    {B^f_k}_{ii} &= \eta \ , &
+    {B^x_k}_{ii} &= x_i - {x_o}_k \ , &
+    {B^y_k}_{ii} &= y_i - {y_o}_k \ , &
+    {B^z_k}_{ii} &= z_i - {z_o}_k \ .
+  \end{aligned}
 \end{equation}
 
 The Hessian matrices are calculated using a Gauss-Newton approximation
