@@ -1,7 +1,11 @@
-# Euler inversion: A total-least-squares solution to Euler's homogeneity equation for locating sources from potential field data
+# Euler inversion: Locating sources of potential-field data through inversion of Euler’s homogeneity equation
 
 by
-[Leonardo Uieda](https://leouieda.com)
+[Leonardo Uieda](https://leouieda.com),
+[Gelson Ferreira Souza-Junior](https://github.com/souza-junior),
+[India Uppal](https://github.com/indiauppal),
+[Vanderlei Coelho Oliveira Jr.](https://www.pinga-lab.org/people/oliveira-jr.html),
+[Valéria Cristina Ferreira Barbosa](https://www.pinga-lab.org/people/barbosa.html)
 
 This repository contains the data and source code used to produce the results
 presented in:
