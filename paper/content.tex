@@ -177,7 +177,7 @@ non-linear function of parameters and data
 \end{equation}
 
 \noindent
-which is known in geodesy as an \textit{implicit model} [CITATION NEEDED].
+which is known in geodesy as an \textit{implicit model} \citep{Vanicek1986}.
 
 We then wish to solve the following constrained optimization problem with
 non-linear equality constraints to estimate both the parameters and the
@@ -500,6 +500,8 @@ is the reduced chi-squared statistic of the Euler deconvolution,
 ${\hat{\sigma}^2} = \|\mathbf{d}^0 - \mathbf{d}_L\|^2 / (4N - 4)$ is the
 reduced chi-squared statistic of the Euler inversion.
 
+
+
 \subsection{Euler inversion: Practical implementation}
 
 Unlike a traditional Gauss-Newton inversion of a parametric model, the Euler
@@ -589,7 +591,7 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
   \label{alg:ei}
 \end{algorithm}
 
-An advantage of Euler inversion of Euler deconvolution is its ability to obtain
+An advantage of Euler inversion over Euler deconvolution is its ability to obtain
 predicted values of the potential field and its gradient.
 In Section~\ref{sec:si}, we demonstrate that the \textit{weighted root
 mean-squared error} $\text{WRMSE} = \mathbf{r}_L^T\mathbf{W}\mathbf{r}_L$
@@ -635,15 +637,15 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
   Divide the data region into $M$ overlapping windows with a defined degree of
   overlap
   \;
-  Define a ratio $\gamma$ of estimates to keep
+  Define a ratio $0 < \gamma \le 1$ of estimates to keep
   \;
   \For{ $l = 1$ \KwTo $M$ }{
     Run Algorithm~\ref{alg:si} on the data from window $l$ to estimate $\mathbf{p}$, $\mathbf{d}$, $\mathbf{C}_p$, and $\eta$
     \;
   }
   \For{ $\eta = \eta_{min}$ \KwTo $\eta_{max}$ }{
-    Sort the $M_\eta$ solutions that estimated SI $\eta$ by the estimated
-    variance of $z_o$ in increasing order
+    Sort the $M_\eta$ solutions which produced an estimated SI equal to $\eta$
+    by the estimated variance of $z_o$ in increasing order
     \;
     Keep the first $\gamma M_\eta$ solutions and discard the remainder
     \;
