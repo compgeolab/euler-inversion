@@ -216,11 +216,53 @@ into an unconstrained problem by using the Lagrangian
 \end{equation}
 
 \noindent
-in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange multipliers.
-The non-linear Lagrangian is then minimized through Newton's method by starting
-with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then iterating
-with the corrections to these values through the solution of the linear system
-\citep{Aster2018}
+in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange
+multipliers.
+
+The non-linear Lagrangian is minimized through Newton's method
+\citep{Aster2018}.
+We start with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then
+iteratively apply corrections $\mathbf{\Delta p}_k$ and $\mathbf{\Delta d}_k$
+until convergence is achieved.
+To calculate the corrections, we introduce a new variable $\mathbf{u} =
+[\mathbf{d}^T\  \boldsymbol{\lambda}^T \ \mathbf{p}^T]^T$, expand the
+Lagrangian $\Lagr(\mathbf{u})$ (Equation~\ref{eq:lagrangian}) in a Taylor
+series around point $\mathbf{u}_k$, and disregard terms of order higher than
+two
+
+\begin{equation}
+  \Lagr(\mathbf{u}) \approx
+  \Gamma(\mathbf{u}) =
+  \Lagr(\mathbf{u}_k)
+    + \mathbf{\Delta u}_k^T \mathbf{\nabla}\Lagr(\mathbf{u}_k)
+    + \dfrac{1}{2}\mathbf{\Delta u}_k^T\mathbf{H}_k\mathbf{\Delta u}_k
+  \ ,
+  \label{eq:taylor}
+\end{equation}
+
+\noindent
+in which $\mathbf{\nabla}$ is the gradient operator and $\mathbf{H}_k$ is the
+Hessian matrix of $\Lagr$ evaluated at $\mathbf{u}_k$.
+Equation~\ref{eq:taylor} is a quadratic function of $\mathbf{\Delta u}_k$ and
+we can obtain its minimum by taking its gradient and equating it to the null
+vector
+
+\begin{equation}
+  \begin{gathered}
+    \mathbf{\nabla}\Gamma(\mathbf{\Delta u}_k) =
+      \mathbf{\nabla}\Lagr(\mathbf{u_k})
+      + \mathbf{H}_k\mathbf{\Delta u}_k
+      = \mathbf{0}
+    \ ,
+    \\
+    \mathbf{H}_k\mathbf{\Delta u}_k = -\mathbf{\nabla}\Lagr(\mathbf{u_k})
+    \ .
+  \end{gathered}
+\end{equation}
+
+\noindent
+The equation above is the \textit{system of normal equations}, which can also
+be written in terms of $\mathbf{p}$, $\boldsymbol{\lambda}$, and $\mathbf{d}$
 
 \begin{equation}
   \underbrace{
@@ -230,11 +272,13 @@ with the corrections to these values through the solution of the linear system
       \mathbf{H}^{pd}_k & \mathbf{H}^{p\lambda}_k & \mathbf{H}^{pp}_k
     \end{bmatrix}
   }_{\text{Hessian of }\Lagr}
-  \begin{bmatrix}
-    \mathbf{\Delta d}_k \\
-    \boldsymbol{\Delta\lambda}_k \\
-    \mathbf{\Delta p}_k
-  \end{bmatrix}
+  \underbrace{
+    \begin{bmatrix}
+      \mathbf{\Delta d}_k \\
+      \boldsymbol{\Delta\lambda}_k \\
+      \mathbf{\Delta p}_k
+    \end{bmatrix}
+  }_{\mathbf{\Delta u}_k}
   = -
   \underbrace{
     \begin{bmatrix}
@@ -242,15 +286,15 @@ with the corrections to these values through the solution of the linear system
       \mathbf{\nabla}_\lambda\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k) \\
       \mathbf{\nabla}_p\Lagr(\mathbf{p}_k,\mathbf{d}_k,\boldsymbol{\lambda}_k)
     \end{bmatrix}
-  }_{\substack{\text{gradient}\\ \text{of }\Lagr}}
+  }_{\text{gradient of }\Lagr}
   \ ,
 \end{equation}
 
 \noindent
 in which $\mathbf{\nabla}_\alpha$ is the gradient operator with respect to
 variable $\alpha$ and
-$\mathbf{H}^{\alpha\beta}$ is the Hessian matrix of $\Lagr$ with respect to
-variables $\alpha$ and $\beta$.
+$\mathbf{H}_k^{\alpha\beta}$ is the Hessian matrix of $\Lagr$ with respect to
+variables $\alpha$ and $\beta$, evaluated at $\mathbf{u}_k$.
 Since the order of derivation can be swapped in the Hessian matrices, the above
 equation can be simplified to
 
