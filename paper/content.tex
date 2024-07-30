@@ -27,7 +27,8 @@ $(x, y, z)$ are the coordinates of the observation point,
 $(x_o, y_o, z_o)$ are the coordinates of the field source,
 $b$ is the base level representing a constant shift in the field,
 and $\eta$ is the structural index, which is related to the nature of the
-source and how its potential-field values decay with distance \citep{Reid2014}.
+source and how its potential-field values decay with distance
+\citep{Ruddock1966,Reid2014}.
 Equation~\ref{eq:euler} relates the coordinates of the source with the
 potential field and its gradient observed at the point $(x, y, z)$.
 
@@ -133,7 +134,8 @@ derivatives of $f$, which are often computed numerically by finite-differences
 or Fourier transforms and are known to amplify the high-frequency random noise
 in the data.
 This presents a problem, particularly for the estimation of $z_o$, which has
-been widely explored in the literature [CITATION NEEDED].
+been widely explored in the literature
+\citep{Silva2001,Melo2020,Pasteka2009,Florio2014}.
 
 
 \subsection{Euler inversion: Formulation}
@@ -202,6 +204,10 @@ in which $\mathbf{d}^o$ is the \textit{observed data vector} which contains all
 of the $4N$ observations of $f$ and its gradient,
 $\mathbf{d}$ is the \textit{predicted data vector} from Equation~\ref{eq:d},
 and $\mathbf{W}$ is a $4N \times 4N$ diagonal weight matrix.
+The first $N$ terms of the diagonal of $\mathbf{W}$ are the weights for the
+potential field observations and the following $3N$ terms are the weights of
+x-, y-, and z-derivatives of the potential field, in order.
+
 The constrained problem in Equation~\ref{eq:constrained} can be transformed
 into an unconstrained problem by using the Lagrangian
 
@@ -218,7 +224,6 @@ into an unconstrained problem by using the Lagrangian
 \noindent
 in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange
 multipliers.
-
 The non-linear Lagrangian is minimized through Newton's method
 \citep{Aster2018}.
 We start with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then
@@ -295,8 +300,8 @@ in which $\mathbf{\nabla}_\alpha$ is the gradient operator with respect to
 variable $\alpha$ and
 $\mathbf{H}_k^{\alpha\beta}$ is the Hessian matrix of $\Lagr$ with respect to
 variables $\alpha$ and $\beta$, evaluated at $\mathbf{u}_k$.
-Since the order of derivation can be swapped in the Hessian matrices, the above
-equation can be simplified to
+Since the order of derivation can be swapped in the Hessian matrices and the
+Hessian of $\Lagr$ is symmetric, the above equation can be simplified to
 
 \begin{equation}
     \begin{bmatrix}
@@ -342,12 +347,12 @@ We will start with the gradient vectors.
 \end{equation}
 
 \noindent
-in which $\mathbf{e}_k = \mathbf{e}(\mathbf{p}_k,\mathbf{d}_k)$, $\mathbf{A}_k$
-is the $N \times 4$ \textit{parameter Jacobian} matrix of Euler's equation
-(Equation~\ref{eq:deconv-system}) evaluated on $(\mathbf{p}_k,\mathbf{d}_k)$,
-and $\mathbf{B}_k$ is the $N \times 4N$ \textit{data Jacobian} of Euler's
-equation, also evaluated on $(\mathbf{p}_k,\mathbf{d}_k)$. The data Jacobian
-$\mathbf{B}_k$ is composed of four diagonal matrices
+in which $\mathbf{e}_k = \mathbf{e}(\mathbf{p}_k,\mathbf{d}_k)$
+(Equation~\ref{eq:e}), $\mathbf{A}_k$ is the $N \times 4$ \textit{parameter
+Jacobian} matrix of Euler's equation (Equation~\ref{eq:deconv-system})
+evaluated on $(\mathbf{p}_k,\mathbf{d}_k)$, and $\mathbf{B}_k$ is the $N \times
+4N$ \textit{data Jacobian} of Euler's equation, also evaluated on
+$(\mathbf{p}_k,\mathbf{d}_k)$, which is composed of four diagonal matrices
 
 \begin{equation}
   \mathbf{B}_k =
@@ -392,8 +397,8 @@ by
 
 \noindent
 Substituting the gradients (Equation~\ref{eq:grad}) and Hessians
-(Equation~\ref{eq:hess}) into the linear system in Equation~\ref{eq:newton} we
-arrive at
+(Equation~\ref{eq:hess}) into the system of normal equations of Newton's method
+(Equation~\ref{eq:newton}) we arrive at
 
 \begin{equation}
     \begin{bmatrix}
@@ -420,7 +425,7 @@ arrive at
 
 Since the data weight matrix $\mathbf{W}$ is diagonal and invertible, we can
 use the following identity to eliminate one equation from the equation system
-above
+above \citep{WellsKrakiwsky1971}
 
 \begin{equation}
     \begin{bmatrix}
@@ -486,7 +491,7 @@ Now applying the identity once more to the equation system above and
 introducing matrix $\mathbf{Q}_k = \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T$
 and the residual vector
 $\mathbf{r}_k = \left[\mathbf{d}^o - \mathbf{d}_k\right]$ leads to a solution
-for the parameter step vector
+for the parameter correction vector
 
 \begin{equation}
   \hat{\mathbf{\Delta p}}_k =
@@ -511,8 +516,8 @@ $\hat{\mathbf{\Delta p}}_k$ from Equation~\ref{eq:normal2}, which results in
 
 \noindent
 Finally, we can substitute the expression above into the first equation of the
-linear system in Equation~\ref{eq:normal} to obtain the data step as a function
-of $\hat{\mathbf{\Delta p}}_k$
+linear system in Equation~\ref{eq:normal} to obtain the data correction as a
+function of $\hat{\mathbf{\Delta p}}_k$
 
 \begin{equation}
   \hat{\mathbf{\Delta d}}_k =
@@ -526,7 +531,7 @@ of $\hat{\mathbf{\Delta p}}_k$
 The covariance matrix of $\mathbf{p}$ is used to rank and filter solutions
 during the moving window procedure.
 It can be calculated by propagating uncertainties from the observed data to the
-parameter step.
+parameter correction vector (Equation~\ref{eq:deltap}).
 Since $\mathbf{p} = \mathbf{p}_0 + \sum_{k=0}^{L-1} \mathbf{\Delta p}_k$,
 the parameter covariance matrix is
 
@@ -602,10 +607,10 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
   Evaluate $\Merit_0(\mathbf{p}_0, \mathbf{d}_0)$
   \;
   \For{ $k = 0$ \KwTo $L - 1$ }{
-    Calculate the parameter step $\mathbf{\Delta p}_k$ using
+    Calculate the parameter correction $\mathbf{\Delta p}_k$ using
     Equation~\ref{eq:deltap}
     \;
-    Calculate the predicted data step $\mathbf{\Delta d}_k$ using
+    Calculate the predicted data correction $\mathbf{\Delta d}_k$ using
     Equation~\ref{eq:deltad}
     \;
     Update $\mathbf{p}_{k+1} = \mathbf{p}_k + \mathbf{\Delta p}_k$
@@ -704,6 +709,10 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 
+We demonstrate the effectiveness and limitations of the Euler inversion method
+by applying it to a series of synthetic datasets and to real aeromagnetic data
+from Rio de Janeiro, Brazil.
+
 
 \subsection{Method demonstration with a single window}
 
@@ -753,6 +762,9 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 
 \subsection{Aeromagnetic data from Rio de Janeiro}
 
+Gelson and India
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 
@@ -761,9 +773,10 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Open research}
 
-The Python source code used to produce all results and figures presented here
-is available at \url{https://github.com/\GitHubRepository} and
-\url{https://doi.org/\ArchiveDOI} under the MIT open-source license.
+The Python source code and data used to produce all results and figures
+presented here are available at \url{https://github.com/\GitHubRepository} and
+\url{https://doi.org/\ArchiveDOI} [CITE SOURCE ARCHIVE] under the CC-BY license
+and the MIT open-source license.
 
 Here we should cite all of the main software used, like Jupyter, numpy, scipy,
 matplotlib, Fatiando, etc.
