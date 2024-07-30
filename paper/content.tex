@@ -462,7 +462,7 @@ leads to
 
 \begin{equation}
   \begin{bmatrix}
-    -\mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T & \mathbf{A}_k \\
+    -\mathbf{Q}_k & \mathbf{A}_k \\
     \mathbf{A}_k^T & \mathbf{0}
   \end{bmatrix}
   \begin{bmatrix}
@@ -471,8 +471,8 @@ leads to
   \end{bmatrix}
   +
   \begin{bmatrix}
-    \mathbf{e}_k + \mathbf{B}_k\left[\mathbf{d}^o - \mathbf{d}_k\right]
-    - \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T \boldsymbol{\lambda}_k
+    \mathbf{e}_k + \mathbf{B}_k\mathbf{r}_k
+    - \mathbf{Q}_k \boldsymbol{\lambda}_k
     \\
     \mathbf{A}_k^T\boldsymbol{\lambda}_k
   \end{bmatrix}
@@ -487,11 +487,11 @@ leads to
 \end{equation}
 
 \noindent
-Now applying the identity once more to the equation system above and
-introducing matrix $\mathbf{Q}_k = \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T$
-and the residual vector
-$\mathbf{r}_k = \left[\mathbf{d}^o - \mathbf{d}_k\right]$ leads to a solution
-for the parameter correction vector
+in which $\mathbf{Q}_k = \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T$ and
+$\mathbf{r}_k = \left[\mathbf{d}^o - \mathbf{d}_k\right]$ is the residual
+vector.
+Applying the identity once more to the equation system above leads to a
+solution for the parameter correction vector
 
 \begin{equation}
   \hat{\mathbf{\Delta p}}_k =
@@ -516,8 +516,8 @@ $\hat{\mathbf{\Delta p}}_k$ from Equation~\ref{eq:normal2}, which results in
 
 \noindent
 Finally, we can substitute the expression above into the first equation of the
-linear system in Equation~\ref{eq:normal} to obtain the data correction as a
-function of $\hat{\mathbf{\Delta p}}_k$
+system of normal equations (Equation~\ref{eq:normal}) to obtain the data
+correction as a function of $\hat{\mathbf{\Delta p}}_k$
 
 \begin{equation}
   \hat{\mathbf{\Delta d}}_k =
