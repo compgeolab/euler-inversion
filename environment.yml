@@ -19,6 +19,8 @@ dependencies:
   - numba
   - rich
   - ipywidgets
+  - pyproj
+  - pygmt
   # Fatiando
   - verde
   - pooch
