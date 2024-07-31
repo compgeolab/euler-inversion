@@ -185,7 +185,7 @@ the values of $f$ and its gradient
 in which $\mathbf{\nabla}_\alpha$ is the gradient operator in the $\alpha$
 dimension.
 
-Next, we formulate the $N \times 4$ equation system from Euler's equation as a
+Next, we formulate the $N \times 4$ equation system from Euler's equation (Equation~\ref{eq:euler}) as a
 non-linear function of parameters and data
 
 \begin{equation}
@@ -238,6 +238,7 @@ into an unconstrained problem by using the Lagrangian
 \end{equation}
 
 \noindent
+<<<<<<< HEAD
 in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange
 multipliers.
 The non-linear Lagrangian is minimized through Newton's method
@@ -284,6 +285,13 @@ vector
 \noindent
 The equation above is the \textit{system of normal equations}, which can also
 be written in terms of $\mathbf{p}$, $\boldsymbol{\lambda}$, and $\mathbf{d}$
+=======
+in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange multipliers.
+The non-linear Lagrangian is then minimized through Newton's method by starting
+with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then iterating
+with the corrections to these values through the solution of the linear system at the kth-iteration
+\citep{Aster2018}
+>>>>>>> origin/overleaf-2024-07-31-0042
 
 \begin{equation}
   \underbrace{
