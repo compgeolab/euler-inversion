@@ -16,7 +16,7 @@ presented in:
 |-:|:-----|
 | Version of record | https://doi.org/JOURNAL_DOI |
 | Open-access version on EarthArXiv | https://doi.org/EARTHARXIV_DOI |
-| Archive of this repository | https://doi.org/FIGSHARE_ZENODO_DOI |
+| Archive of this repository | https://doi.org/10.6084/m9.figshare.26384140 |
 | Reproducing our results | [`REPRODUCING.md`](REPRODUCING.md) |
 
 ## About
