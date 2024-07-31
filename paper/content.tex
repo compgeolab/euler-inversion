@@ -613,15 +613,17 @@ misfit as well as the adherence to the constraints
 
 \begin{equation}
   \Merit_k(\mathbf{p}_k, \mathbf{d}_k) =
-  \mathbf{r}_k^T\mathbf{W}\mathbf{r}_k
-  + \nu\ \mathbf{e}_k^T\mathbf{e}_k
+  \sqrt{\mathbf{r}_k^T\mathbf{W}\mathbf{r}_k}
+  + \nu\sqrt{\mathbf{e}_k^T\mathbf{e}_k}
   \ .
   \label{eq:merit}
 \end{equation}
 
 \noindent
-in which $\nu$ is a trade-off parameter that balances fitting the data and
-strict adherence to the constraints.
+in which $\sqrt{\mathbf{r}_k^T\mathbf{W}\mathbf{r}_k}$ is the 
+\textit{weighted root-mean-squared error} (WRMSE) and
+$\nu$ is a trade-off parameter that balances fitting the data and strict adherence 
+to the constraints.
 In practice, we have found that a value of $\nu=0.1$ works well in all of our
 synthetic data tests and our field data application.
 The merit function is evaluated at every iteration.
@@ -753,9 +755,35 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 In this section, we demonstrate the effectiveness and limitations of the Euler 
 inversion method by applying it to a series of synthetic datasets and to real 
 aeromagnetic data from Rio de Janeiro, Brazil.
+The applications are organized as follows:
 
+\begin{itemize}
+    \item \textbf{Method demonstration:} This test uses a single data window 
+        and a dipolar source. Its aim is to demonstrate that the Euler 
+        inversion method is able to correctly estimate the source position
+        when the structural index is known, even in the presence of random
+        noise and an interfering source at the edge of the data window. 
+    \item \textbf{Effect of random noise:} This test uses a single dipolar 
+        source and a single data window. Its aim is to investigate the
+        effect that increasing levels of random high-frequency noise have 
+        on the estimated source coordinates and base level.
+    \item \textbf{Effect of structural index choice:} This test uses several
+        different sources, each in a separate data window. Its aim is to
+        determine the effect of the choice of $\eta$ on the estimated 
+        coordinates and the weighted root-mean-squared error 
+        (Equation~\ref{eq:merit}).
+    \item \textbf{Moving window procedure with multiple sources:} This test
+        combines several sources and uses the moving window procedure from
+        Algorithm~\ref{alg:window}. Its aim is to show how the Euler inversion
+        method behaves on a more complex dataset.
+    \item \textbf{Aeromagnetic data from Rio de Janeiro:} This test applies
+        the Euler inversion method to a real dataset which contains multiple
+        sources. Its aim is to demonstrate the effectiveness of the method 
+        on a real dataset with realistic levels of noise, signal overlap,
+        and geometry of sources.
+\end{itemize}
 
-\subsection{Method demonstration with a single window}
+\subsection{Method demonstration}
 
 \begin{figure}[tb!]
 \centering
@@ -779,7 +807,7 @@ aeromagnetic data from Rio de Janeiro, Brazil.
 \end{figure}
 
 \label{sec:si}
-\subsection{Effect of SI on multiple sources}
+\subsection{Effect of structural index choice}
 
 \begin{figure}[tb!]
 \centering
@@ -790,7 +818,7 @@ aeromagnetic data from Rio de Janeiro, Brazil.
 \label{fig:si}
 \end{figure}
 
-\subsection{Windowing procedure with multiple sources}
+\subsection{Moving window procedure with multiple sources}
 
 \begin{figure}[tb!]
 \centering
