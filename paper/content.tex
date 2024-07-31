@@ -590,6 +590,8 @@ variance factor of the observed data $\mathbf{d}^o$.
 
 \subsection{Euler inversion: Practical implementation}
 
+\subsubsection{Initial estimates and convergence}
+
 Unlike a traditional Gauss-Newton inversion of a parametric model, the Euler
 inversion procedure estimates corrections to both the parameter vector
 $\mathbf{p}$ and the predicted data vector $\mathbf{d}$ at each iteration.
@@ -675,6 +677,8 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
   \label{alg:ei}
 \end{algorithm}
 
+\subsubsection{Structural index estimation}
+
 An advantage of Euler inversion over Euler deconvolution is its ability to obtain
 predicted values of the potential field and its gradient.
 In Section~\ref{sec:si}, we demonstrate that the \textit{weighted root
@@ -702,6 +706,8 @@ This procedure is summarized in Algorithm~\ref{alg:si}.
   \caption{Structural index estimation through Euler inversion.}
   \label{alg:si}
 \end{algorithm}
+
+\subsubsection{Moving window procedure}
 
 For cases with multiple sources in a given dataset, we adopt a moving window
 procedure similar to the classic Euler deconvolution.
@@ -744,9 +750,9 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 
-We demonstrate the effectiveness and limitations of the Euler inversion method
-by applying it to a series of synthetic datasets and to real aeromagnetic data
-from Rio de Janeiro, Brazil.
+In this section, we demonstrate the effectiveness and limitations of the Euler 
+inversion method by applying it to a series of synthetic datasets and to real 
+aeromagnetic data from Rio de Janeiro, Brazil.
 
 
 \subsection{Method demonstration with a single window}
