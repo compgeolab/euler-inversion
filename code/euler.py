@@ -423,9 +423,7 @@ def fit_window(window_coordinates, window_data, weights, structural_indices, kwa
     else:
         candidates = []
         for si, ed in zip(structural_indices, deconvolutions):
-            ei = EulerInversion(
-                si, initial=ed.parameters_, **kwargs
-            )
+            ei = EulerInversion(si, initial=ed.parameters_, **kwargs)
             ei.fit(window_coordinates, window_data, weights)
             candidates.append(ei)
         best = candidates[np.argmin([ei.data_misfit_[-1] for ei in candidates])]
