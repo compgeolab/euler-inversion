@@ -125,14 +125,12 @@ class EulerInversion:
         tol=0.1,
         euler_misfit_balance=0.1,
         initial=None,
-        initial_covariance=None,
     ):
         self.structural_index = structural_index
         self.max_iterations = max_iterations
         self.tol = tol
         self.euler_misfit_balance = euler_misfit_balance
         self.initial = initial
-        self.initial_covariance = initial_covariance
 
     def fit_grid(
         self,
@@ -169,13 +167,9 @@ class EulerInversion:
         data_observed = np.concatenate(data)
         data_predicted = self._initial_data(coordinates, data)
         if self.initial is None:
-            parameters, cofactor = self._initial_parameters(coordinates, data)
+            parameters = self._initial_parameters(coordinates, data)
         else:
             parameters = self.initial.copy()
-            if self.initial_covariance is None:
-                cofactor = np.eye(4)
-            else:
-                cofactor = self.initial_covariance.copy()
         # Data weights
         data_weights = np.empty_like(data_predicted)
         data_weights[:n_data] = weights[0]
@@ -194,7 +188,7 @@ class EulerInversion:
         self.location_per_iteration_ = [parameters[:3].copy()]
         self.base_level_per_iteration_ = [parameters[3]]
         for iteration in range(self.max_iterations):
-            parameter_step, data_step, cofactor_step = self._newton_step(
+            parameter_step, data_step, cofactor_new = self._newton_step(
                 coordinates,
                 data_observed,
                 data_predicted,
@@ -204,7 +198,6 @@ class EulerInversion:
             )
             parameters += parameter_step
             data_predicted += data_step
-            cofactor += cofactor_step
             euler = self._eulers_equation(coordinates, data_predicted, parameters)
             residuals = data_observed - data_predicted
             # Check stopping criteria
@@ -217,6 +210,7 @@ class EulerInversion:
                 self.stopping_reason_ = "Merit function increased"
                 break
             # Update tracked variables
+            cofactor = cofactor_new
             self.euler_misfit_.append(new_euler_misfit)
             self.data_misfit_.append(new_data_misfit)
             self.merit_.append(new_merit)
@@ -261,10 +255,10 @@ class EulerInversion:
         ATQ = A.T @ Q_inv
         BTQ = WBT @ Q_inv
         Br = B @ residuals
-        cofactor_step = sp.linalg.inv(ATQ @ A)
-        parameter_step = -cofactor_step @ ATQ @ (euler + Br)
+        cofactor = sp.linalg.inv(ATQ @ A)
+        parameter_step = -cofactor @ ATQ @ (euler + Br)
         data_step = residuals - BTQ @ (Br + euler + A @ parameter_step)
-        return parameter_step, data_step, cofactor_step
+        return parameter_step, data_step, cofactor
 
     def _initial_data(self, coordinates, data):
         # Initial estimate for the predicted data is close to the observed
@@ -281,7 +275,7 @@ class EulerInversion:
         parameters = np.empty(4)
         parameters[:3] = euler_deconv.location_
         parameters[3] = euler_deconv.base_level_
-        return parameters, euler_deconv.covariance_
+        return parameters
 
     def _parameter_jacobian(
         self,
@@ -430,7 +424,7 @@ def fit_window(window_coordinates, window_data, weights, structural_indices, kwa
         candidates = []
         for si, ed in zip(structural_indices, deconvolutions):
             ei = EulerInversion(
-                si, initial=ed.parameters_, initial_covariance=ed.covariance_, **kwargs
+                si, initial=ed.parameters_, **kwargs
             )
             ei.fit(window_coordinates, window_data, weights)
             candidates.append(ei)

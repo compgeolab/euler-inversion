@@ -127,8 +127,24 @@ least-squares estimate of $\mathbf{p}$
 \end{equation}
 
 \noindent
-However, the solution above is valid only if the contents of the Jacobian
-matrix $\mathbf{A}$ are assumed to be error-free.
+The covariance matrix of the solution $\mathbf{C}_p$ is obtained through
+standard error propagation assuming that the only variable with uncertainty
+is the pseudo-data vector $\mathbf{c}$
+
+\begin{equation}
+  \mathbf{C}_p = \hat{\sigma}_0^2 \left(\mathbf{A}^T\mathbf{A}\right)^{-1}
+  \ ,
+  \label{eq:deconv-cov}
+\end{equation}
+
+\noindent
+in which
+${\hat{\sigma}_0^2} = \|\mathbf{c} - \mathbf{A}\mathbf{p}\|^2 / (N - 4)$
+is the reduced chi-squared statistic and an estimate of the variance factor of
+$\mathbf{c}$.
+
+The solution in Equation~\ref{eq:deconv-p} above is valid only if the
+contents of the Jacobian matrix $\mathbf{A}$ are assumed to be error-free.
 As can be seen from Equation~\ref{eq:deconv-system}, the Jacobian contains the
 derivatives of $f$, which are often computed numerically by finite-differences
 or Fourier transforms and are known to amplify the high-frequency random noise
@@ -530,24 +546,37 @@ correction as a function of $\hat{\mathbf{\Delta p}}_k$
 
 The covariance matrix of $\mathbf{p}$ is used to rank and filter solutions
 during the moving window procedure.
-It can be calculated by propagating uncertainties from the observed data to the
-parameter correction vector (Equation~\ref{eq:deltap}).
-Since $\mathbf{p} = \mathbf{p}_0 + \sum_{k=0}^{L-1} \mathbf{\Delta p}_k$,
-the parameter covariance matrix is
+It can be estimated by propagating uncertainties from the observed data
+$\mathbf{d}^o$ to the
+parameter correction vector (Equation~\ref{eq:deltap}) and, hence, to the
+parameter vector \citep{WellsKrakiwsky1971}.
+The covariance matrix of the observed data is approximated by
+$\mathbf{C}_d = \hat{\sigma}_0^2\mathbf{W}^{-1}$.
+Recalling that matrix $\mathbf{Q}$ is diagonal,
+the parameter covariance matrix is estimated at the last iteration of the
+Gauss-Newton method (iteration $L$) as
 
 \begin{equation}
-  \mathbf{C}_{p} = \hat{\sigma}_0^2\left[\mathbf{A}^T\mathbf{A}\right]^{-1}
-    + \hat{\sigma}^2\sum\limits_{i=0}^{L-1}
-    \left[\mathbf{A}_k^T\mathbf{Q}_k^{-1}\mathbf{A}_k\right]^{-1}
+  \begin{aligned}
+    \mathbf{C}_{p} &=
+      \left[\mathbf{A}_L^T\mathbf{Q}_L^{-1}\mathbf{A}_L\right]^{-1}
+      \mathbf{A}_L^T\mathbf{Q}_L^{-1}\mathbf{B}_L
+      \mathbf{C}_d
+      \mathbf{B}_L^T\mathbf{Q}_L^{-1}\mathbf{A}_L
+      \left[\mathbf{A}_L^T\mathbf{Q}_L^{-1}\mathbf{A}_L\right]^{-1}
+    \ ,
+    \\
+    &= \hat{\sigma}_0^2 \left[\mathbf{A}_L^T\mathbf{Q}_L^{-1}\mathbf{A}_L\right]^{-1}
+    \ ,
+  \end{aligned}
   \label{eq:cov}
 \end{equation}
 
 \noindent
 in which
-${\hat{\sigma}_0^2} = \|\mathbf{c} - \mathbf{A}\mathbf{p}_0\|^2 / (N - 4)$
-is the reduced chi-squared statistic of the Euler deconvolution,
-${\hat{\sigma}^2} = \|\mathbf{d}^0 - \mathbf{d}_L\|^2 / (4N - 4)$ is the
-reduced chi-squared statistic of the Euler inversion.
+$\hat{\sigma}^2_0 = \|\mathbf{d}^o - \mathbf{d}_L\|^2 / (4N - 4)$ is the
+reduced chi-squared statistic of the Euler inversion and an estimate of the
+variance factor of the observed data $\mathbf{d}^o$.
 
 
 
@@ -600,9 +629,8 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
 \begin{algorithm}[!h]
   \setstretch{1.5}
   Set
-  $\mathbf{p}_0 = \left[\mathbf{A}^T\mathbf{A}\right]^{-1}\mathbf{A}^T\mathbf{c}$,
-  $\mathbf{d}_0 = 0.9\ \mathbf{d}^o$,
-  and $\mathbf{K}_0 = \mathbf{0}$
+  $\mathbf{p}_0 = \left[\mathbf{A}^T\mathbf{A}\right]^{-1}\mathbf{A}^T\mathbf{c}$
+  and $\mathbf{d}_0 = 0.9\ \mathbf{d}^o$
   \;
   Evaluate $\Merit_0(\mathbf{p}_0, \mathbf{d}_0)$
   \;
@@ -616,12 +644,10 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
     Update $\mathbf{p}_{k+1} = \mathbf{p}_k + \mathbf{\Delta p}_k$
     and $\mathbf{d}_{k+1} = \mathbf{d}_k + \mathbf{\Delta d}_k$
     \;
-    Update $\mathbf{K}_{k+1} = \mathbf{K}_k + \left[\mathbf{A}_k^T\mathbf{Q}_k^{-1}\mathbf{A}_k\right]^{-1}$
-    \;
     Evaluate $\Merit_{k+1}(\mathbf{p}_{k+1}, \mathbf{d}_{k+1})$
     \;
     \If{ $\Merit_{k+1} > \Merit_k$ }{
-      Undo the previous update of $\mathbf{p}$, $\mathbf{d}$, and $\mathbf{K}$
+      Undo the previous update of $\mathbf{p}$ and $\mathbf{d}$
       \;
       Exit
       \;
@@ -631,8 +657,9 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
       \;
     }
   }
-  Calculate
-  $\mathbf{C}_p = \hat{\sigma}_0^2\left[\mathbf{A}^T\mathbf{A}\right]^{-1} + \hat{\sigma}^2\mathbf{K}_L$
+  Calculate the $\hat{\sigma}_0^2$ using the last residuals $\mathbf{r}_L$
+  \;
+  Calculate $\mathbf{C}_p$ using Equation~\ref{eq:cov}
   \;
   \BlankLine
   \setstretch{1}
