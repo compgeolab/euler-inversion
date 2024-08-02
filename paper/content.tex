@@ -789,7 +789,11 @@ The applications are organized as follows:
 \centering
 \includegraphics[width=1\linewidth]{figures/synthetic-proof-of-concept.png}
 \caption{
-  \lipsum[1]
+    Data and results from the synthetic data test to demonstrate the performance of the method on a single target with an interfering source at the edge of the data window. 
+    a-d) The noise-corrupted synthetic total-field anomaly and its easting, northing, and upward derivatives, respectively. The position of the dipolar source is marked by the black triangle.
+    e-h) The Euler inversion residuals (observed data minus predicted data) for the total-field anomaly and its easting, northing, and upward derivatives, respectively. The black triangle shows the true location of the source, the black square shows the location estimated by Euler deconvolution, and the yellow circle shows the location estimated by Euler inversion.
+    i) The error in the estimate of the easting (blue line), northing (orange line), and upward (green line) coordinates of the source and the base level (purple line) as a function of the Gauss-Newton iteration (Algorithm~\ref{alg:ei}).
+    j) The value of the merit function $\Merit$ (Equation~\ref{eq:merit}) per Gauss-Newton iteration.
 }
 \label{fig:proof}
 \end{figure}
