@@ -390,7 +390,7 @@ class EulerInversionWindowed:
         variances = [np.sum(np.diag(ei.covariance_)[:3]) for ei in self.solutions_]
         self.solutions_ = [self.solutions_[i] for i in np.argsort(variances)[:keep]]
         self.locations_ = np.transpose([ei.location_ for ei in self.solutions_])
-        self.base_levels_ = np.ar,ray([ei.base_level_ for ei in self.solutions_])
+        self.base_levels_ = np.array([ei.base_level_ for ei in self.solutions_])
         self.structural_indices_ = np.array(
             [ei.structural_index for ei in self.solutions_]
         )
