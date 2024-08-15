@@ -21,6 +21,7 @@ dependencies:
   - ipywidgets
   - pyproj
   - pygmt
+  - scikit-image
   # Fatiando
   - verde
   - pooch
