@@ -185,8 +185,10 @@ the values of $f$ and its gradient
 in which $\mathbf{\nabla}_\alpha$ is the gradient operator in the $\alpha$
 dimension.
 
-Next, we formulate the $N \times 4$ equation system from Euler's equation (Equation~\ref{eq:euler}) as a
-non-linear function of parameters and data
+Next, we formulate the $N \times 4$ equation system
+from Euler's equation
+(Equation~\ref{eq:euler-system})
+as a non-linear function of both parameters and data
 
 \begin{equation}
   \mathbf{e}(\mathbf{p}, \mathbf{d}) = \mathbf{0}
@@ -195,7 +197,8 @@ non-linear function of parameters and data
 \end{equation}
 
 \noindent
-which is known in geodesy as an \textit{implicit model} \citep{Vanicek1986}.
+which is known in geodesy as an \textit{implicit mathematical model}
+\citep{Vanicek1986}.
 
 We then wish to solve the following constrained optimization problem with
 non-linear equality constraints to estimate both the parameters and the
@@ -238,7 +241,6 @@ into an unconstrained problem by using the Lagrangian
 \end{equation}
 
 \noindent
-<<<<<<< HEAD
 in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange
 multipliers.
 The non-linear Lagrangian is minimized through Newton's method
@@ -285,13 +287,6 @@ vector
 \noindent
 The equation above is the \textit{system of normal equations}, which can also
 be written in terms of $\mathbf{p}$, $\boldsymbol{\lambda}$, and $\mathbf{d}$
-=======
-in which $\boldsymbol{\lambda}$ is an $N \times 1$ vector of Lagrange multipliers.
-The non-linear Lagrangian is then minimized through Newton's method by starting
-with initial estimates $\mathbf{p}_0$ and $\mathbf{d}_0$ and then iterating
-with the corrections to these values through the solution of the linear system at the kth-iteration
-\citep{Aster2018}
->>>>>>> origin/overleaf-2024-07-31-0042
 
 \begin{equation}
   \underbrace{
@@ -376,7 +371,11 @@ in which $\mathbf{e}_k = \mathbf{e}(\mathbf{p}_k,\mathbf{d}_k)$
 Jacobian} matrix of Euler's equation (Equation~\ref{eq:deconv-system})
 evaluated on $(\mathbf{p}_k,\mathbf{d}_k)$, and $\mathbf{B}_k$ is the $N \times
 4N$ \textit{data Jacobian} of Euler's equation, also evaluated on
-$(\mathbf{p}_k,\mathbf{d}_k)$, which is composed of four diagonal matrices
+$(\mathbf{p}_k,\mathbf{d}_k)$.
+The data Jacobian $\mathbf{B}_k$ contains the first derivatives of Euler's
+equation (Equation~\ref{eq:euler})
+with respect to the data vector $\mathbf{d}$ (Equation~\ref{eq:d}).
+It is composed of four diagonal matrices
 
 \begin{equation}
   \mathbf{B}_k =
@@ -620,9 +619,9 @@ misfit as well as the adherence to the constraints
 \end{equation}
 
 \noindent
-in which $\sqrt{\mathbf{r}_k^T\mathbf{W}\mathbf{r}_k}$ is the 
+in which $\sqrt{\mathbf{r}_k^T\mathbf{W}\mathbf{r}_k}$ is the
 \textit{weighted root-mean-squared error} (WRMSE) and
-$\nu$ is a trade-off parameter that balances fitting the data and strict adherence 
+$\nu$ is a trade-off parameter that balances fitting the data and strict adherence
 to the constraints.
 In practice, we have found that a value of $\nu=0.1$ works well in all of our
 synthetic data tests and our field data application.
@@ -752,25 +751,25 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 
-In this section, we demonstrate the effectiveness and limitations of the Euler 
-inversion method by applying it to a series of synthetic datasets and to real 
+In this section, we demonstrate the effectiveness and limitations of the Euler
+inversion method by applying it to a series of synthetic datasets and to real
 aeromagnetic data from Rio de Janeiro, Brazil.
 The applications are organized as follows:
 
 \begin{itemize}
-    \item \textbf{Method demonstration:} This test uses a single data window 
-        and a dipolar source. Its aim is to demonstrate that the Euler 
+    \item \textbf{Method demonstration:} This test uses a single data window
+        and a dipolar source. Its aim is to demonstrate that the Euler
         inversion method is able to correctly estimate the source position
         when the structural index is known, even in the presence of random
-        noise and an interfering source at the edge of the data window. 
-    \item \textbf{Effect of random noise:} This test uses a single dipolar 
+        noise and an interfering source at the edge of the data window.
+    \item \textbf{Effect of random noise:} This test uses a single dipolar
         source and a single data window. Its aim is to investigate the
-        effect that increasing levels of random high-frequency noise have 
+        effect that increasing levels of random high-frequency noise have
         on the estimated source coordinates and base level.
     \item \textbf{Effect of structural index choice:} This test uses several
         different sources, each in a separate data window. Its aim is to
-        determine the effect of the choice of $\eta$ on the estimated 
-        coordinates and the weighted root-mean-squared error 
+        determine the effect of the choice of $\eta$ on the estimated
+        coordinates and the weighted root-mean-squared error
         (Equation~\ref{eq:merit}).
     \item \textbf{Moving window procedure with multiple sources:} This test
         combines several sources and uses the moving window procedure from
@@ -778,7 +777,7 @@ The applications are organized as follows:
         method behaves on a more complex dataset.
     \item \textbf{Aeromagnetic data from Rio de Janeiro:} This test applies
         the Euler inversion method to a real dataset which contains multiple
-        sources. Its aim is to demonstrate the effectiveness of the method 
+        sources. Its aim is to demonstrate the effectiveness of the method
         on a real dataset with realistic levels of noise, signal overlap,
         and geometry of sources.
 \end{itemize}
@@ -789,7 +788,7 @@ The applications are organized as follows:
 \centering
 \includegraphics[width=1\linewidth]{figures/synthetic-proof-of-concept.png}
 \caption{
-    Data and results from the synthetic data test to demonstrate the performance of the method on a single target with an interfering source at the edge of the data window. 
+    Data and results from the synthetic data test to demonstrate the performance of the method on a single target with an interfering source at the edge of the data window.
     a-d) The noise-corrupted synthetic total-field anomaly and its easting, northing, and upward derivatives, respectively. The position of the dipolar source is marked by the black triangle.
     e-h) The Euler inversion residuals (observed data minus predicted data) for the total-field anomaly and its easting, northing, and upward derivatives, respectively. The black triangle shows the true location of the source, the black square shows the location estimated by Euler deconvolution, and the yellow circle shows the location estimated by Euler inversion.
     i) The error in the estimate of the easting (blue line), northing (orange line), and upward (green line) coordinates of the source and the base level (purple line) as a function of the Gauss-Newton iteration (Algorithm~\ref{alg:ei}).
