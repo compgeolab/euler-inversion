@@ -29,3 +29,6 @@ data/rio-de-janeiro-magnetic.csv: code/real-data-preparation.ipynb data/1038_XYZ
 	jupyter execute --inplace --kernel_name=python3 $<
 	# Because jupyter execute modifies the notebook last
 	touch $@
+
+format:
+	black code/
