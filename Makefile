@@ -23,3 +23,10 @@ paper/figures/%.png: code/%.ipynb code/euler.py
 	jupyter execute --inplace --kernel_name=python3 $<
 	# Because jupyter execute modifies the notebook last
 	touch $@
+	echo ""
+
+data/rio-de-janeiro-magnetic.nc: code/real-data-prepare-grid.ipynb data/1038_XYZ.tar.xz
+	jupyter execute --inplace --kernel_name=python3 $<
+	# Because jupyter execute modifies the notebook last
+	touch $@
+	echo ""
