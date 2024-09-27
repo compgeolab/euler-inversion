@@ -51,7 +51,6 @@ class EulerDeconvolution:
         """
         Perform Euler Deconvolution on data on a regular grid
         """
-        shape = grid[data_names[0]].shape
         table = vd.grid_to_table(grid)
         coordinates = [table[n] for n in coordinate_names]
         data = [table[n] for n in data_names]
@@ -108,7 +107,6 @@ class EulerDeconvolutionWindowed:
         """
         Perform Euler Deconvolution on data on a regular grid
         """
-        shape = grid[data_names[0]].shape
         table = vd.grid_to_table(grid)
         coordinates = [table[n] for n in coordinate_names]
         data = [table[n] for n in data_names]
@@ -360,6 +358,9 @@ class EulerInversionWindowed:
         pool = concurrent.futures.ProcessPoolExecutor()
         futures = []
         for window in windows.ravel():
+            # Skip windows with too few data points
+            if window[0].size <= 4:
+                continue
             window_coordinates = [c[window[0]] for c in coordinates]
             window_data = [d[window[0]] for d in data]
             future = pool.submit(
