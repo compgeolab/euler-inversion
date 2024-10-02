@@ -21,10 +21,11 @@ dependencies:
   - ipywidgets
   - pyproj
   - pygmt
+  - matplotlib-scalebar
   # Fatiando
   - verde
   - pooch
+  - harmonica
   - pip:
-    - git+https://github.com/fatiando/harmonica
     - line_profiler
     - black[jupyter]
