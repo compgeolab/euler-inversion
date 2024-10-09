@@ -12,6 +12,7 @@ dependencies:
   - jupyterlab
   - pandas
   - geopandas==0.14.3
+
   # For building latex documents
   - make
   - tectonic
@@ -31,3 +32,4 @@ dependencies:
   - pip:
     - line_profiler
     - black[jupyter]
+    - fiona==1.9.1
