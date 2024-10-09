@@ -10,12 +10,14 @@ dependencies:
   - scipy
   - matplotlib
   - jupyterlab
+  - pandas
+  - geopandas==0.14.3
   # For building latex documents
   - make
   - tectonic
   # Project specific dependencies
   - xarray
-  - netcdf4
+  - netcdf4 
   - numba
   - rich
   - ipywidgets
