@@ -39,9 +39,9 @@ modification for non-commercial purposes.
 
 ### Aeromagnetic Survey
 The [aeromagnetic data](https://geosgb.sgb.gov.br/downloads/) were collected 
-in two phases in 1978. Subarea 1 was surveyed from March 25 to May 27 using 
-an Islander aircraft, and Subarea 2 from April 6 to July 19 using a Bandeirante 
-aircraft, both funded by the Brazilian government. The survey followed a grid with 
+in two phases in 1978. Subarea 1 was surveyed using an Islander aircraft from 
+March 25 to May 27, and Subarea 2 from April 6 to July 19 using a Bandeirante 
+aircraft, funded by the Brazilian government. The survey followed a grid with 
 1 km spaced north-south flight lines and east-west tie lines, recording data every 
 100 meters with a Geometrics G-803 magnetometer.
 
