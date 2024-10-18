@@ -29,6 +29,30 @@ paper.
 
 The paper abstract. Paste it here once it's written.
 
+## Geology and Aeromagnetic Survey
+
+The shapefiles and aeromagnetic survey data were obtained from the 
+[Brazilian Geological Survey](https://geosgb.sgb.gov.br/) (Serviço Geológico 
+Brasileiro - SGB). The data is publicly available under a Creative Commons 
+Attribution-NonCommercial 4.0 International License, allowing for use and 
+modification for non-commercial purposes. 
+
+### Aeromagnetic Survey
+The [aeromagnetic data](https://geosgb.sgb.gov.br/downloads/) were collected 
+in two phases in 1978. Subarea 1 was surveyed using an Islander aircraft from 
+March 25 to May 27, and Subarea 2 from April 6 to July 19 using a Bandeirante 
+aircraft, funded by the Brazilian government. The survey followed a grid with 
+1 km spaced north-south flight lines and east-west tie lines, recording data every 
+100 meters with a Geometrics G-803 magnetometer.
+
+### Shapefiles
+The [shapefiles](https://rigeo.sgb.gov.br/handle/doc/20479) represent the geology 
+of the NE-ENE trending Ribeira Belt (RB), formed during the Brasiliano orogeny. 
+The RB comprises older basement high-grade metamorphic rocks, Neoproterozoic to 
+Cambrian/Ordovician granitoid magmatism, and Upper Cretaceous to Paleocene magmatism 
+that resulted in basic dike swarms and alkaline intrusions.
+
+
 ## License
 
 All Python source code (including `.py` and `.ipynb` files) is made available
