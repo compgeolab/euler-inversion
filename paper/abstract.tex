@@ -1,1 +1,9 @@
-\lipsum[1]
+Locating the sources of observed disturbances in potential-field data is a challenging problem because of the non-unique nature of this inverse problem. 
+This what the method of Euler deconvolution was created to solve, at least for idealized sources (spheres, planar vertical dikes, etc.).
+The method has become widely used in the potential-fields literature due, in large part, to its low computational cost and ease of implementation into software.
+However, it is widely known that Euler deconvolution suffers from some shortcomings: 1) non-uniqueness of the solution with respect to the depth of the source and the structural index (a parameter that represents the idealized shape of the source); 2) sensitivity to short-wavelength noise in the data derivatives which are used as inputs for the method.
+Here, we present a new method called \textit{Euler inversion} which is a reformulation of the inverse problem of Euler's homogeneity equation as an implicit mathematical model instead of a parametric model.
+Euler inversion is a constrained non-linear inverse problem which is able to estimate both the model parameters (location of the source and constant base level) as well as the predicted data (potential field and its derivatives).
+We show that Euler inversion is less sensitive than Euler deconvolution to short-wavelength noise and also to the presence interfering sources in the data window.
+Because predicted data are also computed, Euler inversion is able to estimate the integer structural index because the data misfit is smaller when the correct structural index is used for the inversion.
+Furthermore, most matrices involved in the method are either sparse or diagonal, making Euler inversion computationally efficient.
