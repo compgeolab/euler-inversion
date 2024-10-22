@@ -10,6 +10,11 @@ import xarray as xr
 
 
 class EulerDeconvolution:
+    """
+    Classic Euler deconvolution but with only a single data window
+
+    The windowed version is implemented in a different class.
+    """
 
     def __init__(self, structural_index):
         self.structural_index = structural_index
@@ -96,6 +101,65 @@ class EulerDeconvolutionWindowed:
         self.solutions_ = [solutions[i] for i in np.argsort(variances)[:keep]]
         self.locations_ = np.transpose([ed.location_ for ed in self.solutions_])
         self.base_levels_ = np.array([ed.base_level_ for ed in self.solutions_])
+        return self
+
+    def fit_grid(
+        self,
+        grid,
+        data_names=("field", "deriv_east", "deriv_north", "deriv_up"),
+        coordinate_names=("easting", "northing", "height"),
+    ):
+        """
+        Perform Euler Deconvolution on data on a regular grid
+        """
+        table = vd.grid_to_table(grid)
+        coordinates = [table[n] for n in coordinate_names]
+        data = [table[n] for n in data_names]
+        self.fit(coordinates, data)
+        return self
+
+
+class EulerDeconvolutionFD:
+    """
+    Finite-difference Euler deconvolution of Gerovska et al. (2005)
+
+    The SI is estimated from the data.
+    """
+
+    def fit(self, coordinates, data):
+        """
+        Perform FD Euler Deconvolution on a single window spanning the entire data
+        """
+        east, north, up = coordinates
+        field, deriv_east, deriv_north, deriv_up = data
+
+        # Find the point closest to the center of the data window
+        window_center = np.median(east), np.median(north)
+        tree = vd.utils.kdtree((east, north))
+        _, center = tree.query(window_center)
+        not_center = np.arange(field.size) != center
+
+        jacobian = np.empty((field.size - 1, 4))
+        jacobian[:, 0] = deriv_east[not_center] - deriv_east[center]
+        jacobian[:, 1] = deriv_north[not_center] - deriv_north[center]
+        jacobian[:, 2] = deriv_up[not_center] - deriv_up[center]
+        jacobian[:, 3] = field[center] - field[not_center]
+        pseudo_data = (
+            east[not_center] * deriv_east[not_center]
+            - east[center] * deriv_east[center]
+            + north[not_center] * deriv_north[not_center]
+            - north[center] * deriv_north[center]
+        )
+        hessian = jacobian.T @ jacobian
+        cofactor = sp.linalg.inv(hessian)
+        parameters = cofactor @ jacobian.T @ pseudo_data
+        pseudo_residuals = pseudo_data - jacobian @ parameters
+        chi_squared = np.sum(pseudo_residuals**2) / (pseudo_data.size - parameters.size)
+
+        self.covariance_ = chi_squared * cofactor
+        self.parameters_ = parameters
+        self.location_ = parameters[:3]
+        self.structural_index_ = parameters[-1]
         return self
 
     def fit_grid(
