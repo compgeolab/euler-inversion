@@ -5,6 +5,7 @@ PDF = paper/preprint.pdf
 #PDF = preprint.pdf manuscript.pdf
 ### File Types (for dependencies)
 TEX = $(filter-out $(PDF:.pdf=.tex), $(wildcard paper/*.tex))
+TEXVARS = $(wildcard paper/variables/*.tex)
 BIB = $(wildcard paper/*.bib)
 FIG = $(wildcard paper/figures/*)
 
@@ -19,16 +20,19 @@ show: $(PDF)
 clean:
 	rm -f $(PDF)
 
-paper/figures/%.png: code/%.ipynb code/euler.py
-	jupyter execute --inplace --kernel_name=python3 $<
-	# Because jupyter execute modifies the notebook last
-	touch $@
-	echo ""
+paper/variables.tex: $(TEXVARS)
+	cat $^ > $@
 
-data/rio-de-janeiro-magnetic.csv: code/real-data-preparation.ipynb data/1038_XYZ.tar.xz
-	jupyter execute --inplace --kernel_name=python3 $<
-	# Because jupyter execute modifies the notebook last
-	touch $@
+# paper/figures/%.png: code/%.ipynb code/euler.py
+# 	jupyter execute --inplace --kernel_name=python3 $<
+# 	# Because jupyter execute modifies the notebook last
+# 	touch $@
+# 	echo ""
+
+# data/rio-de-janeiro-magnetic.csv: code/real-data-preparation.ipynb data/1038_XYZ.tar.xz
+# 	jupyter execute --inplace --kernel_name=python3 $<
+# 	# Because jupyter execute modifies the notebook last
+# 	touch $@
 
 format:
 	black code/

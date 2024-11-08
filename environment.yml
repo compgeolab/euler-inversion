@@ -17,7 +17,7 @@ dependencies:
   - tectonic
   # Project specific dependencies
   - xarray
-  - netcdf4 
+  - netcdf4
   - numba
   - rich
   - ipywidgets
