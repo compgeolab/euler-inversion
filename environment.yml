@@ -32,4 +32,3 @@ dependencies:
     - line_profiler
     - black[jupyter]
     - fiona==1.9.1
-    - git+https://github.com/compgeolab/latex_variables.git@f1732eb82a67b5e5787f67fdcf9fe233491593d7

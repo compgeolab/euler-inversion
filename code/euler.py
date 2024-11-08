@@ -284,7 +284,7 @@ class EulerInversion:
                 self.stopping_reason_ = f"Merit change ({merit_change:.2e}) below tolerance ({self.tol:.2e})"
                 break
         # Save output attributes
-        self.iterations_ = iteration + 1
+        self.iterations_ = len(self.euler_misfit_) - 1
         self.predicted_field_ = data_predicted[:n_data]
         self.predicted_deriv_east_ = data_predicted[n_data : 2 * n_data]
         self.predicted_deriv_north_ = data_predicted[2 * n_data : 3 * n_data]
