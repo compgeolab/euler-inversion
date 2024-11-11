@@ -9,6 +9,9 @@ import verde as vd
 import xarray as xr
 
 
+DEFAULT_WEIGHTS = (1, 0.1, 0.1, 0.025)
+
+
 class EulerDeconvolution:
     """
     Classic Euler deconvolution but with only a single data window
@@ -197,7 +200,7 @@ class EulerInversion:
     def fit_grid(
         self,
         grid,
-        weights=(1, 0.1, 0.1, 0.05),
+        weights=DEFAULT_WEIGHTS,
         data_names=("field", "deriv_east", "deriv_north", "deriv_up"),
         coordinate_names=("easting", "northing", "height"),
     ):
@@ -220,7 +223,7 @@ class EulerInversion:
         )
         return self
 
-    def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
+    def fit(self, coordinates, data, weights=DEFAULT_WEIGHTS):
         """
         Perform Euler Inversion on a single window spanning the entire data
         """
@@ -407,7 +410,7 @@ class EulerInversionWindowed:
         self.euler_misfit_balance = euler_misfit_balance
         self.keep = keep
 
-    def fit(self, coordinates, data, weights=(1, 0.1, 0.1, 0.05)):
+    def fit(self, coordinates, data, weights=DEFAULT_WEIGHTS):
         _, windows = vd.rolling_window(
             coordinates,
             size=self.window_size,
@@ -462,7 +465,7 @@ class EulerInversionWindowed:
     def fit_grid(
         self,
         grid,
-        weights=(1, 0.1, 0.1, 0.05),
+        weights=DEFAULT_WEIGHTS,
         data_names=("field", "deriv_east", "deriv_north", "deriv_up"),
         coordinate_names=("easting", "northing", "height"),
     ):
