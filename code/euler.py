@@ -135,13 +135,12 @@ class EulerDeconvolutionFD:
         """
         east, north, up = coordinates
         field, deriv_east, deriv_north, deriv_up = data
-
         # Find the point closest to the center of the data window
         window_center = np.median(east), np.median(north)
         tree = vd.utils.kdtree((east, north))
-        _, center = tree.query(window_center)
+        center = tree.query(np.atleast_2d(window_center))[1][0]
         not_center = np.arange(field.size) != center
-
+        # Build the Jacobian matrix
         jacobian = np.empty((field.size - 1, 4))
         jacobian[:, 0] = deriv_east[not_center] - deriv_east[center]
         jacobian[:, 1] = deriv_north[not_center] - deriv_north[center]
