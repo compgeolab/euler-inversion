@@ -180,6 +180,62 @@ class EulerDeconvolutionFD:
         return self
 
 
+class EulerDeconvolutionFDWindowed:
+
+    def __init__(
+        self,
+        window_size,
+        window_step,
+        keep=0.15,
+    ):
+        self.window_size = window_size
+        self.window_step = window_step
+        self.keep = keep
+
+    def fit(self, coordinates, data):
+        _, windows = vd.rolling_window(
+            coordinates,
+            size=self.window_size,
+            spacing=self.window_step,
+            adjust="region",
+        )
+        n_windows = windows.size
+        solutions = []
+        for window in windows.ravel():
+            ed = EulerDeconvolutionFD()
+            window_coordinates = [np.asarray(c[window[0]]) for c in coordinates]
+            ed.fit(
+                window_coordinates,
+                [np.asarray(d[window[0]]) for d in data],
+            )
+            inside_window = vd.inside(ed.location_, vd.get_region(window_coordinates))
+            if inside_window:
+                solutions.append(ed)
+        variances = [np.sum(np.diag(ed.covariance_)[:3]) for ed in solutions]
+        keep = int(self.keep * n_windows)
+        self.solutions_ = [solutions[i] for i in np.argsort(variances)[:keep]]
+        self.locations_ = np.transpose([ed.location_ for ed in self.solutions_])
+        self.structural_indices_ = np.array(
+            [ed.structural_index_ for ed in self.solutions_]
+        )
+        return self
+
+    def fit_grid(
+        self,
+        grid,
+        data_names=("field", "deriv_east", "deriv_north", "deriv_up"),
+        coordinate_names=("easting", "northing", "height"),
+    ):
+        """
+        Perform Euler Deconvolution on data on a regular grid
+        """
+        table = vd.grid_to_table(grid)
+        coordinates = [table[n] for n in coordinate_names]
+        data = [table[n] for n in data_names]
+        self.fit(coordinates, data)
+        return self
+
+
 class EulerInversion:
 
     def __init__(
