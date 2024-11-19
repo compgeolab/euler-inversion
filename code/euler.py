@@ -209,7 +209,8 @@ class EulerDeconvolutionFDWindowed:
                 [np.asarray(d[window[0]]) for d in data],
             )
             inside_window = vd.inside(ed.location_, vd.get_region(window_coordinates))
-            if inside_window:
+            valid_si = ed.structural_index_ >= -1 and ed.structural_index_ <= 3
+            if inside_window and valid_si:
                 solutions.append(ed)
         variances = [np.sum(np.diag(ed.covariance_)[:3]) for ed in solutions]
         keep = int(self.keep * n_windows)
