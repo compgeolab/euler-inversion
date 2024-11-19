@@ -26,13 +26,21 @@ paper.
 
 ## Abstract
 
-Earth scientists are able to determine the depth of certain rocks in below ground by measuring the small disturbances that they cause to Earth's gravity and magnetic fields.
-A popular method for doing this is *Euler deconvolution*, which is widely available in geoscience software and is fast to run on an average computer. 
-Unfortunately, Euler deconvolution has some shortcomings: 1) the approximate shape of the rocks must be known, for example a sphere or a wide flat slab, which is represented by something called the \textit{structural index} 2) the depth of the rocks is not well estimated when there is noise in our data, which is a common occurrence.
-We propose a new method that uses more adequate (and complex) mathematics to fix some of the shortcomings of Euler deconvolution.
-We call our new method **Euler inversion**.
-It is less sensitive to noise in the data and is also able to determine the approximate shape of the source (the structural index).
-Our new method is able to replace Euler deconvolution on an Earth scientists toolbox because it is also fast to execute on an average computer.
+Earth scientists are able to determine the depth of certain rocks in below
+ground by measuring the small disturbances that they cause to Earth's gravity
+and magnetic fields. A popular method for doing this is *Euler deconvolution*,
+which is widely available in geoscience software and is fast to run on an
+average computer. Unfortunately, Euler deconvolution has some shortcomings: 1)
+the approximate shape of the rocks must be known, for example a sphere or
+a wide flat slab, which is represented by something called the
+*structural index* 2) the depth of the rocks is not well estimated when
+there is noise in our data, which is a common occurrence. We propose a new
+method that uses more adequate (and complex) mathematics to fix some of the
+shortcomings of Euler deconvolution. We call our new method **Euler
+inversion**. It is less sensitive to noise in the data and is also able to
+determine the approximate shape of the source (the structural index). Our new
+method is able to replace Euler deconvolution on an Earth scientists toolbox
+because it is also fast to execute on an average computer.
 
 ## License
 
