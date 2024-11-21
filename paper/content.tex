@@ -683,7 +683,7 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
 An advantage of Euler inversion over Euler deconvolution is its ability to obtain
 predicted values of the potential field and its gradient.
 In Section~\ref{sec:si}, we demonstrate that the \textit{weighted root
-mean-squared error} $\text{WRMSE} = \mathbf{r}_L^T\mathbf{W}\mathbf{r}_L$
+mean-squared error} $\text{WRMSE} = \sqrt{\mathbf{r}_L^T\mathbf{W}\mathbf{r}_L}$
 appears to be smallest when the correct structural index $\eta$ is used.
 Given this observation, we can estimate the optimal value of $\eta$ by running
 the Euler inversion in a given data window for different values of $\eta$ and
@@ -695,7 +695,7 @@ This procedure is summarized in Algorithm~\ref{alg:si}.
   \For{ $\eta = \eta_{min}$ \KwTo $\eta_{max}$ }{
     Run Algorithm~\ref{alg:ei} to estimate $\mathbf{p}_{\eta}$ and $\mathbf{d}_{\eta}$
     \;
-    Calculate the $\text{WRMSE}(\eta) = \left[\mathbf{d}^o - \mathbf{d}_\eta\right]^T\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_\eta\right]$
+    Calculate the $\text{WRMSE}(\eta) = \sqrt{\left[\mathbf{d}^o - \mathbf{d}_\eta\right]^T\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_\eta\right]}$
     for the estimated $\mathbf{d}_{\eta}$
     \;
   }
@@ -720,7 +720,7 @@ deconvolution, in cases where there are no sources inside windows or when
 sources are heavily truncated.
 To filter out spurious sources, we rank the solutions for each structural index
 separately by the variance of the $z_o$ estimate (from Equation~\ref{eq:cov})
-and keep only a percentage of the ones with smallest variance.
+and keep only a given percentage of the ones with smallest variance.
 This procedure is summarized in Algorithm~\ref{alg:window}.
 
 \begin{algorithm}[!h]
@@ -751,12 +751,79 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-proof-of-concept.png}
+\caption{
+    Data and results from the synthetic data test to demonstrate the performance of the method on a single target.
+    a-d) The noise-corrupted synthetic total-field anomaly and its easting, northing, and upward derivatives, respectively. The position of the dipolar source is marked by the black triangle.
+    e-h) The Euler inversion residuals (observed data minus predicted data) for the total-field anomaly and its easting, northing, and upward derivatives, respectively. The black triangle shows the true location of the source, the green square shows the location estimated by Euler deconvolution, and the orange triangle shows the location estimated by Euler inversion.
+    i) The error in the estimate of the easting (blue line), northing (orange line), and upward (green line) coordinates of the source and the base level (purple line) as a function of the Gauss-Newton iteration (Algorithm~\ref{alg:ei}).
+    j) The value of the merit function $\Merit$ (Equation~\ref{eq:merit}) per Gauss-Newton iteration.
+}
+\label{fig:proof}
+\end{figure}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-structural-index.png}
+\caption{
+  \lipsum[1]
+}
+\label{fig:si}
+\end{figure}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-noise-levels.png}
+\caption{
+  \lipsum[1]
+}
+\label{fig:noise}
+\end{figure}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-interfering-sources.png}
+\caption{
+  \lipsum[1]
+}
+\label{fig:interf}
+\end{figure}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-windows.png}
+\caption{
+  \lipsum[1]
+}
+\label{fig:windows}
+\end{figure}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/real-data-geology.png}
+\caption{
+  \lipsum[1]. The geologic map in a) was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
+}
+\label{fig:map}
+\end{figure}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/real-data-application.png}
+\caption{
+  \lipsum[1]
+}
+\label{fig:real}
+\end{figure}
+
 In this section, we demonstrate the effectiveness and limitations of the Euler
 inversion method by applying it to a series of synthetic datasets and to real
 aeromagnetic data from Rio de Janeiro, Brazil.
 The applications are organized as follows:
 
-\begin{itemize}
+\begin{enumerate}
     \item \textbf{Method demonstration:} This test uses a single data window
         and a single dipolar source. Its aim is to demonstrate the convergence
         of the Euler inversion method and that it is able to correctly estimate
@@ -789,7 +856,7 @@ The applications are organized as follows:
         sources. Its aim is to demonstrate the effectiveness of the method
         on a real dataset with realistic levels of noise, signal overlap,
         and geometry of sources.
-\end{itemize}
+\end{enumerate}
 
 \noindent
 The Python source code used to produce the results presented here, as well as extra explanation of the models and procedures, can be found in the supplementary information at \url{https://doi.org/\ArchiveDOI} \citep{figshare}.
@@ -797,18 +864,6 @@ The Python source code used to produce the results presented here, as well as ex
 
 \subsection{Method demonstration}
 
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-proof-of-concept.png}
-\caption{
-    Data and results from the synthetic data test to demonstrate the performance of the method on a single target with an interfering source at the edge of the data window.
-    a-d) The noise-corrupted synthetic total-field anomaly and its easting, northing, and upward derivatives, respectively. The position of the dipolar source is marked by the black triangle.
-    e-h) The Euler inversion residuals (observed data minus predicted data) for the total-field anomaly and its easting, northing, and upward derivatives, respectively. The black triangle shows the true location of the source, the orange square shows the location estimated by Euler deconvolution, and the yellow circle shows the location estimated by Euler inversion.
-    i) The error in the estimate of the easting (blue line), northing (orange line), and upward (green line) coordinates of the source and the base level (purple line) as a function of the Gauss-Newton iteration (Algorithm~\ref{alg:ei}).
-    j) The value of the merit function $\Merit$ (Equation~\ref{eq:merit}) per Gauss-Newton iteration.
-}
-\label{fig:proof}
-\end{figure}
 
 The main goal of this synthetic data test is to demonstrate the general effectiveness of the Euler inversion method to estimate the position and base level of a single source.
 To this end, we...
@@ -818,56 +873,25 @@ To this end, we...
 
 
 
-\label{sec:si}
 \subsection{Effect of structural index choice}
+\label{sec:si}
 
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-structural-index.png}
-\caption{
-  \lipsum[1]
-}
-\label{fig:si}
-\end{figure}
 
 
 \subsection{Effect of random noise}
 
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-noise-levels.png}
-\caption{
-  \lipsum[1]
-}
-\label{fig:noise}
-\end{figure}
 
 
 \subsection{Effect of interfering sources}
 
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-interfering-sources.png}
-\caption{
-  \lipsum[1]
-}
-\label{fig:interf}
-\end{figure}
 
 
 \subsection{Moving window procedure with multiple sources}
 
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-windows.png}
-\caption{
-  \lipsum[1]
-}
-\label{fig:windows}
-\end{figure}
 
 
 \subsection{Aeromagnetic data from Rio de Janeiro}
+
 
 The geology of Rio de Janeiro state (Southeastern Brazil) consists primarily of
 high-grade metamorphic rocks and granitoid magmatism related to the Ribeira
@@ -894,33 +918,15 @@ Paleocene period led to the emplacement of alkaline complexes and dikes
 \citep{Thompson1998}.
 
 The RB geological complexity, marked by the interplay of diverse tectonic
-regimes and magmatic events (Figure~\ref{fig }a), makes the Rio de Janeiro
+regimes and magmatic events (Figure~\ref{fig:map}a), makes the Rio de Janeiro
 region ideal for applying our methodology. The aeromagnetic data were collected
 in two phases: Subarea 1 was surveyed between March 25 and May 27, 1978, using
 an Islander aircraft (PT-KRP), while Subarea 2 was surveyed between April 6 and
 July 19, 1978, using a Bandeirante aircraft (PT-GKJ), both funded by the
-Brazilian government. As shown in Figure~\ref{fig }b, the survey followed
+Brazilian government. As shown in Figure~\ref{fig:map}b, the survey followed
 a grid of north-south flight lines spaced 1 km apart, with east-west tie lines.
 Data were recorded at 100-meter intervals using a Geometrics G-803
 magnetometer.
-
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/real-data-geology.png}
-\caption{
-  \lipsum[1]. The geologic map in a) was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
-}
-\label{fig:map}
-\end{figure}
-
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/real-data-application.png}
-\caption{
-  \lipsum[1]
-}
-\label{fig:real}
-\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
