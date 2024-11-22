@@ -817,7 +817,12 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 \centering
 \includegraphics[width=1\linewidth]{figures/synthetic-windows.png}
 \caption{
-  \lipsum[1]
+    Data and results from the synthetic data test using the moving window scheme (Algorithm~\ref{alg:window}).
+    a) Noise-corrupted total-field magnetic anomaly generated from \SynWinNSources{} sources with overlapping signals, including dikes and dipoles. The true upward coordinate $z_o$ of each source is shown next to their respective anomalies.
+    b-f) The estimated source locations from finite-difference Euler deconvolution, Euler inversion, Euler deconvolution ($\eta=1$), Euler deconvolution ($\eta=2$), and Euler deconvolution ($\eta=3$), respectively. The total-field anomaly is shown is in the background for reference.
+    The structural index of the solutions are represented by pentagons ($\eta=-1$),  diamonds ($\eta=0$),  triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$). 
+    The color of each symbol represents the estimated upward coordinate $z_o$. 
+    The window size used was \SynWinWindowSize{} and the step between windows was \SynWinWindowStep{}.
 }
 \label{fig:windows}
 \end{figure}
