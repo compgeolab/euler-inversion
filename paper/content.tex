@@ -789,7 +789,10 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 \centering
 \includegraphics[width=1\linewidth]{figures/synthetic-noise-levels.png}
 \caption{
-  \lipsum[1]
+    Data and results from the synthetic data test used to investigate the effect of high-frequency noise on the Euler inversion results.
+    a-d) Noise-corrupted total-field magnetic anomaly of a dipolar source for noise levels ADD NOISE.
+    e-h) The vertical derivative of the data in a-d, calculated by FFT. 
+    i-m) Error in the estimated easting, northing, and upward coordinates and the base level and structural index, respectively, for Euler deconvolution (dashed line), Euler inversion without data weights (dashed-dotted line), and Euler inversion with weights (solid line) \SynNoiseWeightsF for the total-field anomaly, \SynNoiseWeightsE for the east-derivative, \SynNoiseWeightsN for the north-derivative, and \SynNoiseWeightsU for the upward-derivative.
 }
 \label{fig:noise}
 \end{figure}
