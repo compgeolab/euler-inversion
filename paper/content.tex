@@ -795,7 +795,7 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
     i-k) Error in the estimated easting, northing, and upward coordinates, respectively.
     l) Error in the estimated base level.
     m) The estimated structural index $\eta$ using Algorithm~\ref{alg:si}. 
-    The lines in i-m are the results for Euler deconvolution (dashed line), Euler inversion without data weights (dashed-dotted line), and Euler inversion with weights (solid line) \SynNoiseWeightsF for the total-field anomaly, \SynNoiseWeightsE for the east-derivative, \SynNoiseWeightsN for the north-derivative, and \SynNoiseWeightsU for the upward-derivative.
+    The lines in i-m are the results for Euler deconvolution (dashed line), Euler inversion without data weights (dashed-dotted line), and Euler inversion with weights (solid line) \SynNoiseWeightsF{} for the total-field anomaly, \SynNoiseWeightsE{} for the east-derivative, \SynNoiseWeightsN{} for the north-derivative, and \SynNoiseWeightsU{} for the upward-derivative.
 }
 \label{fig:noise}
 \end{figure}
@@ -804,7 +804,11 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 \centering
 \includegraphics[width=1\linewidth]{figures/synthetic-interfering-sources.png}
 \caption{
-  \lipsum[1]
+    Data and results from the synthetic data test used to investigate the effect of interfering sources inside the data window on the Euler inversion results.
+    a-d) Noise-corrupted total-field magnetic anomaly for four models, each of which include the same central dipole but different interfering sources in the form of another dipolar source. Also plotted are the estimated positions from Euler deconvolution, finite-difference Euler deconvolution, and Euler inversion.
+    e) The error in the estimated upward coordinate of the source $z_o$ for each of the Euler methods as a function of the model number.
+    f) The estimated structural index $\eta$ for Euler inversion and finite-difference Euler deconvolution as a function of the model number.
+    The true source location is represented by a black triangle, the Euler deconvolution result by a green square, the finite-difference Euler deconvolution result by a red diamond, and the Euler inversion result by an orange circle.
 }
 \label{fig:interf}
 \end{figure}
