@@ -831,7 +831,11 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 \centering
 \includegraphics[width=1\linewidth]{figures/real-data-geology.png}
 \caption{
-  \lipsum[1]. The geologic map in a) was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
+  Geologic map and observed total-field magnetic anomaly data from the west of the state of Rio de Janeiro, Brazil. 
+  a) Simplified geologic map showing the main groups and dikes that outcrop in the region. 
+  In pink is the Cabo Frio domain, dark red is the Italva group, purple is the São Fidelis group, orange is the Rio Negro complex, gray is the syn-collisional magmatism, red is the post-collisional magmatism, green are alkaline intrusions, yellow are the Quaternary deposits, and the dashed lines are mafic and alkaline dikes.
+  b) The aeromagnetic flight-line data, overlaid by the outlines of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
+  The geologic map was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
 }
 \label{fig:map}
 \end{figure}
@@ -840,7 +844,13 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 \centering
 \includegraphics[width=1\linewidth]{figures/real-data-application.png}
 \caption{
-  \lipsum[1]
+    Results of applying Euler inversion to the aeromagnetic data from Rio de Janeiro, Brazil. 
+    a) Estimated source locations and structural indices using Euler inversion with a window size of \RioWindowSize{} and a window step of \RioWindowStep{}. 
+    Also shown are the total-field anomaly flight-line data, the contours of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
+    The structural index of the solutions are represented by triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$). 
+    The color of each symbol represents the estimated depth below the surface of the Earth (topography).
+    The purple squares represent the A, B, C, and D anomalies that were isolated manually for Euler inversion.
+    b-e) Separated anomalies A, B, C, and D, respectively, and the estimated source location and structural index from Euler inversion using single data windows.
 }
 \label{fig:real}
 \end{figure}
