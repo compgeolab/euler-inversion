@@ -683,7 +683,15 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
 An advantage of Euler inversion over Euler deconvolution is its ability to obtain
 predicted values of the potential field and its gradient.
 In Section~\ref{sec:si}, we demonstrate that the \textit{weighted root
-mean-squared error} $\text{WRMSE} = \sqrt{\mathbf{r}_L^T\mathbf{W}\mathbf{r}_L}$
+mean-squared error} 
+
+\begin{equation}
+    \text{WRMSE} = \sqrt{\left[\mathbf{d}^o - \mathbf{d}_L\right]^T\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_L\right]} \ ,
+    \label{eq:wrmse}
+\end{equation}
+
+\noindent
+of the predicted data at the $L$-th iteration $\mathbf{d}_L$ 
 appears to be smallest when the correct structural index $\eta$ is used.
 Given this observation, we can estimate the optimal value of $\eta$ by running
 the Euler inversion in a given data window for different values of $\eta$ and
@@ -768,7 +776,11 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 \centering
 \includegraphics[width=1\linewidth]{figures/synthetic-structural-index.png}
 \caption{
-  \lipsum[1]
+    Data and results from the synthetic data test using different values of structural index $\eta$ for different source types.
+    a-d) Noise-corrupted total-field magnetic anomaly data caused by a dipole ($\eta=3$), a horizontal cylinder ($\eta=2$), a vertical pipe ($\eta=2$), and a vertical North-South dike ($\eta=1$), respectively.
+    e) Estimate of the upward source coordinate $z_o$ as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line). 
+    The true upward coordinate of the sources ($z_o = \SynSITrueUp$) is marked by the blue dashed line. Note that the $z_o$ estimate is closest to the true value when the correct structural index for each source type is used.
+    f) The weighted root mean-squared error (WRMSE; Equation~\ref{eq:wrmse}) as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line). The WRMSE is minimum for each source type when the correct structural index is used.
 }
 \label{fig:si}
 \end{figure}
@@ -863,7 +875,7 @@ The Python source code used to produce the results presented here, as well as ex
 
 
 \subsection{Method demonstration}
-
+\label{sec:proof}
 
 The main goal of this synthetic data test is to demonstrate the general effectiveness of the Euler inversion method to estimate the position and base level of a single source.
 To this end, we...
@@ -879,19 +891,22 @@ To this end, we...
 
 
 \subsection{Effect of random noise}
+\label{sec:noise}
 
 
 
 \subsection{Effect of interfering sources}
+\label{sec:interf}
 
 
 
 \subsection{Moving window procedure with multiple sources}
+\label{sec:windows}
 
 
 
 \subsection{Aeromagnetic data from Rio de Janeiro}
-
+\label{sec:rio}
 
 The geology of Rio de Janeiro state (Southeastern Brazil) consists primarily of
 high-grade metamorphic rocks and granitoid magmatism related to the Ribeira
