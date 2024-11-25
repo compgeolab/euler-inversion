@@ -7,7 +7,7 @@
 Starting with \citet{Thompson1982} and \citet{Reid1990}, Euler's equation has
 been used to estimate the source positions of gravity and magnetic data.
 In this section, we will review the solution of Euler's equation for
-$(x_o, y_o, z_o)$ by Euler deconvolution \citep{Reid1990} and then present a
+the source location $(x_o, y_o, z_o)$ by Euler deconvolution \citep{Reid1990} and then present a
 new method, called \textit{Euler inversion}, for solving Euler's equation using
 total least-squares.
 
@@ -29,6 +29,7 @@ $b$ is the base level representing a constant shift in the field,
 and $\eta$ is the structural index, which is related to the nature of the
 source and how its potential-field values decay with distance
 \citep{Ruddock1966,Reid2014}.
+The coordinate system is defined with $x$ pointing eastward, $y$ pointing northward, and $z$ pointing upward.
 Equation~\ref{eq:euler} relates the coordinates of the source with the
 potential field and its gradient observed at the point $(x, y, z)$.
 
@@ -759,102 +760,6 @@ This procedure is summarized in Algorithm~\ref{alg:window}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-proof-of-concept.png}
-\caption{
-    Data and results from the synthetic data test to demonstrate the performance of the method on a single target.
-    a-d) The noise-corrupted synthetic total-field anomaly and its easting, northing, and upward derivatives, respectively. The position of the dipolar source is marked by the black triangle.
-    e-h) The Euler inversion residuals (observed data minus predicted data) for the total-field anomaly and its easting, northing, and upward derivatives, respectively. The black triangle shows the true location of the source, the green square shows the location estimated by Euler deconvolution, and the orange triangle shows the location estimated by Euler inversion.
-    i) The error in the estimate of the easting (blue line), northing (orange line), and upward (green line) coordinates of the source and the base level (purple line) as a function of the Gauss-Newton iteration (Algorithm~\ref{alg:ei}).
-    j) The value of the merit function $\Merit$ (Equation~\ref{eq:merit}) per Gauss-Newton iteration.
-}
-\label{fig:proof}
-\end{figure}
-
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-structural-index.png}
-\caption{
-    Data and results from the synthetic data test using different values of structural index $\eta$ for different source types.
-    a-d) Noise-corrupted total-field magnetic anomaly data caused by a dipole ($\eta=3$), a horizontal cylinder ($\eta=2$), a vertical pipe ($\eta=2$), and a vertical North-South dike ($\eta=1$), respectively.
-    e) Estimate of the upward source coordinate $z_o$ as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line). 
-    The true upward coordinate of the sources ($z_o = \SynSITrueUp$) is marked by the blue dashed line. Note that the $z_o$ estimate is closest to the true value when the correct structural index for each source type is used.
-    f) The weighted root mean-squared error (WRMSE; Equation~\ref{eq:wrmse}) as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line). The WRMSE is minimum for each source type when the correct structural index is used.
-}
-\label{fig:si}
-\end{figure}
-
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-noise-levels.png}
-\caption{
-    Data and results from the synthetic data test used to investigate the effect of high-frequency noise on the Euler inversion results.
-    a-d) Noise-corrupted total-field magnetic anomaly of a dipolar source for noise levels \SynNoisePlotted.
-    e-h) The vertical derivative of the data in a-d, calculated by FFT. 
-    i-k) Error in the estimated easting, northing, and upward coordinates, respectively.
-    l) Error in the estimated base level.
-    m) The estimated structural index $\eta$ using Algorithm~\ref{alg:si}. 
-    The lines in i-m are the results for Euler deconvolution (dashed line), Euler inversion without data weights (dashed-dotted line), and Euler inversion with weights (solid line) \SynNoiseWeightsF{} for the total-field anomaly, \SynNoiseWeightsE{} for the east-derivative, \SynNoiseWeightsN{} for the north-derivative, and \SynNoiseWeightsU{} for the upward-derivative.
-}
-\label{fig:noise}
-\end{figure}
-
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-interfering-sources.png}
-\caption{
-    Data and results from the synthetic data test used to investigate the effect of interfering sources inside the data window on the Euler inversion results.
-    a-d) Noise-corrupted total-field magnetic anomaly for four models, each of which include the same central dipole but different interfering sources in the form of another dipolar source. Also plotted are the estimated positions from Euler deconvolution, finite-difference Euler deconvolution, and Euler inversion.
-    e) The error in the estimated upward coordinate of the source $z_o$ for each of the Euler methods as a function of the model number.
-    f) The estimated structural index $\eta$ for Euler inversion and finite-difference Euler deconvolution as a function of the model number.
-    The true source location is represented by a black triangle, the Euler deconvolution result by a green square, the finite-difference Euler deconvolution result by a red diamond, and the Euler inversion result by an orange circle.
-}
-\label{fig:interf}
-\end{figure}
-
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/synthetic-windows.png}
-\caption{
-    Data and results from the synthetic data test using the moving window scheme (Algorithm~\ref{alg:window}).
-    a) Noise-corrupted total-field magnetic anomaly generated from \SynWinNSources{} sources with overlapping signals, including dikes and dipoles. The true upward coordinate $z_o$ of each source is shown next to their respective anomalies.
-    b-f) The estimated source locations from finite-difference Euler deconvolution, Euler inversion, Euler deconvolution ($\eta=1$), Euler deconvolution ($\eta=2$), and Euler deconvolution ($\eta=3$), respectively. The total-field anomaly is shown is in the background for reference.
-    The structural index of the solutions are represented by pentagons ($\eta=-1$),  diamonds ($\eta=0$),  triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$). 
-    The color of each symbol represents the estimated upward coordinate $z_o$. 
-    The window size used was \SynWinWindowSize{} and the step between windows was \SynWinWindowStep{}.
-}
-\label{fig:windows}
-\end{figure}
-
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/real-data-geology.png}
-\caption{
-  Geologic map and observed total-field magnetic anomaly data from the west of the state of Rio de Janeiro, Brazil. 
-  a) Simplified geologic map showing the main groups and dikes that outcrop in the region. 
-  In pink is the Cabo Frio domain, dark red is the Italva group, purple is the São Fidelis group, orange is the Rio Negro complex, gray is the syn-collisional magmatism, red is the post-collisional magmatism, green are alkaline intrusions, yellow are the Quaternary deposits, and the dashed lines are mafic and alkaline dikes.
-  b) The aeromagnetic flight-line data, overlaid by the outlines of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
-  The geologic map was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
-}
-\label{fig:map}
-\end{figure}
-
-\begin{figure}[tb!]
-\centering
-\includegraphics[width=1\linewidth]{figures/real-data-application.png}
-\caption{
-    Results of applying Euler inversion to the aeromagnetic data from Rio de Janeiro, Brazil. 
-    a) Estimated source locations and structural indices using Euler inversion with a window size of \RioWindowSize{} and a window step of \RioWindowStep{}. 
-    Also shown are the total-field anomaly flight-line data, the contours of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
-    The structural index of the solutions are represented by triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$). 
-    The color of each symbol represents the estimated depth below the surface of the Earth (topography).
-    The purple squares represent the A, B, C, and D anomalies that were isolated manually for Euler inversion.
-    b-e) Separated anomalies A, B, C, and D, respectively, and the estimated source location and structural index from Euler inversion using single data windows.
-}
-\label{fig:real}
-\end{figure}
-
 In this section, we demonstrate the effectiveness and limitations of the Euler
 inversion method by applying it to a series of synthetic datasets and to real
 aeromagnetic data from Rio de Janeiro, Brazil.
@@ -888,7 +793,7 @@ The applications are organized as follows:
         Algorithm~\ref{alg:window}. Its aim is to show how the Euler inversion
         method behaves on a more complex dataset and provide a comparison with
         standard Euler deconvolution and finite-difference Euler deconvolution.
-    \item \textbf{Aeromagnetic data from Rio de Janeiro:} This test applies
+    \item \textbf{Aeromagnetic data from Rio de Janeiro, Brazil:} This test applies
         the Euler inversion method to a real dataset which contains multiple
         sources. Its aim is to demonstrate the effectiveness of the method
         on a real dataset with realistic levels of noise, signal overlap,
@@ -902,36 +807,163 @@ The Python source code used to produce the results presented here, as well as ex
 \subsection{Method demonstration}
 \label{sec:proof}
 
-The main goal of this synthetic data test is to demonstrate the general effectiveness of the Euler inversion method to estimate the position and base level of a single source.
-To this end, we...
-\SynProofTrueEast{}
-\SynProofInt{}
-\SynProofTrueBase{}
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-proof-of-concept.png}
+\caption{
+    Data and results from the synthetic data test to demonstrate the performance of the method on a single target.
+    a-d) The noise-corrupted synthetic total-field anomaly and its easting, northing, and upward derivatives, respectively. The position of the dipolar source is marked by the black triangle.
+    e-h) The Euler inversion residuals (observed data minus predicted data) for the total-field anomaly and its easting, northing, and upward derivatives, respectively. The black triangle shows the true location of the source, the green square shows the location estimated by Euler deconvolution, and the orange triangle shows the location estimated by Euler inversion.
+    i) The error in the estimate of the easting (blue line), northing (orange line), and upward (green line) coordinates of the source and the base level (purple line) as a function of the Gauss-Newton iteration (Algorithm~\ref{alg:ei}).
+    j) The value of the merit function $\Merit$ (Equation~\ref{eq:merit}) per Gauss-Newton iteration.
+}
+\label{fig:proof}
+\end{figure}
 
+The main goal of this synthetic data test is to demonstrate the general effectiveness of the Euler inversion method to estimate the position and base level of a single source.
+To this end, we created a model composed of a single dipole located at 
+$(x_o = \SynProofTrueEast, y_o = \SynProofTrueNorth, z_o = \SynProofTrueUp)$
+with dipole moment magnitude \SynProofInt{}, inclination \SynProofInc{}, and declination \SynProofDec{}.
+The reference field direction was the same as the dipole moment direction.
+The synthetic total-field magnetic anomaly data was calculated on a regular grid
+with point spacing of \SynProofSpacing{} at a height of \SynProofHeight{}.
+To the data, we added a base level of \SynProofTrueBase{} and 
+pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and \SynProofNoise{} standard deviation.
+The eastward and northward derivatives of the total-field anomaly grid were calculated with a central-difference scheme.
+The upward derivative was calculated by Fast Fourier Transform (FFT).
+The synthetic anomaly and its three derivatives are shown in Figures~\ref{fig:proof}a-d.
+
+The Euler inversion method described in Algorithm~\ref{alg:ei} was applied to the synthetic data.
+We chose a fixed structural index of $\eta=3$, which is the correct index for a magnetic dipole.
+For data weights, we used \DefaultWeightsF{} for the total-field anomaly, \DefaultWeightsE{} for the east-derivative, \DefaultWeightsN{} for the north-derivative, and \DefaultWeightsU{} for the upward-derivative.
+These weights were chosen to counteract the increased effect of noise on the derivatives, particularly the upward derivative which was calculated through FFT.
+Figures~\ref{fig:proof}e-h show the inversion residuals after convergence was achieved ($L=\SynProofNIter{}$ iterations) for the total-field anomaly and its eastward, northward, and upward derivatives, respectively. 
+Also shown are the true source location, the initial source location (the Euler deconvolution result), and the predicted source location from Euler inversion.
+The final Euler inversion prediction of the source location was $(x_o=\SynProofEstEast, y_o=\SynProofEstNorth, z_o=\SynProofEstUp)$ and the estimated base level was $b = \SynProofEstBase$, which is an improvement on the estimated values by Euler deconvolution (Figure~\ref{fig:proof}).
+
+The convergence of the solution is shown in Figures~\ref{fig:proof}i-j. 
+The error in the estimated source coordinates and base level are shown in Figure~\ref{fig:proof}i.
+The error in the $x_o$ (easting) and $y_o$ (northing) coordinates, as well as the base level, do not vary greatly from the initial solution.
+However, the error in the $z_o$ (upward) coordinate drops from over \qty{1400}{\m} to less than \qty{400}{\m} in two iterations.
+The merit function (Equation~\ref{eq:merit}) also drops sharply in value by two iterations, as can be seen in Figure~\ref{fig:proof}j, confirming the rapid convergence of the Euler inversion method.
 
 
 \subsection{Effect of structural index choice}
 \label{sec:si}
 
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-structural-index.png}
+\caption{
+    Data and results from the synthetic data test using different values of structural index $\eta$ for different source types.
+    a-d) Noise-corrupted total-field magnetic anomaly data caused by a dipole ($\eta=3$), a horizontal cylinder ($\eta=2$), a vertical pipe ($\eta=2$), and a vertical North-South dike ($\eta=1$), respectively.
+    e) Estimate of the upward source coordinate $z_o$ as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line). 
+    The true upward coordinate of the sources ($z_o = \SynSITrueUp$) is marked by the blue dashed line. Note that the $z_o$ estimate is closest to the true value when the correct structural index for each source type is used.
+    f) The weighted root mean-squared error (WRMSE; Equation~\ref{eq:wrmse}) as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line). The WRMSE is minimum for each source type when the correct structural index is used.
+}
+\label{fig:si}
+\end{figure}
+
+In this synthetic data test, we created datasets using four different models: a dipole, a horizontal cylinder composed of a right-rectangular prism stretched in the southward direction, a vertical pipe composed of a right-rectangular prism stretched in the downward direction, and a vertical dike composed of a right-rectangular prism stretched in the southward, northward, and downward directions.
+All models share the same true location of $(x_o=\SynSITrueEast, y_o=\SynSITrueNorth, z_o=\SynSITrueUp)$, base level of \SynSITrueBase, and induced magnetization with inclination \SynSIInc{} and declination \SynSIDec.
+The data were generated on a regular grid with spacing of \SynSISpacing, height of \SynSIHeight, and contaminated with pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and \SynSINoise{} standard deviation. Figures~\ref{fig:si}a-d show the synthetic noise-corrupted total-field anomaly data.
+
+We ran the Euler inversion method on each data grid three times, each time changing the structural index between one, two, and three.
+Figure~\ref{fig:si}e shows the upward coordinate $z_o$ estimated for each of the four models as a function of the structural index $\eta$.
+The Euler inversion estimated $z_o$ correlates with $\eta$, with larger values of the structural index leading to deeper source estimates. 
+Values closest to the true $z_o=\SynSITrueUp$ are achieved when the correct structural index is used ($\eta=1$ for the dike, $\eta=2$ for the cylinder and pipe, and $\eta=3$ for the dipole).
+Figure~\ref{fig:si}f shows the weighted root mean-squared error (WRMSE; Equation~\ref{eq:wrmse}) at the final iteration of the Euler inversion method for all four models as a function of structural index.
+The WRMSE is a measure of goodnes-of-fit between the predicted total-field anomaly and its three derivatives and their observed counterparts.
+The WRMSE is minimum for all four models when the correct structural index is used.
 
 
 \subsection{Effect of random noise}
 \label{sec:noise}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-noise-levels.png}
+\caption{
+    Data and results from the synthetic data test used to investigate the effect of high-frequency noise on the Euler inversion results.
+    a-d) Noise-corrupted total-field magnetic anomaly of a dipolar source for noise levels \SynNoisePlotted.
+    e-h) The vertical derivative of the data in a-d, calculated by FFT. 
+    i-k) Error in the estimated easting, northing, and upward coordinates, respectively.
+    l) Error in the estimated base level.
+    m) The estimated structural index $\eta$ using Algorithm~\ref{alg:si}. 
+    The lines in i-m are the results for Euler deconvolution (dashed line), Euler inversion without data weights (dashed-dotted line), and Euler inversion with weights (solid line) \SynNoiseWeightsF{} for the total-field anomaly, \SynNoiseWeightsE{} for the east-derivative, \SynNoiseWeightsN{} for the north-derivative, and \SynNoiseWeightsU{} for the upward-derivative.
+}
+\label{fig:noise}
+\end{figure}
 
 
 
 \subsection{Effect of interfering sources}
 \label{sec:interf}
 
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-interfering-sources.png}
+\caption{
+    Data and results from the synthetic data test used to investigate the effect of interfering sources inside the data window on the Euler inversion results.
+    a-d) Noise-corrupted total-field magnetic anomaly for four models, each of which include the same central dipole but different interfering sources in the form of another dipolar source. Also plotted are the estimated positions from Euler deconvolution, finite-difference Euler deconvolution, and Euler inversion.
+    e) The error in the estimated upward coordinate of the source $z_o$ for each of the Euler methods as a function of the model number.
+    f) The estimated structural index $\eta$ for Euler inversion and finite-difference Euler deconvolution as a function of the model number.
+    The true source location is represented by a black triangle, the Euler deconvolution result by a green square, the finite-difference Euler deconvolution result by a red diamond, and the Euler inversion result by an orange circle.
+}
+\label{fig:interf}
+\end{figure}
+
 
 
 \subsection{Moving window procedure with multiple sources}
 \label{sec:windows}
 
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-windows.png}
+\caption{
+    Data and results from the synthetic data test using the moving window scheme (Algorithm~\ref{alg:window}).
+    a) Noise-corrupted total-field magnetic anomaly generated from \SynWinNSources{} sources with overlapping signals, including dikes and dipoles. The true upward coordinate $z_o$ of each source is shown next to their respective anomalies.
+    b-f) The estimated source locations from finite-difference Euler deconvolution, Euler inversion, Euler deconvolution ($\eta=1$), Euler deconvolution ($\eta=2$), and Euler deconvolution ($\eta=3$), respectively. The total-field anomaly is shown is in the background for reference.
+    The structural index of the solutions are represented by pentagons ($\eta=-1$),  diamonds ($\eta=0$),  triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$). 
+    The color of each symbol represents the estimated upward coordinate $z_o$. 
+    The window size used was \SynWinWindowSize{} and the step between windows was \SynWinWindowStep{}.
+}
+\label{fig:windows}
+\end{figure}
+
 
 
 \subsection{Aeromagnetic data from Rio de Janeiro}
 \label{sec:rio}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/real-data-geology.png}
+\caption{
+  Geologic map and observed total-field magnetic anomaly data from the west of the state of Rio de Janeiro, Brazil. 
+  a) Simplified geologic map showing the main groups and dikes that outcrop in the region. 
+  In pink is the Cabo Frio domain, dark red is the Italva group, purple is the São Fidelis group, orange is the Rio Negro complex, gray is the syn-collisional magmatism, red is the post-collisional magmatism, green are alkaline intrusions, yellow are the Quaternary deposits, and the dashed lines are mafic and alkaline dikes.
+  b) The aeromagnetic flight-line data, overlaid by the outlines of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
+  The geologic map was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
+}
+\label{fig:map}
+\end{figure}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/real-data-application.png}
+\caption{
+    Results of applying Euler inversion to the aeromagnetic data from Rio de Janeiro, Brazil. 
+    a) Estimated source locations and structural indices using Euler inversion with a window size of \RioWindowSize{} and a window step of \RioWindowStep{}. 
+    Also shown are the total-field anomaly flight-line data, the contours of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
+    The structural index of the solutions are represented by triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$). 
+    The color of each symbol represents the estimated depth below the surface of the Earth (topography).
+    The purple squares represent the A, B, C, and D anomalies that were isolated manually for Euler inversion.
+    b-e) Separated anomalies A, B, C, and D, respectively, and the estimated source location and structural index from Euler inversion using single data windows.
+}
+\label{fig:real}
+\end{figure}
 
 The geology of Rio de Janeiro state (Southeastern Brazil) consists primarily of
 high-grade metamorphic rocks and granitoid magmatism related to the Ribeira
