@@ -898,6 +898,7 @@ The WRMSE is minimum for all four models when the correct structural index is us
 We conducted another experiment to determine the effect of random high-frequency noise on the Euler inversion estimates. 
 To this end, we created synthetic data from a dipole model located at $(x_o=\SynNoiseTrueEast, y_o=\SynNoiseTrueNorth, z_o=\SynNoiseTrueUp)$ and with dipole moment magnitude \SynNoiseInt{}, inclination \SynNoiseInc, and declination \SynNoiseDec.
 The total-field anomaly data were generated on a regular grid with spacing \SynNoiseSpacing{} and a constant height of \SynNoiseHeight.
+The reference field direction was the same as the dipole moment direction.
 A base level of \SynNoiseTrueBase{} was added to the data.
 We generated different datasets by adding pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and standard deviations varying from \SynNoiseMin{} to \SynNoiseMax{} with a step of \SynNoiseStep{}.
 Figures~\ref{fig:noise}a-d show the synthetic data for noise levels \SynNoisePlotted, while Figures~\ref{fig:noise}e-h show the upward derivative calculated from the total-field anomaly through FFT. 
@@ -932,6 +933,25 @@ The weighted Euler inversion was able to estimate the correct structural index (
 \label{fig:interf}
 \end{figure}
 
+Another common issue encountered during the application of Euler-based methods is the presence of interfering sources within the data window.
+To test this effect on Euler inversion, we create four different synthetic total-field anomaly datasets.
+All contain a main dipole located at $(x_o=\SynInterfTrueEast, y_o=\SynInterfTrueNorth, z_o=\SynInterfTrueUp)$ with dipole moment amplitude \SynInterfInt{}, inclination \SynInterfInc, and declination \SynInterfDec.
+The reference field direction was the same as the dipole moment direction.
+Each of the four models also contain a second dipolar source, simulating an interfering source in the data window, that is located at different places and depths relative to the main dipole.
+The total-field anomaly data were generated on regular grids with spacing \SynInterfSpacing{} and at a constant height of \SynInterfHeight.
+We added to all datasets a base level of \SynInterfTrueBase{} and pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and \SynInterfNoise{} standard deviation.
+Figures~\ref{fig:interf}a-d show the noise-corrupted total-field anomaly for each of the models.
+
+We ran on each dataset Euler deconvolution (Equation~\ref{eq:deconv-p} with structural index $\eta=3$), the finite-difference Euler deconvolution method of \citet{Gerovska2005}, and Euler inversion with the structural index estimation (Algorithm~\ref{alg:si}) and data weights of \DefaultWeightsF{} for the total-field anomaly, \DefaultWeightsE{} for the eastward derivative, \DefaultWeightsN{} for the northward derivative, and \DefaultWeightsU{} for the upward derivative.
+The estimated easting and northing coordinates are shown in Figures~\ref{fig:interf}a-d.
+For models 2 and 3, all three methods performed similarly in estimating the horizontal coordinates of the true source. 
+For models 1 and 4, the Euler deconvolution and finite-difference Euler deconvolution results are comparable which the Euler inversion results are closer to the true source location.
+Figure~\ref{fig:interf}e shows the error in the estimated upward coordinate for all three methods and four models. 
+The Euler inversion inversion errors are consistently lower than those of both Euler deconvolution methods.
+With the exception of model 2, the Euler inversion error on the upward coordinate are approximately half those of the Euler deconvolution methods.
+Figure~\ref{fig:interf}f shows the estimated structural index for finite-difference Euler deconvolution and Euler inversion.
+The finite-difference Euler deconvolution method consistently estimated values lower than $\eta=1$.
+With the exception of model 2, Euler inversion was able to estimate the correct structural index $\eta=3$ for all other models.
 
 
 \subsection{Moving window procedure with multiple sources}
