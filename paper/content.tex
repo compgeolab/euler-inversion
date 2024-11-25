@@ -1007,7 +1007,7 @@ Euler inversion notably estimates an incorrect $\eta$ and $z_o$ for smaller sour
   b) The aeromagnetic flight-line data, overlaid by the outlines of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
   The geologic map was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
 }
-\label{fig:map}
+\label{fig:rio_context}
 \end{figure}
 
 \begin{figure}[tb!]
@@ -1022,20 +1022,22 @@ Euler inversion notably estimates an incorrect $\eta$ and $z_o$ for smaller sour
     The purple squares represent the A, B, C, and D anomalies that were isolated manually for Euler inversion.
     b-e) Separated anomalies A, B, C, and D, respectively, and the estimated source location and structural index from Euler inversion using single data windows.
 }
-\label{fig:real}
+\label{fig:rio_results}
 \end{figure}
 
 The geology of Rio de Janeiro state (Southeastern Brazil) consists primarily of
 high-grade metamorphic rocks and granitoid magmatism related to the Ribeira
-Belt (RB) \citep{Heilbron2020}. The RB is traditionally interpreted as a thrust
+Belt (RB) \citep{Heilbron2020}. 
+Figure~\ref{fig:rio_context}a shows a simplified geologic map of the area, which was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
+The Ribeira Belt is traditionally interpreted as a thrust
 belt formed by diachronous collisions mainly between the São Francisco and
 Congo paleocontinents \citep{Heilbron2008, Trouw2000} or by an intracontinental
 orogeny \citep[\textit{e.g.}][]{Meira2015, Meira2019}, during the Brasiliano
 orogeny. This process culminated in an orogen-parallel, steep strike-slip shear
 system \citep{EgydioSilva2005}, which deformed the Paleoproterozoic basement
-rocks and reworked the Meso- to Neoproterozoic metasedimentary units (e.g.,
-Italva and São Fidelis groups) and syn-orogenic granitoid plutons (e.g., Rio
-Negro complex) formed during the orogeny \citep{Heilbron2003, Heilbron2020}.
+rocks and reworked the Meso- to Neoproterozoic metasedimentary units (for example, the
+Italva and São Fidelis groups) and syn-orogenic granitoid plutons (for example, the Rio
+Negro complex) which formed during the orogeny \citep{Heilbron2003, Heilbron2020}.
 These tectonic events imprinted a distinct NE-ENE-trending structural pattern
 onto these rocks.
 
@@ -1048,17 +1050,33 @@ Gondwana and the opening of the South Atlantic Ocean \citep{Almeida2013}.
 Lastly, thermal anomalies in the region during the Upper Cretaceous to
 Paleocene period led to the emplacement of alkaline complexes and dikes
 \citep{Thompson1998}.
+The geological complexity of the Ribeira Belt, marked by the interplay of diverse tectonic
+regimes and magmatic events (Figure~\ref{fig:rio_context}a), makes the Rio de Janeiro
+region an ideal test case for Euler inversion. 
 
-The RB geological complexity, marked by the interplay of diverse tectonic
-regimes and magmatic events (Figure~\ref{fig:map}a), makes the Rio de Janeiro
-region ideal for applying our methodology. The aeromagnetic data were collected
-in two phases: Subarea 1 was surveyed between March 25 and May 27, 1978, using
+We used aeromagnetic data from the state of Rio de Janeiro which are distributed by the Serviço Geológico do Brasil (\url{https://geosgb.sgb.gov.br}).
+The data were collected in two phases: Subarea 1 was surveyed between March 25 and May 27, 1978, using
 an Islander aircraft (PT-KRP), while Subarea 2 was surveyed between April 6 and
 July 19, 1978, using a Bandeirante aircraft (PT-GKJ), both funded by the
-Brazilian government. As shown in Figure~\ref{fig:map}b, the survey followed
-a grid of north-south flight lines spaced 1 km apart, with east-west tie lines.
-Data were recorded at 100-meter intervals using a Geometrics G-803
-magnetometer.
+Brazilian government. 
+As shown in Figure~\ref{fig:rio_context}b, the survey followed a pattern of north-south flight lines spaced approximately \qty{1}{\km} apart, with east-west tie lines.
+Data were recorded at 100-meter intervals using a Geometrics G-803 magnetometer.
+Some of the notable features of the data are the NE-SW linear features (interpreted here as dikes), which coincide with known dike outcrops, and complex dipolar anomalies which coincide with some of the post-collisional magmatism and alkaline intrusions.
+A subset of \RioNData{} data points were used in our analysis.
+
+The data were not interpolated on a regular grid to avoid any smoothing effects that the interpolation might have on the linear features.
+This could result in an over-estimation of their depth, as discussed in Section~\ref{sec:windows}.
+Instead, we used the gradient-boosted equivalent sources method of \citet{Soler2021} to fit a model to the observed line data.
+We then used the model to make predictions of the three spatial derivatives at the original measurement locations by a central-difference method with a coordinate shift of \RioDerivSpacing{}.
+Further details about the data processing can be found in the source code archive that accompanies this article \url{https://doi.org/\ArchiveDOI} \citep{figshare}.
+
+We performed the moving-window Euler inversion (Algorithm~\ref{alg:window}) on the observed total-field anomaly line data using windows of size of \RioWindowSize{} which were moved \RioWindowStep{} at a time.
+The proportion of solutions kept was $\gamma=0.15$.
+The inversion was performed with data weights of \RioWeightsF{} for the total-field anomaly, \RioWeightsE{} for the eastward derivative, \RioWeightsN{} for the northward derivative, and \RioWeightsU{} for the upward derivative.
+To aid in the geological interpretation of the results, we converted the estimated upward source coordinates $z_o$ to depths below the surface of the Earth.
+We did so by subtracting the estimated $z_o$ from the interpolated topographic height of the Shuttle Radar Topography Mission \citep[SRTM;][]{SRTM}.
+The estimated positions and structural indices are showin in Figure~\ref{fig:rio_results}.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1099,7 +1117,7 @@ survey 1038 ``Projeto Aerogeofísico São Paulo -- Rio de Janeiro''.
 We are indebted to the developers and maintainers of the open-source software
 without which this work would not have been possible.
 LU would like to thank Prof. Spiros Pagiatakis for teaching him the mathematics which formed the foundations of this work during his undergraduate exchange at York University.
-LU was supported by grant PRPI 22.1.09345.01.2 from Universidade de São Paulo.
+LU was supported by start-up grant PRPI 22.1.09345.01.2 from Universidade de São Paulo.
 GFSJ was supported by scholarship 2021/08379-5 from the Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP).
 The opinions, hypotheses, and conclusions or recommendations expressed in this material are the responsibility of the authors and do not necessarily reflect the views of FAPESP.
 
