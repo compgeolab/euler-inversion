@@ -971,6 +971,27 @@ With the exception of model 2, Euler inversion was able to estimate the correct 
 \label{fig:windows}
 \end{figure}
 
+To simulate a more realistic dataset, we created a model composed of \SynWinNSources{} sources combining dipoles at various locations and depths and vertical dikes at various orientations.
+All sources had induced magnetization in the direction of the regional field with inclination \SynWinInc{} and declination \SynWinDec{}.
+The total-field anomaly of the model was calculated on a regular grid with spacing \SynWinSpacing{} and at a constant height of \SynWinHeight{}.
+We added to the data a base level of \SynWinBase{}, pseudo-random Gaussian noise with \qty{0}{\nano\tesla} and \SynWinNoise{} standard deviation, and a regional field composed of a first-degree polynomial with angular coefficients of \SynWinRegionalE{} in the eastward and \SynWinRegionalN{} in the northward directions.
+The noise-corrupted total-field anomaly data are shown in Figure~\ref{fig:windows}a.
+
+We applied to the dataset the moving window Euler inversion method (Algorithm~\ref{alg:window}), the finite-difference Euler deconvolution method of \citet{Gerovska2005}, and standard Euler deconvolution (using structural indices 1, 2, and 3).
+Euler inversion was performed with data weights of \DefaultWeightsF{} for the total-field anomaly, \DefaultWeightsE{} for the eastward derivative, \DefaultWeightsN{} for the northward derivative, and \DefaultWeightsU{} for the upward derivative.
+All three methods used the same moving window procedure described in Algorithm~\ref{alg:window} for the sake of comparison.
+The windows had a size of \SynWinWindowSize{} and were moved by \SynWinWindowStep{} at a time.
+The ratio of estimates kept to form the final solution was $\gamma=\SynWinKeepED$ for Euler deconvolution, $\gamma=\SynWinKeepFD$ for finite-difference Euler deconvolution, and $\gamma=\SynWinKeepEI$ for Euler inversion.
+
+Figures~\ref{fig:windows}b-f show the estimated source positions and structural indices for finite-difference Euler deconvolution, Euler inversion, and Euler deconvolution with structural indices 1, 2, and 3, respectively.
+Because the finite-difference method estimates a non-integer structural index, Figure~\ref{fig:windows}b shows the closest integer value to the actual estimated $\eta$.
+The finite-difference Euler deconvolution method underestimates the structural indices of all sources and, therefore, also underestimates their depths.
+The finite-difference method solutions are also more scattered their Euler deconvolution and Euler inversion counterparts.
+The Euler deconvolution results are closer to the correct depths when the correct structural index is used.
+They present larger dispersion than Euler inversion in areas where the signals of multiple sources overlap.
+With the exception of the deeper dikes in the northwest and southeast and the small dipole with $z_o=\qty{-400}{\m}$, Euler inversion is able to estimate the correct structural index for most sources.
+The upward coordinate estimates for Euler inversion are also closer than Euler deconvolution to their true values when the correct structural index was estimated.
+Euler inversion notably estimates an incorrect $\eta$ and $z_o$ for smaller sources when there is a large amount of interference in the anomalies and for dikes that are deeper and produce a smoother signal.
 
 
 \subsection{Aeromagnetic data from Rio de Janeiro}
