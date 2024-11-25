@@ -895,6 +895,25 @@ The WRMSE is minimum for all four models when the correct structural index is us
 \label{fig:noise}
 \end{figure}
 
+We conducted another experiment to determine the effect of random high-frequency noise on the Euler inversion estimates. 
+To this end, we created synthetic data from a dipole model located at $(x_o=\SynNoiseTrueEast, y_o=\SynNoiseTrueNorth, z_o=\SynNoiseTrueUp)$ and with dipole moment magnitude \SynNoiseInt{}, inclination \SynNoiseInc, and declination \SynNoiseDec.
+The total-field anomaly data were generated on a regular grid with spacing \SynNoiseSpacing{} and a constant height of \SynNoiseHeight.
+A base level of \SynNoiseTrueBase{} was added to the data.
+We generated different datasets by adding pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and standard deviations varying from \SynNoiseMin{} to \SynNoiseMax{} with a step of \SynNoiseStep{}.
+Figures~\ref{fig:noise}a-d show the synthetic data for noise levels \SynNoisePlotted, while Figures~\ref{fig:noise}e-h show the upward derivative calculated from the total-field anomaly through FFT. 
+
+We ran on each dataset Euler deconvolution (Equation~\ref{eq:deconv-p}), Euler inversion with unit weights, and Euler inversion with weights \SynNoiseWeightsF{} for the total-field anomaly, \SynNoiseWeightsE{} for the eastward derivative, \SynNoiseWeightsN{} for the northward derivative, and \SynNoiseWeightsU{} for the upward derivative.
+Both Euler inversion runs used the structural index estimation procedure (Algorithm~\ref{alg:si}).
+Figures~\ref{fig:si}i-l show the error in the estimated easting, northing, and upward coordinates as well as the base level for each of the methods as a function of noise level.
+The error in each of three coordinates raises sharply with noise level for Euler deconvolution, particularly for the upward $z_o$ coordinate. 
+The unweighted Euler inversion results vary less regularly but present errors just as large as Euler deconvolution for the upward coordinate.
+However, the weighted Euler inversion presented overall smaller errors and slower growth curve for the upward coordinate error than the other two methods.
+The base level error is nearly constant at approximately \qty{10}{\nano\tesla} for Euler deconvolution and the weighted Euler inversion, but varies to as much as \qty{40}{\nano\tesla} for the unweighted Euler inversion.
+
+Figure~\ref{fig:noise}m shows the estimated structural index $\eta$ for the weighted and unweighted Euler inversion as a function of noise level. 
+The unweighted Euler inversion estimated the wrong structural index $\eta=2$ from approximately noise level \qty{7}{\nano\tesla} and $\eta=1$ from approximately noise level \qty{20}{\nano\tesla}.
+These jumps in the estimated structural index appear to correlate with jumps in the base level and $z_o$ coordinate errors.
+The weighted Euler inversion was able to estimate the correct structural index ($\eta=3$) for all noise levels tested.
 
 
 \subsection{Effect of interfering sources}
