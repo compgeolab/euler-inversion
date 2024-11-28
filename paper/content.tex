@@ -1075,8 +1075,17 @@ The proportion of solutions kept was $\gamma=0.15$.
 The inversion was performed with data weights of \RioWeightsF{} for the total-field anomaly, \RioWeightsE{} for the eastward derivative, \RioWeightsN{} for the northward derivative, and \RioWeightsU{} for the upward derivative.
 To aid in the geological interpretation of the results, we converted the estimated upward source coordinates $z_o$ to depths below the surface of the Earth.
 We did so by subtracting the estimated $z_o$ from the interpolated topographic height of the Shuttle Radar Topography Mission \citep[SRTM;][]{SRTM}.
-The estimated positions and structural indices are shown in in Figure~\ref{fig:rio_results}.
+The estimated positions and structural indices are shown in Figure~\ref{fig:rio_results}.
 
+The estimated source positions shown in Figure~\ref{fig:rio_results}a highlight the NE-SW lineaments as well as some of the more dipolar anomalies.
+The lineaments are estimated with a mix of $\eta=1$, $\eta=2$, and $\eta=3$. 
+The southernmost lineament is mostly estimated with $\eta=1$ and depths suggesting that it does not outcrop in its southernmost parts (depths of \qtyrange{400}{600}{\m}), which is consistent with the geologic information in Figure~\ref{fig:rio_context}a.
+The southernmost part of this lineament, in particular, has an estimated $\eta=3$, which is known to happen for deeper dikes in our synthetic data tests (Section~\ref{sec:windows}).
+Conversely, the northernmost part of the lineament has a larger prevalence of $\eta=1$ with shallower depths which coincide with a known dike outcrop. 
+Other known dike outcrops coincide with estimated sources with $\eta=1$, however their depths range from \qtyrange{100}{300}{\m}.
+This may be caused by an excess of smoothing in the vertical derivative or effects of noise in the estimated coordinates.
+
+The dipolar anomalies associated with 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
