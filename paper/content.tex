@@ -684,7 +684,7 @@ Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
 An advantage of Euler inversion over Euler deconvolution is its ability to obtain
 predicted values of the potential field and its gradient.
 In Section~\ref{sec:si}, we demonstrate that the \textit{weighted root
-mean-squared error} 
+mean-squared error}
 
 \begin{equation}
     \text{WRMSE} = \sqrt{\left[\mathbf{d}^o - \mathbf{d}_L\right]^T\mathbf{W}\left[\mathbf{d}^o - \mathbf{d}_L\right]} \ ,
@@ -692,7 +692,7 @@ mean-squared error}
 \end{equation}
 
 \noindent
-of the predicted data at the $L$-th iteration $\mathbf{d}_L$ 
+of the predicted data at the $L$-th iteration $\mathbf{d}_L$
 appears to be smallest when the correct structural index $\eta$ is used.
 Given this observation, we can estimate the optimal value of $\eta$ by running
 the Euler inversion in a given data window for different values of $\eta$ and
@@ -821,13 +821,13 @@ The Python source code used to produce the results presented here, as well as ex
 \end{figure}
 
 The main goal of this synthetic data test is to demonstrate the general effectiveness of the Euler inversion method to estimate the position and base level of a single source.
-To this end, we created a model composed of a single dipole located at 
+To this end, we created a model composed of a single dipole located at
 $(x_o = \SynProofTrueEast, y_o = \SynProofTrueNorth, z_o = \SynProofTrueUp)$
 with dipole moment magnitude \SynProofInt{}, inclination \SynProofInc{}, and declination \SynProofDec{}.
 The reference field direction was the same as the dipole moment direction.
 The synthetic total-field magnetic anomaly data was calculated on a regular grid
 with point spacing of \SynProofSpacing{} at a height of \SynProofHeight{}.
-To the data, we added a base level of \SynProofTrueBase{} and 
+To the data, we added a base level of \SynProofTrueBase{} and
 pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and \SynProofNoise{} standard deviation.
 The eastward and northward derivatives of the total-field anomaly grid were calculated with a central-difference scheme.
 The upward derivative was calculated by Fast Fourier Transform (FFT).
@@ -837,11 +837,11 @@ The Euler inversion method described in Algorithm~\ref{alg:ei} was applied to th
 We chose a fixed structural index of $\eta=3$, which is the correct index for a magnetic dipole.
 For data weights, we used \DefaultWeightsF{} for the total-field anomaly, \DefaultWeightsE{} for the east-derivative, \DefaultWeightsN{} for the north-derivative, and \DefaultWeightsU{} for the upward-derivative.
 These weights were chosen to counteract the increased effect of noise on the derivatives, particularly the upward derivative which was calculated through FFT.
-Figures~\ref{fig:proof}e-h show the inversion residuals after convergence was achieved ($L=\SynProofNIter{}$ iterations) for the total-field anomaly and its eastward, northward, and upward derivatives, respectively. 
+Figures~\ref{fig:proof}e-h show the inversion residuals after convergence was achieved ($L=\SynProofNIter{}$ iterations) for the total-field anomaly and its eastward, northward, and upward derivatives, respectively.
 Also shown are the true source location, the initial source location (the Euler deconvolution result), and the predicted source location from Euler inversion.
 The final Euler inversion prediction of the source location was $(x_o=\SynProofEstEast, y_o=\SynProofEstNorth, z_o=\SynProofEstUp)$ and the estimated base level was $b = \SynProofEstBase$, which is an improvement on the estimated values by Euler deconvolution (Figure~\ref{fig:proof}).
 
-The convergence of the solution is shown in Figures~\ref{fig:proof}i-j. 
+The convergence of the solution is shown in Figures~\ref{fig:proof}i-j.
 The error in the estimated source coordinates and base level are shown in Figure~\ref{fig:proof}i.
 The error in the $x_o$ (easting) and $y_o$ (northing) coordinates, as well as the base level, do not vary greatly from the initial solution.
 However, the error in the $z_o$ (upward) coordinate drops from over \qty{1400}{\m} to less than \qty{400}{\m} in two iterations.
@@ -857,7 +857,7 @@ The merit function (Equation~\ref{eq:merit}) also drops sharply in value by two 
 \caption{
     Data and results from the synthetic data test using different values of structural index $\eta$ for different source types.
     a-d) Noise-corrupted total-field magnetic anomaly data caused by a dipole ($\eta=3$), a horizontal cylinder ($\eta=2$), a vertical pipe ($\eta=2$), and a vertical North-South dike ($\eta=1$), respectively.
-    e) Estimate of the upward source coordinate $z_o$ as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line). 
+    e) Estimate of the upward source coordinate $z_o$ as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line).
     The true upward coordinate of the sources ($z_o = \SynSITrueUp$) is marked by the blue dashed line. Note that the $z_o$ estimate is closest to the true value when the correct structural index for each source type is used.
     f) The weighted root mean-squared error (WRMSE; Equation~\ref{eq:wrmse}) as a function of structural index for the dipole (blue line), horizontal cylinder (orange line), vertical pipe (green line), and dike (red line). The WRMSE is minimum for each source type when the correct structural index is used.
 }
@@ -870,7 +870,7 @@ The data were generated on a regular grid with spacing of \SynSISpacing, height 
 
 We ran the Euler inversion method on each data grid three times, each time changing the structural index between one, two, and three.
 Figure~\ref{fig:si}e shows the upward coordinate $z_o$ estimated for each of the four models as a function of the structural index $\eta$.
-The Euler inversion estimated $z_o$ correlates with $\eta$, with larger values of the structural index leading to deeper source estimates. 
+The Euler inversion estimated $z_o$ correlates with $\eta$, with larger values of the structural index leading to deeper source estimates.
 Values closest to the true $z_o=\SynSITrueUp$ are achieved when the correct structural index is used ($\eta=1$ for the dike, $\eta=2$ for the cylinder and pipe, and $\eta=3$ for the dipole).
 Figure~\ref{fig:si}f shows the weighted root mean-squared error (WRMSE; Equation~\ref{eq:wrmse}) at the final iteration of the Euler inversion method for all four models as a function of structural index.
 The WRMSE is a measure of goodnes-of-fit between the predicted total-field anomaly and its three derivatives and their observed counterparts.
@@ -886,32 +886,32 @@ The WRMSE is minimum for all four models when the correct structural index is us
 \caption{
     Data and results from the synthetic data test used to investigate the effect of high-frequency noise on the Euler inversion results.
     a-d) Noise-corrupted total-field magnetic anomaly of a dipolar source for noise levels \SynNoisePlotted.
-    e-h) The vertical derivative of the data in a-d, calculated by FFT. 
+    e-h) The vertical derivative of the data in a-d, calculated by FFT.
     i-k) Error in the estimated easting, northing, and upward coordinates, respectively.
     l) Error in the estimated base level.
-    m) The estimated structural index $\eta$ using Algorithm~\ref{alg:si}. 
+    m) The estimated structural index $\eta$ using Algorithm~\ref{alg:si}.
     The lines in i-m are the results for Euler deconvolution (dashed line), Euler inversion without data weights (dashed-dotted line), and Euler inversion with weights (solid line) \SynNoiseWeightsF{} for the total-field anomaly, \SynNoiseWeightsE{} for the east-derivative, \SynNoiseWeightsN{} for the north-derivative, and \SynNoiseWeightsU{} for the upward-derivative.
 }
 \label{fig:noise}
 \end{figure}
 
-We conducted another experiment to determine the effect of random high-frequency noise on the Euler inversion estimates. 
+We conducted another experiment to determine the effect of random high-frequency noise on the Euler inversion estimates.
 To this end, we created synthetic data from a dipole model located at $(x_o=\SynNoiseTrueEast, y_o=\SynNoiseTrueNorth, z_o=\SynNoiseTrueUp)$ and with dipole moment magnitude \SynNoiseInt{}, inclination \SynNoiseInc, and declination \SynNoiseDec.
 The total-field anomaly data were generated on a regular grid with spacing \SynNoiseSpacing{} and a constant height of \SynNoiseHeight.
 The reference field direction was the same as the dipole moment direction.
 A base level of \SynNoiseTrueBase{} was added to the data.
 We generated different datasets by adding pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and standard deviations varying from \SynNoiseMin{} to \SynNoiseMax{} with a step of \SynNoiseStep{}.
-Figures~\ref{fig:noise}a-d show the synthetic data for noise levels \SynNoisePlotted, while Figures~\ref{fig:noise}e-h show the upward derivative calculated from the total-field anomaly through FFT. 
+Figures~\ref{fig:noise}a-d show the synthetic data for noise levels \SynNoisePlotted, while Figures~\ref{fig:noise}e-h show the upward derivative calculated from the total-field anomaly through FFT.
 
 We ran on each dataset Euler deconvolution (Equation~\ref{eq:deconv-p}), Euler inversion with unit weights, and Euler inversion with weights \SynNoiseWeightsF{} for the total-field anomaly, \SynNoiseWeightsE{} for the eastward derivative, \SynNoiseWeightsN{} for the northward derivative, and \SynNoiseWeightsU{} for the upward derivative.
 Both Euler inversion runs used the structural index estimation procedure (Algorithm~\ref{alg:si}).
 Figures~\ref{fig:si}i-l show the error in the estimated easting, northing, and upward coordinates as well as the base level for each of the methods as a function of noise level.
-The error in each of three coordinates raises sharply with noise level for Euler deconvolution, particularly for the upward $z_o$ coordinate. 
+The error in each of three coordinates raises sharply with noise level for Euler deconvolution, particularly for the upward $z_o$ coordinate.
 The unweighted Euler inversion results vary less regularly but present errors just as large as Euler deconvolution for the upward coordinate.
 However, the weighted Euler inversion presented overall smaller errors and slower growth curve for the upward coordinate error than the other two methods.
 The base level error is nearly constant at approximately \qty{10}{\nano\tesla} for Euler deconvolution and the weighted Euler inversion, but varies to as much as \qty{40}{\nano\tesla} for the unweighted Euler inversion.
 
-Figure~\ref{fig:noise}m shows the estimated structural index $\eta$ for the weighted and unweighted Euler inversion as a function of noise level. 
+Figure~\ref{fig:noise}m shows the estimated structural index $\eta$ for the weighted and unweighted Euler inversion as a function of noise level.
 The unweighted Euler inversion estimated the wrong structural index $\eta=2$ from approximately noise level \qty{7}{\nano\tesla} and $\eta=1$ from approximately noise level \qty{20}{\nano\tesla}.
 These jumps in the estimated structural index appear to correlate with jumps in the base level and $z_o$ coordinate errors.
 The weighted Euler inversion was able to estimate the correct structural index ($\eta=3$) for all noise levels tested.
@@ -944,9 +944,9 @@ Figures~\ref{fig:interf}a-d show the noise-corrupted total-field anomaly for eac
 
 We ran on each dataset Euler deconvolution (Equation~\ref{eq:deconv-p} with structural index $\eta=3$), the finite-difference Euler deconvolution method of \citet{Gerovska2005}, and Euler inversion with the structural index estimation (Algorithm~\ref{alg:si}) and data weights of \DefaultWeightsF{} for the total-field anomaly, \DefaultWeightsE{} for the eastward derivative, \DefaultWeightsN{} for the northward derivative, and \DefaultWeightsU{} for the upward derivative.
 The estimated easting and northing coordinates are shown in Figures~\ref{fig:interf}a-d.
-For models 2 and 3, all three methods performed similarly in estimating the horizontal coordinates of the true source. 
+For models 2 and 3, all three methods performed similarly in estimating the horizontal coordinates of the true source.
 For models 1 and 4, the Euler deconvolution and finite-difference Euler deconvolution results are comparable which the Euler inversion results are closer to the true source location.
-Figure~\ref{fig:interf}e shows the error in the estimated upward coordinate for all three methods and four models. 
+Figure~\ref{fig:interf}e shows the error in the estimated upward coordinate for all three methods and four models.
 The Euler inversion inversion errors are consistently lower than those of both Euler deconvolution methods.
 With the exception of model 2, the Euler inversion error on the upward coordinate are approximately half those of the Euler deconvolution methods.
 Figure~\ref{fig:interf}f shows the estimated structural index for finite-difference Euler deconvolution and Euler inversion.
@@ -964,8 +964,8 @@ With the exception of model 2, Euler inversion was able to estimate the correct 
     Data and results from the synthetic data test using the moving window scheme (Algorithm~\ref{alg:window}).
     a) Noise-corrupted total-field magnetic anomaly generated from \SynWinNSources{} sources with overlapping signals, including dikes and dipoles. The true upward coordinate $z_o$ of each source is shown next to their respective anomalies.
     b-f) The estimated source locations from finite-difference Euler deconvolution, Euler inversion, Euler deconvolution ($\eta=1$), Euler deconvolution ($\eta=2$), and Euler deconvolution ($\eta=3$), respectively. The total-field anomaly is shown is in the background for reference.
-    The structural index of the solutions are represented by pentagons ($\eta=-1$),  diamonds ($\eta=0$),  triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$). 
-    The color of each symbol represents the estimated upward coordinate $z_o$. 
+    The structural index of the solutions are represented by pentagons ($\eta=-1$),  diamonds ($\eta=0$),  triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$).
+    The color of each symbol represents the estimated upward coordinate $z_o$.
     The window size used was \SynWinWindowSize{} and the step between windows was \SynWinWindowStep{}.
 }
 \label{fig:windows}
@@ -1001,8 +1001,8 @@ Euler inversion notably estimates an incorrect $\eta$ and $z_o$ for smaller sour
 \centering
 \includegraphics[width=1\linewidth]{figures/real-data-geology.png}
 \caption{
-  Geologic map and observed total-field magnetic anomaly data from the west of the state of Rio de Janeiro, Brazil. 
-  a) Simplified geologic map showing the main groups and dikes that outcrop in the region. 
+  Geologic map and observed total-field magnetic anomaly data from the west of the state of Rio de Janeiro, Brazil.
+  a) Simplified geologic map showing the main groups and dikes that outcrop in the region.
   In pink is the Cabo Frio domain, dark red is the Italva group, purple is the São Fidelis group, orange is the Rio Negro complex, gray is the syn-collisional magmatism, red is the post-collisional magmatism, green are alkaline intrusions, yellow are the Quaternary deposits, and the dashed lines are mafic and alkaline dikes.
   b) The aeromagnetic flight-line data, overlaid by the outlines of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
   The geologic map was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
@@ -1014,20 +1014,18 @@ Euler inversion notably estimates an incorrect $\eta$ and $z_o$ for smaller sour
 \centering
 \includegraphics[width=1\linewidth]{figures/real-data-application.png}
 \caption{
-    Results of applying Euler inversion to the aeromagnetic data from Rio de Janeiro, Brazil. 
-    a) Estimated source locations and structural indices using Euler inversion with a window size of \RioWindowSize{} and a window step of \RioWindowStep{}. 
-    Also shown are the total-field anomaly flight-line data, the contours of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
-    The structural index of the solutions are represented by triangles ($\eta=1$),  squares ($\eta=2$), and circles ($\eta=3$). 
+    Results of applying Euler inversion with a window size of \RioWindowSize{} and a window step of \RioWindowStep{} to the aeromagnetic data from Rio de Janeiro, Brazil.
+    Estimated source locations and structural indices obtained from Euler inversion are shown as triangles ($\eta=1$), squares ($\eta=2$), and circles ($\eta=3$).
     The color of each symbol represents the estimated depth below the surface of the Earth (topography).
-    The purple squares represent the A, B, C, and D anomalies that were isolated manually for Euler inversion.
-    b-e) Separated anomalies A, B, C, and D, respectively, and the estimated source location and structural index from Euler inversion using single data windows.
+    Also shown are the total-field anomaly flight-line data, the contours of the post-collisional magmatism and alkaline intrusions (solid black lines) and dikes (dashed lines).
+    The purple squares highlight the A, B, C, and D anomalies that are discussed in the text.
 }
 \label{fig:rio_results}
 \end{figure}
 
 The geology of Rio de Janeiro state (Southeastern Brazil) consists primarily of
 high-grade metamorphic rocks and granitoid magmatism related to the Ribeira
-Belt (RB) \citep{Heilbron2020}. 
+Belt (RB) \citep{Heilbron2020}.
 Figure~\ref{fig:rio_context}a shows a simplified geologic map of the area, which was modified from \citet{Heilbron2016} and \citet{Dantas2017}.
 The Ribeira Belt is traditionally interpreted as a thrust
 belt formed by diachronous collisions mainly between the São Francisco and
@@ -1052,13 +1050,13 @@ Paleocene period led to the emplacement of alkaline complexes and dikes
 \citep{Thompson1998}.
 The geological complexity of the Ribeira Belt, marked by the interplay of diverse tectonic
 regimes and magmatic events (Figure~\ref{fig:rio_context}a), makes the Rio de Janeiro
-region an ideal test case for Euler inversion. 
+region an ideal test case for Euler inversion.
 
 We used aeromagnetic data from the state of Rio de Janeiro which are distributed by the Serviço Geológico do Brasil (\url{https://geosgb.sgb.gov.br}).
 The data were collected in two phases: Subarea 1 was surveyed between March 25 and May 27, 1978, using
 an Islander aircraft (PT-KRP), while Subarea 2 was surveyed between April 6 and
 July 19, 1978, using a Bandeirante aircraft (PT-GKJ), both funded by the
-Brazilian government. 
+Brazilian government.
 As shown in Figure~\ref{fig:rio_context}b, the survey followed a pattern of north-south flight lines spaced approximately \qty{1}{\km} apart, with east-west tie lines.
 Data were recorded at 100-meter intervals using a Geometrics G-803 magnetometer.
 Some of the notable features of the data are the NE-SW linear features (interpreted here as dikes), which coincide with known dike outcrops, and complex dipolar anomalies which coincide with some of the post-collisional magmatism and alkaline intrusions.
@@ -1078,14 +1076,14 @@ We did so by subtracting the estimated $z_o$ from the interpolated topographic h
 The estimated positions and structural indices are shown in Figure~\ref{fig:rio_results}.
 
 The estimated source positions shown in Figure~\ref{fig:rio_results}a highlight the NE-SW lineaments as well as some of the more dipolar anomalies.
-The lineaments are estimated with a mix of $\eta=1$, $\eta=2$, and $\eta=3$. 
+The lineaments are estimated with a mix of $\eta=1$, $\eta=2$, and $\eta=3$.
 The southernmost lineament is mostly estimated with $\eta=1$ and depths suggesting that it does not outcrop in its southernmost parts (depths of \qtyrange{400}{600}{\m}), which is consistent with the geologic information in Figure~\ref{fig:rio_context}a.
 The southernmost part of this lineament, in particular, has an estimated $\eta=3$, which is known to happen for deeper dikes in our synthetic data tests (Section~\ref{sec:windows}).
-Conversely, the northernmost part of the lineament has a larger prevalence of $\eta=1$ with shallower depths which coincide with a known dike outcrop. 
+Conversely, the northernmost part of the lineament has a larger prevalence of $\eta=1$ with shallower depths which coincide with a known dike outcrop.
 Other known dike outcrops coincide with estimated sources with $\eta=1$, however their depths range from \qtyrange{100}{300}{\m}.
 This may be caused by an excess of smoothing in the vertical derivative or effects of noise in the estimated coordinates.
 
-The dipolar anomalies associated with 
+The dipolar anomalies associated with
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
