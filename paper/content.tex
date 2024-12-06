@@ -1075,13 +1075,16 @@ To aid in the geological interpretation of the results, we converted the estimat
 We did so by subtracting the estimated $z_o$ from the interpolated topographic height of the Shuttle Radar Topography Mission \citep[SRTM;][]{SRTM}.
 The estimated positions and structural indices are shown in Figure~\ref{fig:rio_results}.
 
-The estimated source positions shown in Figure~\ref{fig:rio_results}a highlight the NE-SW lineaments as well as some of the more dipolar anomalies.
+The estimated source positions shown in Figure~\ref{fig:rio_results} highlight the NE-SW lineaments as well as some of the more dipolar anomalies.
 The lineaments are estimated with a mix of $\eta=1$, $\eta=2$, and $\eta=3$.
 The southernmost lineament is mostly estimated with $\eta=1$ and depths suggesting that it does not outcrop in its southernmost parts (depths of \qtyrange{400}{600}{\m}), which is consistent with the geologic information in Figure~\ref{fig:rio_context}a.
 The southernmost part of this lineament, in particular, has an estimated $\eta=3$, which is known to happen for deeper dikes in our synthetic data tests (Section~\ref{sec:windows}).
 Conversely, the northernmost part of the lineament has a larger prevalence of $\eta=1$ with shallower depths which coincide with a known dike outcrop.
 Other known dike outcrops coincide with estimated sources with $\eta=1$, however their depths range from \qtyrange{100}{300}{\m}.
 This may be caused by an excess of smoothing in the vertical derivative or effects of noise in the estimated coordinates.
+The lineaments in the northwestern part of the region are also highlighted by estimated sources.
+However, their structural indices are a mix of $\eta=2$ and $\eta=3$, suggesting deeper sources.
+This is inline with the geologic information, which includes no outcrops of linear structures in the area.
 
 The dipolar anomalies associated with
 
@@ -1112,14 +1115,16 @@ Verde \citep{verde} for moving windows and interpolation,
 and
 Harmonica \citep{harmonica} for potential-field data processing and modeling.
 
-The aeromagnetic data are available from Serviço Geológico do Brasil
-(\url{https://geosgb.sgb.gov.br}) under a CC-BY-NC license. It is part of
-survey 1038 ``Projeto Aerogeofísico São Paulo -- Rio de Janeiro''.
-
+The aeromagnetic and geologic data are available from Serviço Geológico do Brasil
+(\url{https://geosgb.sgb.gov.br}) under a CC-BY-NC license. 
+The magnetic data are part of survey 1038 ``Projeto Aerogeofísico São Paulo -- Rio de Janeiro''.
+Both are also available in our source code and data archive \citep{figshare}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Acknowledgements}
+
+% Thank the editors and reviewers after review.
 
 We are indebted to the developers and maintainers of the open-source software
 without which this work would not have been possible.
@@ -1128,4 +1133,9 @@ LU was supported by start-up grant PRPI 22.1.09345.01.2 from Universidade de Sã
 GFSJ was supported by scholarship 2021/08379-5 from the Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP).
 The opinions, hypotheses, and conclusions or recommendations expressed in this material are the responsibility of the authors and do not necessarily reflect the views of FAPESP.
 
-% Thank the editors and reviewers after review.
+\section*{CRediT author contributions}
+
+\textbf{Leonardo Uieda:} Conceptualization, Data curation, Formal analysis, Investigation, Methodology, Project administration, Resources, Software, Supervision, Visualization, Writing – original draft.
+\textbf{Gelson Ferreira Souza-Junior:} Data curation, Formal analysis, Resources, Software, Visualization, Writing - original draft, Writing - review \& editing.
+\textbf{India Uppal:} Data curation, Formal analysis, Investigation, Software, Writing - review \& editing. 
+\textbf{Vanderlei Coelho Oliveira Jr.:} Conceptualization, Methodology, Writing - review \& editing.
