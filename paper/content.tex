@@ -1125,17 +1125,41 @@ Otherwise, they are estimated with a mix of structural indices and depths, as wa
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 
+Euler deconvolution is a widely used method for locating the sources of potential-field data, but under-performs in real-world scenarios due to its dependence on the chosen value of the structural index $\eta$ and its sensitivity to high-frequency noise and signal overlap.
+We have developed a new method to solve Euler's homogeneity equation for the source position, base level, and integer structural index, which we call \textit{Euler inversion}.
+Unlike Euler deconvolution, Euler inversion is also able to estimate the predicted field and its three spatial derivatives, as well as assign different weights to each type of data.
+The Euler inversion algorithm is computationally efficient because most of the large matrices involved in the computations are diagonal or block-diagonal.
+We found that, in practice, the computation time of Euler inversion and Euler deconvolution are on the same order of magnitude.
 
+Tests on synthetic data show that Euler inversion outperforms Euler deconvolution and finite-difference Euler deconvolution (a variant that estimates $\eta$ but does not rely on second-order derivatives) in terms of robustness to random noise and interfering sources inside the data window.
+Our tests also show that the estimated $z_o$ coordinate is correlated with the structural index, as is the case for Euler deconvolution.
+We have also found that the data misfit from Euler inversion is minimal when the correct structural index is used.
+This led us to develop an algorithm for estimating the best integer structural index based on the data misfit.
+A test on complex synthetic data from a model of dikes and dipoles with overlapping signals shows that Euler inversion is able to estimate the structural index and position of the sources within expected error bounds when the signal overlap is not larger than the data window. 
+For deeper dikes in particular, Euler inversion was not able to estimate the correct $\eta=1$, leading to an overestimation of the depths.
+
+We applied Euler inversion to an aeromagnetic dataset from Rio de Janeiro, Brazil, to analyze its performance under real-world scenarios.
+Euler inversion was able to locate the NE-SW linear features in the data with an $\eta=1$ which are associated with known dike outcrops.
+For the deeper linear features, Euler inversion was not able to estimate the correct $\eta=1$.
+Some of the dipolar anomalies present in the data were picked out with $\eta=3$, while the sources with a large signal overlap with other features provided a mix of $\eta=2$ and $\eta=3$.
+These results are consistent with the synthetic data tests and show the benefits and limitations of the proposed method.
+
+Euler inversion outperforms other Euler-based methods in most cases.
+However, it still suffers from some of the same limitations.
+While Euler inversion is less sensitive to signal overlap, it still fails to correctly estimate the position and structural index when the overlap is large.
+The windowing procedure still generates a large amount of spurious solutions which need to be filtered out.
+This could be improved with techniques like the source detection method proposed by \citet{Castro2020}, for example.
+Euler inversion can also be coupled with other inverse problems by following our methodology to add Euler's equation as a non-linear constraint. 
+This could help with issues of non-uniqueness and stability in traditional 3D inverse problems in potential-field methods.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Open research}
+\section*{Open research}
 
 The Python source code and data that were used to produce all results and
 figures presented here are available at
 \url{https://github.com/\GitHubRepository}
 and \url{https://doi.org/\ArchiveDOI} \citep{figshare}
 under the CC-BY license and the MIT license.
-
 This study made use of the following open-source scientific software:
 matplotlib \citep{matplotlib} and PyGMT \citep{pygmt} for generating figures
 and maps,
@@ -1147,7 +1171,6 @@ xarray \citep{xarray} for working with gridded data,
 Verde \citep{verde} for moving windows and interpolation,
 and
 Harmonica \citep{harmonica} for potential-field data processing and modeling.
-
 The aeromagnetic and geologic data are available from Serviço Geológico do Brasil
 (\url{https://geosgb.sgb.gov.br}) under a CC-BY-NC license. 
 The magnetic data are part of survey 1038 ``Projeto Aerogeofísico São Paulo -- Rio de Janeiro''.
