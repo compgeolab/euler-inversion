@@ -6,12 +6,12 @@ dependencies:
   # Should be on every project
   - python==3.12.*
   - pip
+  - conda-lock
   - numpy
   - scipy
   - matplotlib
   - jupyterlab
   - pandas
-  - geopandas==0.14.3
   # For building latex documents
   - make
   - tectonic
@@ -24,6 +24,7 @@ dependencies:
   - pyproj
   - pygmt
   - matplotlib-scalebar
+  - geopandas==0.14.3
   # Fatiando
   - verde
   - pooch

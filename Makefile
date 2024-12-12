@@ -20,19 +20,27 @@ show: $(PDF)
 clean:
 	rm -f $(PDF)
 
+lock:
+	# Create lock files for the current version of the environment
+	conda-lock -f environment.yml -p osx-64 -p osx-arm64 -p linux-64 -p win-64
+	# Use this instead
+	conda-lock render -p linux-64
+	conda create -n my-locked-env --file conda-linux-64.lock
+
+
 paper/variables.tex: $(TEXVARS)
 	cat $^ > $@
 
-# paper/figures/%.png: code/%.ipynb code/euler.py
-# 	jupyter execute --inplace --kernel_name=python3 $<
-# 	# Because jupyter execute modifies the notebook last
-# 	touch $@
-# 	echo ""
+paper/figures/%.png: code/%.ipynb code/euler.py
+	jupyter execute --inplace --kernel_name=python3 $<
+	# Because jupyter execute modifies the notebook last
+	touch $@
+	echo ""
 
-# data/rio-de-janeiro-magnetic.csv: code/real-data-preparation.ipynb data/1038_XYZ.tar.xz
-# 	jupyter execute --inplace --kernel_name=python3 $<
-# 	# Because jupyter execute modifies the notebook last
-# 	touch $@
+data/rio-de-janeiro-magnetic.csv: code/real-data-preparation.ipynb data/1038_XYZ.tar.xz
+	jupyter execute --inplace --kernel_name=python3 $<
+	# Because jupyter execute modifies the notebook last
+	touch $@
 
 format:
 	black code/
