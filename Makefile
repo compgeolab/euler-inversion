@@ -2,7 +2,6 @@
 
 ### Documents to build
 PDF = paper/preprint.pdf
-#PDF = preprint.pdf manuscript.pdf
 ### File Types (for dependencies)
 TEX = $(filter-out $(PDF:.pdf=.tex), $(wildcard paper/*.tex))
 TEXVARS = $(wildcard paper/variables/*.tex)
@@ -20,19 +19,22 @@ show: $(PDF)
 clean:
 	rm -f $(PDF)
 
+format:
+	black code/
+
+lock: conda-lock.yml
+
+conda-lock.yml: environment.yml
+	conda-lock -f $<
+
 paper/variables.tex: $(TEXVARS)
 	cat $^ > $@
 
-# paper/figures/%.png: code/%.ipynb code/euler.py
-# 	jupyter execute --inplace --kernel_name=python3 $<
-# 	# Because jupyter execute modifies the notebook last
-# 	touch $@
-# 	echo ""
+paper/figures/%.png paper/variables/%.tex &: code/%.ipynb code/euler.py
+	jupyter execute --inplace --kernel_name=python3 $< && touch paper/figures/$*.png paper/variables/$*.tex
 
-# data/rio-de-janeiro-magnetic.csv: code/real-data-preparation.ipynb data/1038_XYZ.tar.xz
-# 	jupyter execute --inplace --kernel_name=python3 $<
-# 	# Because jupyter execute modifies the notebook last
-# 	touch $@
+paper/figures/real-data-application.png paper/variables/real-data-application.tex &: code/real-data-application.ipynb code/euler.py data/rio-de-janeiro-magnetic.csv
+	jupyter execute --inplace --kernel_name=python3 $< && touch paper/figures/real-data-application.png paper/variables/real-data-application.tex
 
-format:
-	black code/
+data/rio-de-janeiro-magnetic.csv paper/variables/real-data-preparation.tex &: code/real-data-preparation.ipynb data/raw/1038_XYZ.tar.xz
+	jupyter execute --inplace --kernel_name=python3 $< && touch data/rio-de-janeiro-magnetic.csv paper/variables/real-data-preparation.tex

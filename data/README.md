@@ -41,3 +41,9 @@ comprises older basement high-grade metamorphic rocks, Neoproterozoic to
 Cambrian/Ordovician granitoid magmatism, and Upper Cretaceous to Paleocene
 magmatism that resulted in basic dike swarms and alkaline intrusions. License:
 CC-BY-NC.
+
+## Natural Earth
+
+The shapefile `raw/ne_110m_admin_0_countries.zip` was downloaded from
+https://www.naturalearthdata.com/downloads/110m-cultural-vectors/ and is in the
+public domain.
