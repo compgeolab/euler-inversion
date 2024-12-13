@@ -1,6 +1,6 @@
 \section{Introduction}
 
-The estimation of the depths of the sources of measured anomalies is a common challenge in potential-field geophysics. 
+The estimation of the depths of the sources of measured anomalies is a common challenge in potential-field geophysics.
 One of the most widely used techniques for providing depth estimates is Euler deconvolution \citep{Thompson1982,Reid1990}.
 Its widespread adoption is due, in large part, to its low algorithmic complexity and fast computation times, both of which are orders of magnitude smaller than solutions to 3D inverse problems.
 As a result, Euler deconvolution is widely available in both commercial and open-source software \citep{Uieda2013,Uieda2014}.
@@ -16,8 +16,8 @@ It is well known that Euler deconvolution suffers from some limitations, of whic
 
 \begin{enumerate}
 
-\item \textbf{Separation of reliable and spurious solutions:} 
-The moving window procedure adopted in Euler deconvolution generates many estimated positions which are considered spurious and must be removed. 
+\item \textbf{Separation of reliable and spurious solutions:}
+The moving window procedure adopted in Euler deconvolution generates many estimated positions which are considered spurious and must be removed.
 Spurious solutions happen when the moving window does not contain any anomalies or only contains parts of an anomaly.
 \citet{FitzGerald2004} and \citet{Melo2020} provide overviews of the many existing methods that have been developed to remove spurious solutions.
 
@@ -26,7 +26,7 @@ Spurious solutions happen when the moving window does not contain any anomalies 
 This is also why Euler deconvolution variants that rely on higher-order derivatives, like tilt-Euler deconvolution \citep{Salem2007,Huang2019} and AN-EUL \citep{Salem2003}, present a larger dispersion of estimated positions and are more sensitive to noise in general.
 Methods like finite-difference Euler deconvolution \citep{Gerovska2005} and ratio-Euler deconvolution \citep{Huang2022} were specifically developed to avoid the use of higher-order derivatives because of this noise-sensitivity issue.
 
-\item \textbf{Correlation of the estimated depth and the structural index:} 
+\item \textbf{Correlation of the estimated depth and the structural index:}
 \citet{Silva2001} demonstrated theoretically and in practice that the estimated depth from Euler deconvolution is directly correlated with the structural index used.
 The higher the structural index, the larger is the estimated depth.
 This makes it very important to know the correct structural index for the type of source being interpreted.
@@ -37,7 +37,7 @@ However, most of these methods estimate real-valued structural indices instead o
 
 We aim to tackle the issues of sensitivity to noise and structural index estimation by reformulating the inverse problem of solving Euler's homogeneity equation.
 The issue of noise sensitivity can be traced back to the presence of data derivatives in the Jacobian matrix, which generally contain larger amounts of noise than the original potential field.
-We propose formulating the inverse problem as a non-linear optimization with Euler's equation as a constraint. 
+We propose formulating the inverse problem as a non-linear optimization with Euler's equation as a constraint.
 This is similar to ``total least-squares'' in statistics \citep{VanHuffel1991} and ``combined adjustment'' in geodesy \citep{Vanicek1986}.
 Another advantage of this new formulation is the ability to calculate predicted data for the potential-field and its three derivatives, which is impossible in Euler deconvolution and all of its variants.
 We call our new method ``Euler inversion''.
@@ -1129,7 +1129,7 @@ However, their structural indices are a mix of $\eta=2$ and $\eta=3$, suggesting
 This is inline with the geologic information, which includes no outcrops of linear structures in the area.
 
 The dipolar anomalies are associated with post-collisional and alkaline intrusions, many of which are also cut by known outcropping dikes or have known dikes with magnetic signals that significantly overlap with the dipolar anomalies.
-The Euler inversion estimated structural indices for them range from $\eta=2$ to $\eta=3$. 
+The Euler inversion estimated structural indices for them range from $\eta=2$ to $\eta=3$.
 We have highlighted four dipolar anomalies, marked as A, B, C, and D in Figure~\ref{fig:rio_results}, to aid in our discussion.
 
 \begin{itemize}
@@ -1146,14 +1146,14 @@ The linear feature to the north is associated with Euler inversion results with 
 At the center of the anomaly are Euler inversion estimates with $\eta=3$ and depth estimate of approximately \qty{1400}{\m}.
 The Euler inversion solutions surrounding these central solutions are likely caused by interferance from other sources.
 
-\item \textbf{Anomaly C:} A dipolar anomaly associated with an outcropping portion of the post-collisional magmatism. 
-There is a known outcropping dike to the south of the anomaly, which is associated with Euler inversion estimates with $\eta=1$ and depths ranging from \qtyrange{500}{1000}{\m}. 
+\item \textbf{Anomaly C:} A dipolar anomaly associated with an outcropping portion of the post-collisional magmatism.
+There is a known outcropping dike to the south of the anomaly, which is associated with Euler inversion estimates with $\eta=1$ and depths ranging from \qtyrange{500}{1000}{\m}.
 These depth estimates are likely overestimated because of the interference of the dipolar anomaly.
-The main anomaly has Euler inversion solutions with $\eta=2$ and $\eta=3$ and depths varying from 
+The main anomaly has Euler inversion solutions with $\eta=2$ and $\eta=3$ and depths varying from
 \qtyrange{1400}{1800}{\m}.
 There is no clear indication of which of these estimates is more reliable.
 
-\item \textbf{Anomaly D:} A small dipolar anomaly associated with an outcropping alkaline intrusion. 
+\item \textbf{Anomaly D:} A small dipolar anomaly associated with an outcropping alkaline intrusion.
 The Euler inversion estimates have $\eta=3$ and depths \qtyrange{1700}{2000}{\m}.
 There are known outcropping dikes around the main intrusion but they have no discernible magnetic anomalies and no Euler inversion solutions associated with them.
 \end{itemize}
@@ -1161,7 +1161,7 @@ There are known outcropping dikes around the main intrusion but they have no dis
 Overall, the Euler inversion solutions in Figure~\ref{fig:rio_results} are consistent with the known geology in Figure~\ref{fig:rio_context}a.
 The main linear features are mostly associated with Euler inversion estimates with $\eta=1$ and shallow depths, particularly where known dike outcrops are located.
 Deeper linear features are estimated with $\eta=2$ and $\eta=3$, which is consistent with the synthetic data results (Section~\ref{sec:windows}).
-The dipolar anomalies have consistent Euler inversion estimates with $\eta=3$ when they are well isolated from interfering sources. 
+The dipolar anomalies have consistent Euler inversion estimates with $\eta=3$ when they are well isolated from interfering sources.
 Otherwise, they are estimated with a mix of structural indices and depths, as was demonstrated in Section~\ref{sec:windows}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1177,7 +1177,7 @@ Tests on synthetic data show that Euler inversion outperforms Euler deconvolutio
 Our tests also show that the estimated $z_o$ coordinate is correlated with the structural index, as is the case for Euler deconvolution.
 We have also found that the data misfit from Euler inversion is minimal when the correct structural index is used.
 This led us to develop an algorithm for estimating the best integer structural index based on the data misfit.
-A test on complex synthetic data from a model of dikes and dipoles with overlapping signals shows that Euler inversion is able to estimate the structural index and position of the sources within expected error bounds when the signal overlap is not larger than the data window. 
+A test on complex synthetic data from a model of dikes and dipoles with overlapping signals shows that Euler inversion is able to estimate the structural index and position of the sources within expected error bounds when the signal overlap is not larger than the data window.
 For deeper dikes in particular, Euler inversion was not able to estimate the correct $\eta=1$, leading to an overestimation of the depths.
 
 We applied Euler inversion to an aeromagnetic dataset from Rio de Janeiro, Brazil, to analyze its performance under real-world scenarios.
@@ -1191,7 +1191,7 @@ However, it still suffers from some of the same limitations.
 While Euler inversion is less sensitive to signal overlap, it still fails to correctly estimate the position and structural index when the overlap is large.
 The windowing procedure still generates a large amount of spurious solutions which need to be filtered out.
 This could be improved with techniques like the source detection method proposed by \citet{Castro2020}, for example.
-Euler inversion can also be coupled with other inverse problems by following our methodology to add Euler's equation as a non-linear constraint. 
+Euler inversion can also be coupled with other inverse problems by following our methodology to add Euler's equation as a non-linear constraint.
 This could help with issues of non-uniqueness and stability in traditional 3D inverse problems in potential-field methods.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1212,7 +1212,7 @@ xarray \citep{xarray} for working with gridded data,
 Verde \citep{verde} for moving windows and interpolation,
 and Harmonica \citep{harmonica} for potential-field data processing and modeling.
 The aeromagnetic and geologic data are available from Serviço Geológico do Brasil
-(\url{https://geosgb.sgb.gov.br}) under a CC-BY-NC license. 
+(\url{https://geosgb.sgb.gov.br}) under a CC-BY-NC license.
 The magnetic data are part of survey 1038 ``Projeto Aerogeofísico São Paulo -- Rio de Janeiro''.
 Both are also available in our source code and data archive \citep{figshare}.
 
@@ -1233,5 +1233,5 @@ The opinions, hypotheses, and conclusions or recommendations expressed in this m
 
 \textbf{Leonardo Uieda:} Conceptualization, Data curation, Formal analysis, Investigation, Methodology, Project administration, Resources, Software, Supervision, Visualization, Writing – original draft.
 \textbf{Gelson Ferreira Souza-Junior:} Data curation, Formal analysis, Resources, Software, Visualization, Writing - original draft, Writing - review \& editing.
-\textbf{India Uppal:} Data curation, Formal analysis, Investigation, Software, Writing - review \& editing. 
+\textbf{India Uppal:} Data curation, Formal analysis, Investigation, Software, Writing - review \& editing.
 \textbf{Vanderlei Coelho Oliveira Jr.:} Conceptualization, Methodology, Writing - review \& editing.
