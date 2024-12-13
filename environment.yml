@@ -24,12 +24,11 @@ dependencies:
   - pyproj
   - pygmt
   - matplotlib-scalebar
-  - geopandas==0.14.3
+  - geopandas
+  - fiona
   # Fatiando
   - verde
   - pooch
   - harmonica
   - pip:
-    - line_profiler
     - black[jupyter]
-    - fiona==1.9.1

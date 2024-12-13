@@ -27,18 +27,19 @@ This will give you access to a Python 3 environment and the excellent `conda`
 package manager.
 
 Besides the standard scientific packages, you'll also need to install some
-extra libraries like: Numba for just-in-time compilation; Harmonica, Verde,
-Boule and Pooch from the [Fatiando a Terra](https://www.fatiando.org) project;
-PyGMT for generating maps and more.
+extra libraries which are specified in the `environment.yml` file.
 **Instead of manually installing them**, they can all be automatically
-installed using a conda environment:
+installed at the exact version we used for this paper with a conda environment:
 
+1. Install the [conda-lock](https://github.com/conda/conda-lock) package:
+   ```
+   conda install conda-lock
+   ```
 1. Inside the cloned repository (or an unzipped version), create a new virtual
-   environment from the `environment.yml` file by running:
+   environment that replicates the one we used from the `conda-lock.yml` file:
    ```
-   conda env create -f environment.yml
+   conda-lock install --name euler-inversion conda-lock.yml
    ```
-1. Check the environment name in the `environment.yml` file.
 1. Activate the new environment by running:
    ```
    conda activate euler-inversion
@@ -61,12 +62,21 @@ Once in JupyterLab, open each notebook in turn and run them from top to bottom.
 > Some notebooks might take several minutes to run, depending on the resources
 > of your system.
 
+Alternatively, you can use GNU/Make (which should be installed in your
+conda environment) to run each notebook and produce its outputs (usually the
+figures from the paper). The `Makefile` provides the rules for executing them.
+The notebooks will only be executed if the corresponding figure files are older
+than the notebook files, which generally won't happen unless you modify one of
+the notebooks or the Python source code files in `code`.
+Run `make` in the base folder of the repository to execute all of the
+notebooks that need to be run.
+
 ## Generating the preprint PDF
 
 The `paper` folder provides all of the LaTeX sources used to generate the paper
 PDF. A `Makefile` in the base directory of this repository includes commands
 that automatically build the preprint PDF from the LaTeX source files using
-[Tectonic](https://tectonic-typesetting.github.io/). The GNU Make program which
+[Tectonic](https://tectonic-typesetting.github.io/). The GNU/Make program which
 executes the `Makefile` should be installed in your conda environment from
 above.
 
