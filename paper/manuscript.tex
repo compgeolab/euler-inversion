@@ -1,0 +1,88 @@
+% GJI manuscript for submission to the journal.
+%
+% This is the document structure. The actual content is written in:
+% * abstract.tex: The abstract.
+% * abstract-plain.tex: A plain language version of the abstract.
+% * content.tex: The actual manuscript text (minus the abstract).
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[extra,mreferee]{gji}
+\usepackage[utf8]{inputenc}
+\usepackage[TU]{fontenc}
+\usepackage[english]{babel}
+\usepackage{siunitx}
+\usepackage{timet}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{microtype}
+\usepackage[longend,linesnumbered,ruled]{algorithm2e}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{doi}
+\usepackage{setspace}
+% Add line numbers
+\usepackage{lineno}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Read in the title, authors, etc
+\input{information.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math shortcuts
+
+% To be able to use matrices with more than 10 columns in amsmath
+\setcounter{MaxMatrixCols}{20}
+
+% Lagrangian
+\DeclareMathOperator{\Lagr}{\mathcal{L}}
+% Merit function
+\DeclareMathOperator{\Merit}{\mathcal{M}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\linenumbers
+
+% Define style for urls
+\urlstyle{same}
+
+% Configure hyperref and add PDF metadata
+\hypersetup{
+    colorlinks,
+    allcolors=blue,
+    pdftitle={\Title},
+    pdfauthor={\AuthorShort},
+    breaklinks=true,
+}
+
+% Define title and authors
+\title{\Title}
+\author[\AuthorShort{}]{
+    \Authors{} \\
+    \Affiliations{}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\begin{summary}
+    \input{abstract}
+\end{summary}
+
+\begin{keywords}
+    \Keywords{}
+\end{keywords}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{content.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{gji}
+\bibliography{references}
+
+\end{document}
