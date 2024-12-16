@@ -20,9 +20,21 @@ presented in:
 
 ## About
 
-A little bit about this paper, how it came about, and what are the main
-contributions. Also include a summary figure or graphical abstract for this
-paper.
+The main idea for this paper came about during an potential-field methods class
+which Leo took in 2012 with his then PhD supervisor [Prof. Valéria C. F.
+Barbosa](https://www.pinga-lab.org/people/barbosa.html).
+While learning about the Euler deconvolution method, which is a speciality of
+Valéria, Leo connected it with the geodetic network adjustment theory he had
+been taught by [Prof. Spiros
+Pagiatakis](https://www.yorku.ca/spiros/spiros.html) during an exchange program
+at York University, Canada, in 2008.
+An initial prototype was developed in 2012 but there were still some rough
+edges and the project was shelved to make way for other more urgent projects at
+the time.
+Leo returned to this every few years, making slow progress, and involving
+Vanderlei in the planning and discussion of the theory.
+In 2024, co-authors Gelson, India, and Vanderlei joined Leo for a sprint to
+finish the method and produce this paper.
 
 ## Abstract
 
