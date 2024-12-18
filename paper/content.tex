@@ -674,12 +674,12 @@ below a given threshold.
 
 An outline of the entire Euler inversion procedure is given in
 Algorithm~\ref{alg:ei}.
-Notice that Equations~\ref{eq:deltap}~and~\ref{eq:deltad} for calculating
+Notice that Equations~\ref{eq:deltap} and \ref{eq:deltad} for calculating
 $\mathbf{\Delta p}_k$ and $\mathbf{\Delta d}_k$ do not depend on
 $\boldsymbol{\lambda}_k$ or $\boldsymbol{\Delta\lambda}_k$.
 Thus, Equation~\ref{eq:deltalambda} does not need to be calculated in practice.
 
-\begin{algorithm}[!h]
+\begin{algorithm}[!htb]
   \setstretch{1.5}
   Set
   $\mathbf{p}_0 = \left[\mathbf{A}^T\mathbf{A}\right]^{-1}\mathbf{A}^T\mathbf{c}$
@@ -739,7 +739,7 @@ the Euler inversion in a given data window for different values of $\eta$ and
 choosing the one that produces the smallest WRMSE.
 This procedure is summarised in Algorithm~\ref{alg:si}.
 
-\begin{algorithm}[!h]
+\begin{algorithm}[!htb]
   \setstretch{1.5}
   \For{ $\eta = \eta_{min}$ \KwTo $\eta_{max}$ }{
     Run Algorithm~\ref{alg:ei} to estimate $\mathbf{p}_{\eta}$ and $\mathbf{d}_{\eta}$
@@ -772,7 +772,7 @@ separately by the variance of the $z_o$ estimate (from Equation~\ref{eq:cov})
 and keep only a given percentage of those with the smallest variance.
 This procedure is summarised in Algorithm~\ref{alg:window}.
 
-\begin{algorithm}[!h]
+\begin{algorithm}[!htb]
   \setstretch{1.5}
   Divide the data region into $M$ overlapping windows with a defined degree of
   overlap
