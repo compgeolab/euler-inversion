@@ -62,15 +62,6 @@ Once in JupyterLab, open each notebook in turn and run them from top to bottom.
 > Some notebooks might take several minutes to run, depending on the resources
 > of your system.
 
-Alternatively, you can use GNU/Make (which should be installed in your
-conda environment) to run each notebook and produce its outputs (usually the
-figures from the paper). The `Makefile` provides the rules for executing them.
-The notebooks will only be executed if the corresponding figure files are older
-than the notebook files, which generally won't happen unless you modify one of
-the notebooks or the Python source code files in `code`.
-Run `make` in the base folder of the repository to execute all of the
-notebooks that need to be run.
-
 ## Generating the preprint PDF
 
 The `paper` folder provides all of the LaTeX sources used to generate the paper
