@@ -54,6 +54,16 @@ structural index). Euler inversion is also fast to execute on a standard
 computer, making it a practical alternative to Euler deconvolution on an Earth
 scientists toolbox.
 
+<figure>
+  <img src="https://github.com/compgeolab/euler-inversion/raw/main/paper/figures/real-data-application.png">
+  <figcaption><strong>Figure:</strong> Results of applying Euler inversion with a window size of 12 000 m and a window step of 2400 m to the
+aeromagnetic data from Rio de Janeiro, Brazil. Estimated source locations and structural indices obtained from Euler
+inversion are shown as triangles (𝜂 = 1), squares (𝜂 = 2), and circles (𝜂 = 3). The colour of each symbol represents
+the estimated depth below the surface of the Earth (topography). Also shown are the total-field anomaly flight-line
+data, the contours of the post-collisional magmatism and alkaline intrusions (solid black lines) and dykes (dashed
+lines). The purple squares highlight the A, B, C, and D anomalies that are discussed in the text.</figcaption>
+</figure>
+
 ## License
 
 All Python source code (including `.py` and `.ipynb` files) is made available
