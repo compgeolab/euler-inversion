@@ -1,4 +1,4 @@
 .ipynb_checkpoints
 __pycache__
-paper/preprint.pdf
+paper/*.pdf
 code/profile_output*
