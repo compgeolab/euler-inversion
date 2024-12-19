@@ -1,7 +1,7 @@
 # Rules for compiling the PDF from the LaTeX sources and displaying the output
 
 ### Documents to build
-PDF = paper/preprint.pdf
+PDF = paper/preprint.pdf paper/manuscript.pdf
 ### File Types (for dependencies)
 TEX = $(filter-out $(PDF:.pdf=.tex), $(wildcard paper/*.tex))
 TEXVARS = $(wildcard paper/variables/*.tex)
@@ -14,7 +14,7 @@ all: $(PDF)
 	tectonic -X compile $<
 
 show: $(PDF)
-	xdg-open $<
+	@for f in $?; do xdg-open $$f; done
 
 clean:
 	rm -f $(PDF)
