@@ -1,0 +1,136 @@
+% Template for a letter on IAG-USP letterhead
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set a class and general configuration
+\documentclass[a4paper,onecolumn,10pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set variables with the title, authors, etc.
+
+\input{../information.tex}
+\newcommand{\LetterTitle}{Cover letter -- \Title}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Import the required packages
+\usepackage[utf8]{inputenc}
+\usepackage[TU]{fontenc}
+\usepackage[british]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+% improved urls with proper hyphenation
+\usepackage{xurl}
+% Use a different font
+\usepackage[scaled=1.1]{notomath}
+% Control the font size
+\usepackage{anyfontsize}
+\usepackage{setspace}
+% Generate random text
+\usepackage{lipsum}
+% Better left and right align
+\usepackage{ragged2e}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Configuration of the document
+
+\geometry{%
+  left=25mm,
+  right=15mm,
+  top=15mm,
+  bottom=15mm,
+  headsep=15mm,
+  headheight=15mm,
+  footskip=7mm,
+  includehead=true,
+  includefoot=true
+}
+
+% Control line spacing
+\onehalfspacing
+\newcommand{\Padding}{\vspace{0.5cm}}
+
+% Custom colors
+\definecolor{darkgray}{gray}{0.4}
+\definecolor{mediumgray}{gray}{0.5}
+\definecolor{lightgray}{gray}{0.9}
+\definecolor{mediumblue}{HTML}{2060c2}
+\definecolor{lightblue}{HTML}{f7faff}
+
+% Make urls use the same font as every other text
+\urlstyle{same}
+
+% Configure hyperref and add PDF metadata
+\hypersetup{
+    colorlinks,
+    allcolors=mediumblue,
+    pdftitle={\LetterTitle},
+    pdfauthor={\AuthorShort},
+    breaklinks=true,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\begin{flushleft}
+    Editorial team
+    \\
+    \Journal
+\end{flushleft}
+\begin{flushright}
+  \today
+\end{flushright}
+\Padding
+
+\noindent
+Dear Editor,
+\Padding
+
+We are pleased to submit the original research paper titled ``\Title{}'' for
+consideration by \Journal{}.
+
+The paper introduces a novel method that we have developed, which we call
+\textit{Euler inversion}, for estimating the location and approximate geometry
+of sources of gravity and magnetic anomalies.
+Euler inversion is a significant departure from established methods (mainly
+Euler deconvolution and its variants), both in terms of the mathematical
+formulation and the higher robustness of the results to random noise and the
+presence of interfering sources.
+Instead of a linear inversion, we perform a non-linear inversion which can
+estimate both the model parameters and the predicted potential-field and its
+spatial derivatives.
+The mathematics used are similar to total-least-squares from statistics and the
+combined adjustment from geodesy (which was the inspiration for our work).
+An added benefit of being able to provide predicted data (which Euler
+deconvolution cannot do) is that Euler inversion can also estimate an integer
+structural index, which is related to the source geometry.
+We found that the best index is the one that minimizes the data misfit.
+Euler inversion is also fast to execute on a standard computer, making it
+a practical alternative to Euler deconvolution on an Earth scientists toolbox.
+All of the code and data needed to reproduce every figure is provided through
+the DOI and GitHub repository to which there are links in the paper.
+
+Thank you for your consideration of our manuscript.
+\Padding
+
+\begin{flushleft}
+  Sincerely,
+  \Padding
+
+  India Uppal (on behalf of all authors)
+  \\[0.25cm]
+  {
+    \color{mediumgray}
+    \small
+    Department of Earth, Ocean and Ecological Sciences
+    \\
+    School of Environmental Science
+    \\
+    University of Liverpool
+    \\
+    United Kingdom
+  }
+\end{flushleft}
+\end{document}

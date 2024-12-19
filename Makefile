@@ -27,6 +27,11 @@ lock: conda-lock.yml
 conda-lock.yml: environment.yml
 	conda-lock -f $<
 
+letter: paper/misc/cover-letter.pdf
+
+paper/misc/cover-letter.pdf: paper/misc/cover-letter.tex paper/information.tex
+	tectonic -X compile $<
+
 paper/variables.tex: $(TEXVARS)
 	cat $^ > $@
 
