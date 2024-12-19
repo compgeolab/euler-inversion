@@ -11,7 +11,8 @@ presented in:
 
 > Uieda, L., Souza-Junior, G. F., Uppal, I., Oliveira Jr., V. C. (2024). Euler
 > inversion: Locating sources of potential-field data through inversion of
-> Euler’s homogeneity equation. EarthArXiv. doi:10.31223/X5T41M
+> Euler’s homogeneity equation. EarthArXiv.
+> doi:[10.31223/X5T41M](https://doi.org/10.31223/X5T41M).
 
 |  | Info |
 |-:|:-----|
