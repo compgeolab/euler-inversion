@@ -9,12 +9,14 @@ by
 This repository contains the data and source code used to produce the results
 presented in:
 
-> Reference of the paper and/or preprint.
+> Uieda, L., Souza-Junior, G. F., Uppal, I., Oliveira Jr., V. C. (2024). Euler
+> inversion: Locating sources of potential-field data through inversion of
+> Euler’s homogeneity equation. EarthArXiv. doi:10.31223/X5T41M
 
 |  | Info |
 |-:|:-----|
-| Version of record | https://doi.org/JOURNAL_DOI |
-| Open-access version on EarthArXiv | https://doi.org/EARTHARXIV_DOI |
+| Version of record | TBD |
+| Open-access version on EarthArXiv | https://doi.org/10.31223/X5T41M |
 | Archive of this repository | https://doi.org/10.6084/m9.figshare.26384140 |
 | Reproducing our results | [`REPRODUCING.md`](REPRODUCING.md) |
 
