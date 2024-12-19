@@ -1,33 +1,59 @@
-% GJI manuscript for submission to the journal.
+% Manuscript for submission to a journal.
+%
+% Formatted with double space and line numbers.
 %
 % This is the document structure. The actual content is written in:
 % * abstract.tex: The abstract.
-% * abstract-plain.tex: A plain language version of the abstract.
 % * content.tex: The actual manuscript text (minus the abstract).
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[extra,mreferee]{gji}
-\usepackage[utf8]{inputenc}
-\usepackage[TU]{fontenc}
-\usepackage[english]{babel}
-\usepackage{siunitx}
-\usepackage{timet}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage{microtype}
-\usepackage[longend,linesnumbered,ruled]{algorithm2e}
-\usepackage{graphicx}
-\usepackage{url}
-\usepackage{hyperref}
-\usepackage{doi}
-\usepackage{setspace}
-% Add line numbers
-\usepackage{lineno}
+% Set a class and general configuration
+\documentclass[onecolumn,12pt,A4]{article}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Read in the title, authors, etc
 \input{information.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Import the required packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{siunitx}
+\usepackage[longend,linesnumbered,ruled]{algorithm2e}
+% To customize the title page
+\usepackage{titling}
+% For adding multiple authors
+\usepackage{authblk}
+% improved urls with proper hyphenation
+\usepackage{xurl}
+% Tweak the look of captions
+\usepackage{caption}
+% To control the style of section titles
+\usepackage{titlesec}
+% Import natbib and doi packages
+\usepackage[round,authoryear,sort]{natbib}
+% show dois as links on references
+\usepackage{doi}
+% Remove extra space between references
+\usepackage{natbibspacing}
+% Control the font size
+\usepackage{anyfontsize}
+\usepackage{setspace}
+% To get the number of pages in the document
+\usepackage{lastpage}
+\usepackage{ragged2e}
+% Add line numbers
+\usepackage{lineno}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Math shortcuts
@@ -41,9 +67,28 @@
 \DeclareMathOperator{\Merit}{\mathcal{M}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\linenumbers
+% Configuration of the document
 
-% Define style for urls
+\geometry{%
+  left=30mm,
+  right=15mm,
+  top=15mm,
+  bottom=15mm,
+  headsep=0mm,
+  headheight=0mm,
+  footskip=10mm,
+  includehead=true,
+  includefoot=true
+}
+
+% Control line spacing
+\doublespacing
+
+% Configure captions
+\captionsetup[table]{position=below,skip=0pt}
+\captionsetup{labelfont=bf,font={small,onehalfspacing},skip=10pt}
+
+% Make urls use the same font as every other text
 \urlstyle{same}
 
 % Configure hyperref and add PDF metadata
@@ -55,34 +100,52 @@
     breaklinks=true,
 }
 
-% Define title and authors
-\title{\Title}
-\author[\AuthorShort{}]{
-    \Authors{} \\
-    \Affiliations{}
+% Configure header and footer
+\newcommand{\Separator}{\hspace{3pt}|\hspace{3pt}}
+\newcommand{\FooterFont}{\footnotesize}
+\pagestyle{fancy}
+\fancyhf{}
+\lfoot{%
+  \FooterFont{}
+  \AuthorShort{} (\Year)
+  \Separator{}
+  \TitleShort
 }
+\rfoot{%
+  \FooterFont{}
+  Submitted to \Journal{}
+  \Separator{}
+  \thepage\space of\space \pageref*{LastPage}
+}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
-\maketitle
+\begin{FlushLeft}
+    {\Large\bfseries \Title}
+    \\[0.3cm]
+    \Authors
+    \\[0.3cm]
+    {\Affiliations}
+    \\[0.3cm]
+    {Submitted for publication to \textit{\Journal{}} on \SubmittedOn.}
+    \\[0.3cm]
+    \textbf{Keywords:} \Keywords{}
+\end{FlushLeft}
 
-\begin{summary}
-    \input{abstract}
-\end{summary}
+% Add line numbers
+\linenumbers
 
-\begin{keywords}
-    \Keywords{}
-\end{keywords}
+\section*{Abstract}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{abstract}
 
 \input{content.tex}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\bibliographystyle{gji}
+\bibliographystyle{apalike-doi}
 \bibliography{references}
 
 \end{document}
