@@ -16,7 +16,7 @@ presented in:
 
 |  | Info |
 |-:|:-----|
-| Version of record | TBD |
+| Version of record | TBD (submitted to *Geophysical Journal International*) |
 | Open-access version on EarthArXiv | https://doi.org/10.31223/X5T41M |
 | Archive of this repository | https://doi.org/10.6084/m9.figshare.26384140 |
 | Reproducing our results | [`REPRODUCING.md`](REPRODUCING.md) |
