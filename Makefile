@@ -17,7 +17,7 @@ show: $(PDF)
 	@for f in $?; do xdg-open $$f; done
 
 clean:
-	rm -f $(PDF)
+	rm -f $(PDF) paper/misc/cover-letter.pdf
 
 format:
 	black code/
