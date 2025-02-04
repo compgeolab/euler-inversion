@@ -164,14 +164,14 @@ The solution proposed by \citet{Thompson1982} and \citet{Reid1990} is a
 least-squares estimate of $\mathbf{p}$
 
 \begin{equation}
-  \hat{\mathbf{p}} = \left(\mathbf{A}^T\mathbf{A}\right)^{-1}
+  \mathbf{p} = \left(\mathbf{A}^T\mathbf{A}\right)^{-1}
   \mathbf{A}^T\mathbf{c}
   \ .
   \label{eq:deconv-p}
 \end{equation}
 
 \noindent
-The covariance matrix of the solution $\mathbf{C}_p$ is obtained through
+The covariance matrix of the parameters $\mathbf{C}_p$ is obtained through
 standard error propagation assuming that the only variable with uncertainty
 is the pseudo-data vector $\mathbf{c}$
 
@@ -527,9 +527,9 @@ above \citep{WellsKrakiwsky1971}
   \label{eq:identity}
 \end{equation}
 
-Applying the identity to Equation~\ref{eq:normal} with
+Applying the identity above to Equation~\ref{eq:normal} with
 $\mathbf{g} = \mathbf{\Delta d}_k$ and
-$\mathbf{h} = \left[\boldsymbol{\Delta\lambda}_k \quad \mathbf{\Delta p}_k\right]^T$
+$\mathbf{h} = \left[\boldsymbol{\Delta\lambda}_k^T \quad \mathbf{\Delta p}_k^T\right]^T$
 leads to
 
 \begin{equation}
@@ -562,11 +562,11 @@ leads to
 in which $\mathbf{Q}_k = \mathbf{B}_k\mathbf{W}^{-1}\mathbf{B}_k^T$ and
 $\mathbf{r}_k = \left[\mathbf{d}^o - \mathbf{d}_k\right]$ is the residual
 vector.
-Applying the identity once more to the equation system above leads to a
-solution for the parameter correction vector
+Applying the identity in Equation~\ref{eq:identity} once more to the equation
+system above leads to a solution for the parameter correction vector
 
 \begin{equation}
-  \hat{\mathbf{\Delta p}}_k =
+  \mathbf{\Delta p}_k =
   -\left[\mathbf{A}_k^T\mathbf{Q}_k^{-1}\mathbf{A}_k\right]^{-1}
   \mathbf{A}_k^T\mathbf{Q}_k^{-1}
   \left[\mathbf{B}_k\mathbf{r}_k + \mathbf{e}_k\right]
@@ -575,10 +575,10 @@ solution for the parameter correction vector
 \end{equation}
 
 We can obtain an expression for $\boldsymbol{\Delta\lambda}_k$ as a function of
-$\hat{\mathbf{\Delta p}}_k$ from Equation~\ref{eq:normal2}, which results in
+$\mathbf{\Delta p}_k$ from Equation~\ref{eq:normal2}, which results in
 
 \begin{equation}
-  \hat{\boldsymbol{\Delta\lambda}}_k =
+  \boldsymbol{\Delta\lambda}_k =
   \mathbf{Q}_k^{-1}
   \left[\mathbf{A}_k^T\mathbf{\Delta p}_k + \mathbf{B}_k\mathbf{r}_k + \mathbf{e}_k\right]
   -\boldsymbol{\lambda}_k
@@ -589,10 +589,10 @@ $\hat{\mathbf{\Delta p}}_k$ from Equation~\ref{eq:normal2}, which results in
 \noindent
 Finally, we can substitute the expression above into the first equation of the
 system of normal equations (Equation~\ref{eq:normal}) to obtain the data
-correction as a function of $\hat{\mathbf{\Delta p}}_k$
+correction as a function of $\mathbf{\Delta p}_k$
 
 \begin{equation}
-  \hat{\mathbf{\Delta d}}_k =
+  \mathbf{\Delta d}_k =
   \mathbf{r}_k -
   \mathbf{W}^{-1}\mathbf{B}_k^T\mathbf{Q}_k^{-1}
   \left[\mathbf{A}_k^T\mathbf{\Delta p}_k + \mathbf{B}_k\mathbf{r}_k + \mathbf{e}_k\right]
@@ -602,8 +602,8 @@ correction as a function of $\hat{\mathbf{\Delta p}}_k$
 
 \noindent
 It is worth mentioning that the Lagrange multipliers
-$\hat{\boldsymbol{\lambda}}_k$ and their corrections
-$\hat{\boldsymbol{\Delta\lambda}}_k$ are not explicitly calculated during the
+$\boldsymbol{\lambda}_k$ and their corrections
+$\boldsymbol{\Delta\lambda}_k$ are not explicitly calculated during the
 optimization.
 They are a mathematical tool for enforcing the equality constraints and have no
 physical interpretation.
@@ -614,7 +614,8 @@ It can be estimated by propagating uncertainties from the observed data
 $\mathbf{d}^o$ to the
 parameter correction vector (Equation~\ref{eq:deltap}) and, hence, to the
 parameter vector \citep{WellsKrakiwsky1971}.
-The covariance matrix of the observed data is approximated by
+The propagation requires the observed data covariance matrix $\mathbf{C}_d$,
+which can be approximated by
 $\mathbf{C}_d = \hat{\sigma}_0^2\mathbf{W}^{-1}$.
 Recalling that matrix $\mathbf{Q}$ is diagonal,
 the parameter covariance matrix is estimated at the last iteration of the
@@ -753,6 +754,8 @@ Given this observation, we can estimate the optimal value of $\eta$ by running
 the Euler inversion in a given data window for different values of $\eta$ and
 choosing the one that produces the smallest WRMSE.
 This procedure is summarised in Algorithm~\ref{alg:si}.
+In all of our tests, we used the range $\eta_{min} = \DefaultSIMin$ and
+$\eta_{max} = \DefaultSIMax$.
 
 \begin{algorithm}[!htb]
   \setstretch{1.5}
@@ -783,7 +786,9 @@ This procedure leads to spurious solutions, much like standard Euler
 deconvolution, in cases where there are no sources inside windows or when
 sources are heavily truncated.
 To filter out spurious sources, we rank the solutions for each structural index
-separately by the variance of the $z_o$ estimate (from Equation~\ref{eq:cov})
+separately by the variance of the $z_o$ estimate, which can obtained by
+selecting the corresponding element from the covariance matrix $\mathbf{C}_p$
+(Equation~\ref{eq:cov}),
 and keep only a given percentage of those with the smallest variance.
 This procedure is summarised in Algorithm~\ref{alg:window}.
 
@@ -811,6 +816,33 @@ This procedure is summarised in Algorithm~\ref{alg:window}.
   \label{alg:window}
 \end{algorithm}
 
+
+\subsubsection{Choice of data weights}
+
+The data weight matrix $\mathbf{W}$ (Equation~\ref{eq:constrained}) can be used
+to assign different weights to different observations.
+This matrix should be diagonal, with each diagonal element corresponding to the
+weights of the corresponding datum.
+Weights should be normalized to the range $[0, 1]$.
+Assigning a weight smaller than 1 to a datum will result in a larger residual
+for that datum at the end of the inversion procedure.
+Hence, weights can be used to mitigate outliers in the data by assigning
+a small weight to them.
+Different weights can also be assigned to the potential field and its
+derivatives.
+Assigning a weight smaller than 1 to the derivatives will cause the inversion
+to prioritize fitting the observed potential field instead of the, often
+noisier, derivatives.
+
+In practice, data weights can be calculated based on known data uncertainties
+or determined by trial and error.
+We have found that the following weights work well in most of the applications
+we have undertaken: \DefaultWeightsF{} for the total-field anomaly,
+\DefaultWeightsE{} for the east-derivative, \DefaultWeightsN{} for the
+north-derivative, and \DefaultWeightsU{} for the upward-derivative.
+The decrease in weight for the derivatives helps mitigate the effect of
+high-frequency noise, which is amplified by the numerical derivation, on the
+inversion estimate.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
@@ -893,12 +925,19 @@ We chose a fixed structural index of $\eta=3$, which is the correct index for a 
 For data weights, we used \DefaultWeightsF{} for the total-field anomaly, \DefaultWeightsE{} for the east-derivative, \DefaultWeightsN{} for the north-derivative, and \DefaultWeightsU{} for the upward-derivative.
 These weights were chosen to counteract the increased effect of noise on the derivatives, particularly the upward derivative which was calculated through FFT.
 Figures~\ref{fig:proof}e-h show the inversion residuals after convergence was achieved ($L=\SynProofNIter{}$ iterations) for the total-field anomaly and its eastward, northward, and upward derivatives, respectively.
-Also shown are the true source location, the initial source location (the Euler deconvolution result), and the predicted source location from Euler inversion.
-The final Euler inversion prediction of the source location was $(x_o=\SynProofEstEast, y_o=\SynProofEstNorth, z_o=\SynProofEstUp)$ and the estimated base level was $b = \SynProofEstBase$, which is an improvement on the estimated values by Euler deconvolution (Figure~\ref{fig:proof}).
+Also shown are the true source location, the initial source location, and the predicted source location from Euler inversion.
+The initial estimate of the source location was $(x_o=\SynProofEDEast,
+y_o=\SynProofEDNorth, z_o=\SynProofEDUp)$ and the base level was $b
+= \SynProofEDBase$, which are the Euler deconvolution results.
+The final Euler inversion prediction of the source location was
+$(x_o=\SynProofEstEast, y_o=\SynProofEstNorth, z_o=\SynProofEstUp)$ and the
+estimated base level was $b = \SynProofEstBase$, which is an improvement on the
+estimated values by Euler deconvolution (Figure~\ref{fig:proof}i).
 
-The convergence of the solution is shown in Figures~\ref{fig:proof}i-j.
-The error in the estimated source coordinates and base level are shown in Figure~\ref{fig:proof}i.
-The error in the $x_o$ (easting) and $y_o$ (northing) coordinates, as well as the base level, do not vary greatly from the initial solution.
+Figure~\ref{fig:proof}i shows the error in the estimated source coordinates and base level.
+We can see from the figure that the error in the $x_o$ (easting) and $y_o$
+(northing) coordinates, as well as the base level, do not vary greatly from the
+initial solution at iteration 0.
 However, the error in the $z_o$ (upward) coordinate drops from over \qty{1400}{\m} to less than \qty{400}{\m} in two iterations.
 The merit function (Equation~\ref{eq:merit}) also drops sharply in value by two iterations, as can be seen in Figure~\ref{fig:proof}j, confirming the rapid convergence of the Euler inversion method.
 

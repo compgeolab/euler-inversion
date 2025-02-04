@@ -10,6 +10,7 @@ import xarray as xr
 
 
 DEFAULT_WEIGHTS = (1, 0.1, 0.1, 0.025)
+STRUCTURAL_INDICES = (1, 2, 3)
 
 
 class EulerDeconvolution:
@@ -475,7 +476,7 @@ class EulerInversionWindowed:
         )
         n_windows = windows.size
         if self.structural_index is None:
-            structural_indices = [1, 2, 3]
+            structural_indices = STRUCTURAL_INDICES
         else:
             structural_indices = [self.structural_index]
         pool = concurrent.futures.ProcessPoolExecutor()
