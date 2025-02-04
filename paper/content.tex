@@ -270,6 +270,11 @@ and $\mathbf{W}$ is a $4N \times 4N$ diagonal weight matrix.
 The first $N$ terms of the diagonal of $\mathbf{W}$ are the weights for the
 potential field observations and the following $3N$ terms are the weights of
 x-, y-, and z-derivatives of the potential field, in order.
+In practice, the weight matrix is usually diagonal because covariances of
+observations are seldom available.
+The weights can be used to reduce the importance of each datum in the
+fitting process, allowing for mitigation of outliers or data components that
+have higher levels of noise.
 
 The constrained problem in Equation~\ref{eq:constrained} can be transformed
 into an unconstrained problem by using the Lagrangian
@@ -594,6 +599,14 @@ correction as a function of $\hat{\mathbf{\Delta p}}_k$
   \ .
   \label{eq:deltad}
 \end{equation}
+
+\noindent
+It is worth mentioning that the Lagrange multipliers
+$\hat{\boldsymbol{\lambda}}_k$ and their corrections
+$\hat{\boldsymbol{\Delta\lambda}}_k$ are not explicitly calculated during the
+optimization.
+They are a mathematical tool for enforcing the equality constraints and have no
+physical interpretation.
 
 The covariance matrix of $\mathbf{p}$ is used to rank and filter solutions
 during the moving window procedure.
