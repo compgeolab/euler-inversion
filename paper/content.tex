@@ -869,12 +869,14 @@ The applications are organised as follows:
         levels of pseudo-random noise. Its aim is to investigate the effect of
         random high-frequency noise on the Euler inversion estimated source
         coordinates, base level, and structural index.
-    \item \textbf{Effect of interfering sources:} This test uses four different
-        models of a dipolar source and a single data window with an interfering
-        dipolar source present in different locations and depths. Its aim is to
-        investigate the effect of interfering sources inside the data window on
-        the Euler inversion, Euler deconvolution, and finite-difference Euler
-        deconvolution results.
+    \item \textbf{Effect of interfering sources:} This test uses models
+        composed of two sources at increasing distances from each other. The
+        test is performed for two dipolar sources and also two dykes. Its aim
+        is to investigate the effect of interfering sources inside the data
+        window on the Euler inversion, Euler deconvolution, and
+        finite-difference Euler deconvolution results. We use a single data
+        window so that we can understand what happens at each step of the
+        moving window procedure.
     \item \textbf{Moving window procedure with multiple sources:} This test
         combines several sources and uses the moving window procedure from
         Algorithm~\ref{alg:window}. Its aim is to show how the Euler inversion
@@ -1018,13 +1020,48 @@ The weighted Euler inversion was able to estimate the correct structural index (
 \centering
 \includegraphics[width=1\linewidth]{figures/synthetic-interfering-sources.png}
 \caption{
-    Data and results from the synthetic data test used to investigate the effect of interfering sources inside the data window on the Euler inversion results.
-    a-d) Noise-corrupted total-field magnetic anomaly for four models, each of which include the same central dipole but different interfering sources in the form of another dipolar source. Also plotted are the estimated positions from Euler deconvolution, finite-difference Euler deconvolution, and Euler inversion.
-    e) The error in the estimated upward coordinate of the source $z_o$ for each of the Euler methods as a function of the model number.
-    f) The estimated structural index $\eta$ for Euler inversion and finite-difference Euler deconvolution as a function of the model number.
-    The true source location is represented by a black triangle, the Euler deconvolution result by a green square, the finite-difference Euler deconvolution result by a red diamond, and the Euler inversion result by an orange circle.
+    Data and results from the synthetic data test used to investigate the
+    effect of interfering dipolar sources inside the data window on the Euler
+    inversion results.
+    a-d) Total-field magnetic anomaly of four out of the \SynInterfNModels{}
+    models, each of which includes the same central dipole and an interfering
+    dipolar source at different distances from the main source. Also plotted
+    are the estimated positions from Euler deconvolution (green square),
+    finite-difference Euler deconvolution (red diamond), and Euler inversion
+    (orange circle).
+    e-g) The error in the estimated eastward, northward, and upward
+    coordinates, respectively, of the source for each of the Euler methods as
+    a function of the distance between sources.
+    h) The estimated structural index $\eta$ for Euler inversion and
+    finite-difference Euler deconvolution as a function of the distance between
+    sources.
 }
 \label{fig:interf}
+\end{figure}
+
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/synthetic-interfering-sources-dykes.png}
+\caption{
+    Data and results from the synthetic data test used to investigate the
+    effect of interfering dykes inside the data window on the Euler inversion
+    results.
+    a-d) Total-field magnetic anomaly of four out of the \SynInterfDykesNModels{}
+    models, each of which includes the same dyke to the east and an interfering
+    dyke to the west at different distances from the main source. Also plotted
+    are the estimated positions from Euler deconvolution (green square),
+    finite-difference Euler deconvolution (red diamond), and Euler inversion
+    (orange circle).
+    In c and d, the three Euler solutions are not visible because they are
+    outside the data window.
+    e-g) The error in the estimated eastward, northward, and upward
+    coordinates, respectively, of the source for each of the Euler methods as
+    a function of the distance between sources.
+    h) The estimated structural index $\eta$ for Euler inversion and
+    finite-difference Euler deconvolution as a function of the distance between
+    sources.
+}
+\label{fig:interf-dykes}
 \end{figure}
 
 Another common issue encountered during the application of Euler-based methods is the presence of interfering sources within the data window.
@@ -1033,7 +1070,9 @@ All contain a main dipole located at $(x_o=\SynInterfTrueEast, y_o=\SynInterfTru
 The reference field direction was the same as the dipole moment direction.
 Each of the four models also contain a second dipolar source, simulating an interfering source in the data window, that is located at different places and depths relative to the main dipole.
 The total-field anomaly data were generated on regular grids with a spacing of \SynInterfSpacing{} and at a constant height of \SynInterfHeight.
-We added to all datasets a base level of \SynInterfTrueBase{} and pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and \SynInterfNoise{} standard deviation.
+We added to all datasets a base level of \SynInterfTrueBase{}.
+No noise was added to these synthetic data in order to isolate the effect of
+the interfering source from the effect of random noise.
 Figures~\ref{fig:interf}a-d show the noise-corrupted total-field anomaly for each of the models.
 
 On each dataset we, ran Euler deconvolution (Equation~\ref{eq:deconv-p} with structural index $\eta=3$), the finite-difference Euler deconvolution method of \citet{Gerovska2005}, and Euler inversion with the structural index estimation (Algorithm~\ref{alg:si}) and data weights of \DefaultWeightsF{} for the total-field anomaly, \DefaultWeightsE{} for the eastward derivative, \DefaultWeightsN{} for the northward derivative, and \DefaultWeightsU{} for the upward derivative.
