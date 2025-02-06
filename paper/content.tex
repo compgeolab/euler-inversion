@@ -1064,19 +1064,40 @@ The weighted Euler inversion was able to estimate the correct structural index (
 \label{fig:interf-dykes}
 \end{figure}
 
-Another common issue encountered during the application of Euler-based methods is the presence of interfering sources within the data window.
-To test this effect on Euler inversion, we create four different synthetic total-field anomaly datasets.
-All contain a main dipole located at $(x_o=\SynInterfTrueEast, y_o=\SynInterfTrueNorth, z_o=\SynInterfTrueUp)$ with a dipole moment amplitude of \SynInterfInt{}, inclination of \SynInterfInc, and declination of \SynInterfDec.
-The reference field direction was the same as the dipole moment direction.
-Each of the four models also contain a second dipolar source, simulating an interfering source in the data window, that is located at different places and depths relative to the main dipole.
-The total-field anomaly data were generated on regular grids with a spacing of \SynInterfSpacing{} and at a constant height of \SynInterfHeight.
-We added to all datasets a base level of \SynInterfTrueBase{}.
+Another common issue encountered during the application of Euler-based methods
+is the presence of interfering sources within the data window.
+To test this effect on Euler inversion, we create two different scenarios, one
+with two dipoles and another with two dykes.
+In both scenarios, we created several synthetic total-field anomaly datasets
+by varying the distance between the two sources.
 No noise was added to these synthetic data in order to isolate the effect of
 the interfering source from the effect of random noise.
-Figures~\ref{fig:interf}a-d show the noise-corrupted total-field anomaly for each of the models.
+We added to all datasets a base level of \SynInterfTrueBase{}.
+On each dataset, we ran Euler deconvolution (Equation~\ref{eq:deconv-p}) with
+the correct structural index for the source ($\eta=3$ for the dipoles and
+$\eta=1$ for the dykes), the finite-difference Euler deconvolution method of
+\citet{Gerovska2005}, and Euler inversion with the structural index estimation
+(Algorithm~\ref{alg:si}) and data weights of \DefaultWeightsF{} for the
+total-field anomaly, \DefaultWeightsE{} for the eastward derivative,
+\DefaultWeightsN{} for the northward derivative, and \DefaultWeightsU{} for the
+upward derivative.
 
-On each dataset we, ran Euler deconvolution (Equation~\ref{eq:deconv-p} with structural index $\eta=3$), the finite-difference Euler deconvolution method of \citet{Gerovska2005}, and Euler inversion with the structural index estimation (Algorithm~\ref{alg:si}) and data weights of \DefaultWeightsF{} for the total-field anomaly, \DefaultWeightsE{} for the eastward derivative, \DefaultWeightsN{} for the northward derivative, and \DefaultWeightsU{} for the upward derivative.
-The estimated easting and northing coordinates are shown in Figures~\ref{fig:interf}a-d.
+The dipole models contain a main dipole located at $(x_o=\SynInterfTrueEast,
+y_o=\SynInterfTrueNorth, z_o=\SynInterfTrueUp)$ with a dipole moment amplitude
+of \SynInterfInt{}, inclination of \SynInterfInc, and declination of
+\SynInterfDec.
+The interfering dipole was located at $y_o=\SynInterfInterfNorth$ and
+$z_o=\SynInterfInterfUp$, with the $x_o$ coordinate varying from
+\SynInterfInterfEastMin{} to \SynInterfInterfEastMax{}.
+The reference field direction was the same as the dipole moment direction.
+The total-field anomaly data were generated on regular grids with a spacing of
+\SynInterfSpacing{} and at a constant height of \SynInterfHeight.
+Figures~\ref{fig:interf}a-d show the total-field anomaly of four out of the
+\SynInterfNModels{} models.
+
+The error in the estimated eastward, northward, and upward coordinates are
+shown in Figures~\ref{fig:interf}e-g.
+
 For models 2 and 3, all three methods performed similarly in estimating the horizontal coordinates of the true source.
 For models 1 and 4, the Euler deconvolution and finite-difference Euler deconvolution results are comparable, whilst the Euler inversion results are closer to the true source location.
 Figure~\ref{fig:interf}e shows the error in the estimated upward coordinate for all three methods and four models.
