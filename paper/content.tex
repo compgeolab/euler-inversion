@@ -1056,7 +1056,9 @@ The weighted Euler inversion was able to estimate the correct structural index (
     outside the data window.
     e-g) The error in the estimated eastward, northward, and upward
     coordinates, respectively, of the source for each of the Euler methods as
-    a function of the distance between sources.
+    a function of the distance between sources. The error for the eastward and
+    northward coordinates was calculated with respect to the center point of
+    the eastern dyke (black triangle).
     h) The estimated structural index $\eta$ for Euler inversion and
     finite-difference Euler deconvolution as a function of the distance between
     sources.
@@ -1097,15 +1099,53 @@ Figures~\ref{fig:interf}a-d show the total-field anomaly of four out of the
 
 The error in the estimated eastward, northward, and upward coordinates are
 shown in Figures~\ref{fig:interf}e-g.
+For the eastward and northward coordinates, the three methods are mostly
+compatible, with Euler inversion being slightly closer to the true source for
+most distances between sources.
+For the upward coordinate, Euler inversion and Euler deconvolution are
+roughly equivalent and both have smaller errors than finite-difference Euler
+deconvolution for all but the largest distances.
+For the structural index estimates (Figure~\ref{fig:interf}h),
+finite-difference Euler deconvolution underestimates $\eta$ for all but the
+largest distances, while Euler inversion estimates the correct index of
+$\eta=3$ for all distances.
 
-For models 2 and 3, all three methods performed similarly in estimating the horizontal coordinates of the true source.
-For models 1 and 4, the Euler deconvolution and finite-difference Euler deconvolution results are comparable, whilst the Euler inversion results are closer to the true source location.
-Figure~\ref{fig:interf}e shows the error in the estimated upward coordinate for all three methods and four models.
-The Euler inversion errors are consistently lower than those of both Euler deconvolution methods.
-With the exception of model 2, the Euler inversion error on the upward coordinate are approximately half those of the Euler deconvolution methods.
-Figure~\ref{fig:interf}f shows the estimated structural index for finite-difference Euler deconvolution and Euler inversion.
-The finite-difference Euler deconvolution method consistently estimated values lower than $\eta=1$.
-With the exception of model 2, Euler inversion was able to estimate the correct structural index ($\eta=3$) for all other models.
+The dyke models contain a main dyke at the east with a center point at
+$(x_o=\SynInterfDykesTrueEast, y_o=\SynInterfDykesTrueNorth)$ and a top at
+$z_o=\SynInterfDykesTrueUp$ with a dipole moment amplitude
+of \SynInterfDykesInt{}, inclination of \SynInterfDykesInc, and declination of
+\SynInterfDykesDec.
+The interfering dyke has a top at $z_o=\SynInterfDykesInterfUp$, with the $x_o$
+coordinate varying from
+\SynInterfDykesInterfEastMin{} to \SynInterfDykesInterfEastMax{}.
+The reference field direction was the same as the dipole moment direction.
+The total-field anomaly data were generated on regular grids with a spacing of
+\SynInterfDykesSpacing{} and at a constant height of \SynInterfDykesHeight.
+Figures~\ref{fig:interf-dykes}a-d show the total-field anomaly of four out of
+the \SynInterfDykesNModels{} models.
+
+The error in the estimated eastward, northward, and upward coordinates are
+shown in Figures~\ref{fig:interf-dykes}e-g.
+The error for the eastward and northward coordinates was calculated with
+respect to the center point of the eastern dyke.
+For the eastward and northward coordinates, the three methods are mostly
+compatible.
+When the two dykes intersect, all three methods estimate a horizontal position
+at the intersection point.
+When they don't intersect, the estimates for all three methods falls outside of
+the data window.
+This is a well known issue for Euler deconvolution methods because the Hessian
+matrix $\mathbf{A}^T\mathbf{A}$ (Equation~\ref{eq:deconv-p}) is ill-conditioned
+for 2D sources \citep{Mushayandebvu2004}.
+For the upward coordinate, Euler inversion and Euler deconvolution are
+roughly equivalent and approach zero at the largest distances.
+Both methods have smaller errors than finite-difference Euler deconvolution for
+all distances tested.
+For the structural index estimates (Figure~\ref{fig:interf-dykes}h),
+finite-difference Euler deconvolution estimates incorrect $\eta$ at most
+distances, presenting no clear relationship between distance and $\eta$
+estimate.
+Euler inversion estimates the correct index of $\eta=1$ for all distances.
 
 
 \subsection{Moving window procedure with multiple sources}
