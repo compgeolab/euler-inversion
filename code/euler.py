@@ -13,6 +13,17 @@ DEFAULT_WEIGHTS = (1, 0.1, 0.1, 0.025)
 STRUCTURAL_INDICES = (1, 2, 3)
 
 
+def rotate_coordinates(coordinates, azimuth):
+    "Rotate a coordinate system by a given azimuth angle"
+    angle = np.radians(azimuth)
+    rotated = (
+        coordinates[0] * np.cos(angle) + coordinates[1] * np.sin(angle),
+        -coordinates[0] * np.sin(angle) + coordinates[1] * np.cos(angle),
+        coordinates[2],
+    )
+    return rotated
+
+
 class EulerDeconvolution:
     """
     Classic Euler deconvolution but with only a single data window
