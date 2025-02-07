@@ -1218,6 +1218,30 @@ Euler inversion notably estimates an incorrect $\eta$ and $z_o$ for smaller sour
 \label{fig:rio_results}
 \end{figure}
 
+\begin{figure}[tb!]
+\centering
+\includegraphics[width=1\linewidth]{figures/real-data-application-comparison.png}
+\caption{
+    Results of applying Euler deconvolution and finite-difference Euler
+    deconvolution with a window size of \RioWindowSize{} and a window step of
+    \RioWindowStep{} to the aeromagnetic data from Rio de Janeiro, Brazil.
+    a-c) Euler deconvolution results with structural index $\eta=1$, $\eta=2$,
+    and $\eta=3$, respectively.
+    d) Finite-difference Euler deconvolution results.
+    The structural index of the solutions are represented by pentagons
+    ($\eta=-1$),  diamonds ($\eta=0$),  triangles ($\eta=1$),  squares
+    ($\eta=2$), and circles ($\eta=3$).
+    For finite-difference Euler deconvolution, the structural index symbol is
+    that of the closest integer to the estimated value.
+    The colour of each symbol represents the estimated depth below the surface
+    of the Earth (topography).
+    Also shown are the total-field anomaly flight-line data, the contours of
+    the post-collisional magmatism and alkaline intrusions (solid black lines)
+    and dykes (dashed lines).
+}
+\label{fig:rio_comp}
+\end{figure}
+
 The geology of Rio de Janeiro state (Southeastern Brazil) consists primarily of
 high-grade metamorphic rocks and granitoid magmatism related to the Ribeira
 Belt (RB) \citep{Heilbron2020}.
@@ -1269,8 +1293,12 @@ The inversion was performed with data weights of \RioWeightsF{} for the total-fi
 To aid in the geological interpretation of the results, we converted the estimated upward source coordinates $z_o$ to depths below the surface of the Earth.
 We did so by subtracting the estimated $z_o$ from the interpolated topographic height of the Shuttle Radar Topography Mission \citep[SRTM;][]{SRTM}.
 The estimated positions and structural indices are shown in Figure~\ref{fig:rio_results}.
+We also performed Euler deconvolution with structural indices one, two, and
+three, as well as finite-difference Euler deconvolution on the same dataset
+using the same window size and window step for the sake of consistency.
+These results are shown in Figure~\ref{fig:rio_comp}.
 
-The estimated source positions shown in Figure~\ref{fig:rio_results} highlight the NE-SW lineaments as well as some of the more dipolar anomalies.
+The Euler inversion estimated source positions shown in Figure~\ref{fig:rio_results} highlight the NE-SW lineaments as well as some of the more dipolar anomalies.
 The lineaments are estimated with a mix of $\eta=1$, $\eta=2$, and $\eta=3$.
 The southernmost lineament is mostly estimated with $\eta=1$ and depths suggesting that it does not outcrop in its southernmost parts (depths of \qtyrange{400}{600}{\m}), which is consistent with the geologic information in Figure~\ref{fig:rio_context}a.
 The southernmost part of this lineament, in particular, has an estimated $\eta=3$, which is known to happen for deeper dykes in our synthetic data tests (Section~\ref{sec:windows}).
