@@ -941,7 +941,10 @@ The applications are organised as follows:
 \end{enumerate}
 
 \noindent
-The Python source code used to produce the results presented here, as well as extra explanation of the models and procedures, can be found in the supplementary information at \url{https://doi.org/\ArchiveDOI} \citep{figshare}.
+The Python source code used to produce the results presented here, as well as
+extra explanation of the models and procedures, can be found in the
+supplementary information at \url{https://doi.org/\ArchiveDOI}
+\citep{figshare}.
 
 
 \subsection{Method demonstration}
@@ -1015,7 +1018,8 @@ In this synthetic data test, we created datasets using four different models: a 
 All models share the same true location of $(x_o=\SynSITrueEast, y_o=\SynSITrueNorth, z_o=\SynSITrueUp)$, base level of \SynSITrueBase, and induced magnetisation with inclination of \SynSIInc{} and declination of \SynSIDec.
 The data were generated on a regular grid with spacing of \SynSISpacing, height of \SynSIHeight, and contaminated with pseudo-random Gaussian noise with \qty{0}{\nano\tesla} mean and \SynSINoise{} standard deviation. Figures~\ref{fig:si}a-d show the synthetic noise-corrupted total-field anomaly data.
 
-We ran the Euler inversion method on each data grid three times, each time changing the structural index between one, two, and three.
+We ran the Euler inversion method on each data grid four times, each time
+changing the structural index between zero, one, two, and three.
 Figure~\ref{fig:si}e shows the upward coordinate $z_o$ estimated for each of the four models as a function of the structural index $\eta$.
 The Euler inversion estimated $z_o$ correlates with $\eta$, with larger values of the structural index leading to deeper source estimates.
 Values closest to the true $z_o=\SynSITrueUp$ are achieved when the correct structural index is used ($\eta=1$ for the dyke, $\eta=2$ for the cylinder and pipe, and $\eta=3$ for the dipole).
@@ -1051,7 +1055,9 @@ We generated different datasets by adding pseudo-random Gaussian noise with \qty
 Figures~\ref{fig:noise}a-d show the synthetic data for noise levels \SynNoisePlotted, while Figures~\ref{fig:noise}e-h show the upward derivative calculated from the total-field anomaly through FFT.
 
 On each dataset, we ran Euler deconvolution (Equation~\ref{eq:deconv-p}), Euler inversion with unit weights, and Euler inversion with weights \SynNoiseWeightsF{} for the total-field anomaly, \SynNoiseWeightsE{} for the eastward derivative, \SynNoiseWeightsN{} for the northward derivative, and \SynNoiseWeightsU{} for the upward derivative.
-Both Euler inversion runs used the structural index estimation procedure (Algorithm~\ref{alg:si}).
+Both Euler inversion runs used the structural index estimation procedure
+(Algorithm~\ref{alg:si} with $\eta_{min}=\DefaultSIMin$ and
+$\eta_{max}=\DefaultSIMax$).
 Figures~\ref{fig:si}i-l show the error in the estimated easting, northing, and upward coordinates as well as the base level for each of the methods as a function of noise level.
 The error in each of three coordinates raises sharply with noise level for Euler deconvolution, particularly for the upward $z_o$ coordinate.
 The unweighted Euler inversion results vary less regularly but the present errors are just as large as Euler deconvolution for the upward coordinate.
@@ -1130,7 +1136,8 @@ On each dataset, we ran Euler deconvolution (Equation~\ref{eq:deconv-p}) with
 the correct structural index for the source ($\eta=3$ for the dipoles and
 $\eta=1$ for the dykes), the finite-difference Euler deconvolution method of
 \citet{Gerovska2005}, and Euler inversion with the structural index estimation
-(Algorithm~\ref{alg:si}) and data weights of \DefaultWeightsF{} for the
+(Algorithm~\ref{alg:si} with $\eta_{min}=\DefaultSIMin$ and
+$\eta_{max}=\DefaultSIMax$) and data weights of \DefaultWeightsF{} for the
 total-field anomaly, \DefaultWeightsE{} for the eastward derivative,
 \DefaultWeightsN{} for the northward derivative, and \DefaultWeightsU{} for the
 upward derivative.
@@ -1244,7 +1251,9 @@ The noise-corrupted total-field anomaly data are shown in
 Figure~\ref{fig:windows}a.
 
 To the dataset, we applied the moving window Euler inversion method
-(Algorithm~\ref{alg:window}), the finite-difference Euler deconvolution method
+(Algorithm~\ref{alg:window} and Algorithm~\ref{alg:si} with
+$\eta_{min}=\DefaultSIMin$ and $\eta_{max}=\DefaultSIMax$), the
+finite-difference Euler deconvolution method
 of \citet{Gerovska2005}, and standard Euler deconvolution (using structural
 indices 1, 2, and 3).
 Euler inversion was performed with data weights of \DefaultWeightsF{} for the
@@ -1428,13 +1437,15 @@ a coordinate shift of \RioDerivSpacing{}. Further details about the data
 processing can be found in the source code archive that accompanies this
 article \url{https://doi.org/\ArchiveDOI} \citep{figshare}.
 
-We performed the moving-window Euler inversion (Algorithm~\ref{alg:window}) on
-the observed total-field anomaly line data using windows of size of
-\RioWindowSize{} which were moved \RioWindowStep{} at a time. The proportion of
-solutions kept was $\gamma=0.15$. The inversion was performed with data weights
-of \RioWeightsF{} for the total-field anomaly, \RioWeightsE{} for the eastward
-derivative, \RioWeightsN{} for the northward derivative, and \RioWeightsU{} for
-the upward derivative.
+We performed the moving-window Euler inversion (Algorithm~\ref{alg:window} and
+Algorithm~\ref{alg:si} with $\eta_{min}=\RioSIMin$ and
+$\eta_{max}=\RioSIMax$) on the observed total-field anomaly line data using
+windows of size of \RioWindowSize{} which were moved \RioWindowStep{} at
+a time.
+The proportion of solutions kept was $\gamma=0.15$.
+The inversion was performed with data weights of \RioWeightsF{} for the
+total-field anomaly, \RioWeightsE{} for the eastward derivative, \RioWeightsN{}
+for the northward derivative, and \RioWeightsU{} for the upward derivative.
 To aid in the geological interpretation of the results, we converted the
 estimated upward source coordinates $z_o$ to depths below the surface of the
 Earth. We did so by subtracting the estimated $z_o$ from the interpolated
