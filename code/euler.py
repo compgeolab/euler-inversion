@@ -10,7 +10,7 @@ import xarray as xr
 
 
 DEFAULT_WEIGHTS = (1, 0.1, 0.1, 0.025)
-STRUCTURAL_INDICES = (1, 2, 3)
+STRUCTURAL_INDICES = (0, 1, 2, 3)
 
 
 def rotate_coordinates(coordinates, azimuth):
@@ -33,6 +33,10 @@ class EulerDeconvolution:
 
     def __init__(self, structural_index):
         self.structural_index = structural_index
+        if structural_index == 0:
+            self.nparams = 3
+        else:
+            self.nparams = 4
 
     def fit(self, coordinates, data):
         """
@@ -40,11 +44,12 @@ class EulerDeconvolution:
         """
         east, north, up = coordinates
         field, deriv_east, deriv_north, deriv_up = data
-        jacobian = np.empty((field.size, 4))
+        jacobian = np.empty((field.size, self.nparams))
         jacobian[:, 0] = deriv_east
         jacobian[:, 1] = deriv_north
         jacobian[:, 2] = deriv_up
-        jacobian[:, 3] = self.structural_index
+        if self.nparams == 4:
+            jacobian[:, 3] = self.structural_index
         pseudo_data = (
             east * deriv_east
             + north * deriv_north
@@ -59,7 +64,10 @@ class EulerDeconvolution:
         self.covariance_ = chi_squared * cofactor
         self.parameters_ = parameters
         self.location_ = parameters[:3]
-        self.base_level_ = parameters[-1]
+        if self.nparams == 4:
+            self.base_level_ = parameters[-1]
+        else:
+            self.base_level_ = None
         return self
 
     def fit_grid(
@@ -264,6 +272,11 @@ class EulerInversion:
         self.tol = tol
         self.euler_misfit_balance = euler_misfit_balance
         self.initial = initial
+        if structural_index == 0:
+            self.nparams = 3
+        else:
+            self.nparams = 4
+
 
     def fit_grid(
         self,
@@ -319,7 +332,8 @@ class EulerInversion:
             self.data_misfit_[-1] + self.euler_misfit_balance * self.euler_misfit_[-1]
         ]
         self.location_per_iteration_ = [parameters[:3].copy()]
-        self.base_level_per_iteration_ = [parameters[3]]
+        if self.nparams == 4:
+            self.base_level_per_iteration_ = [parameters[3]]
         for iteration in range(self.max_iterations):
             parameter_step, data_step, cofactor_new = self._newton_step(
                 coordinates,
@@ -348,7 +362,8 @@ class EulerInversion:
             self.data_misfit_.append(new_data_misfit)
             self.merit_.append(new_merit)
             self.location_per_iteration_.append(parameters[:3].copy())
-            self.base_level_per_iteration_.append(parameters[3])
+            if self.structural_index != 0:
+                self.base_level_per_iteration_.append(parameters[3])
             # Check convergence
             merit_change = abs((self.merit_[-2] - self.merit_[-1]) / self.merit_[-2])
             if merit_change < self.tol:
@@ -361,7 +376,10 @@ class EulerInversion:
         self.predicted_deriv_north_ = data_predicted[2 * n_data : 3 * n_data]
         self.predicted_deriv_up_ = data_predicted[3 * n_data :]
         self.location_ = parameters[:3]
-        self.base_level_ = parameters[3]
+        if self.nparams == 4:
+            self.base_level_ = parameters[3]
+        else:
+            self.base_level_ = None
         chi_squared = np.sum(residuals**2) / (residuals.size - parameters.size)
         self.covariance_ = chi_squared * cofactor
         return self
@@ -375,7 +393,6 @@ class EulerInversion:
         # Weights don't seem to make a difference
         east, north, up = coordinates
         field, deriv_east, deriv_north, deriv_up = np.split(data_predicted, 4)
-        xo, yo, zo, base_level = parameters
         A = self._parameter_jacobian(deriv_east, deriv_north, deriv_up)
         B_diags = self._data_jacobian_diagonals(coordinates, parameters[:3])
         B = sp.sparse.hstack([sp.sparse.diags(b) for b in B_diags])
@@ -405,9 +422,10 @@ class EulerInversion:
         # Deconvolution results
         euler_deconv = EulerDeconvolution(structural_index=self.structural_index)
         euler_deconv.fit(coordinates, data)
-        parameters = np.empty(4)
+        parameters = np.empty(self.nparams)
         parameters[:3] = euler_deconv.location_
-        parameters[3] = euler_deconv.base_level_
+        if self.nparams == 4:
+            parameters[3] = euler_deconv.base_level_
         return parameters
 
     def _parameter_jacobian(
@@ -419,11 +437,12 @@ class EulerInversion:
         """
         Calculate the model parameter Jacobian for Euler Inversion
         """
-        jacobian = np.empty((deriv_east.size, 4))
+        jacobian = np.empty((deriv_east.size, self.nparams))
         jacobian[:, 0] = -deriv_east
         jacobian[:, 1] = -deriv_north
         jacobian[:, 2] = -deriv_up
-        jacobian[:, 3] = -self.structural_index
+        if self.nparams == 4:
+            jacobian[:, 3] = -self.structural_index
         return jacobian
 
     def _data_jacobian_diagonals(self, coordinates, source_location):
@@ -448,7 +467,10 @@ class EulerInversion:
         east, north, up = coordinates
         field, deriv_east, deriv_north, deriv_up = np.split(data, 4)
         east_s, north_s, up_s = parameters[:3]
-        base_level = parameters[-1]
+        if self.nparams == 4:
+            base_level = parameters[-1]
+        else:
+            base_level = 0
         euler = (
             (east - east_s) * deriv_east
             + (north - north_s) * deriv_north
@@ -489,7 +511,7 @@ class EulerInversionWindowed:
         if self.structural_index is None:
             structural_indices = STRUCTURAL_INDICES
         else:
-            structural_indices = [self.structural_index]
+            structural_indices = self.structural_index
         pool = concurrent.futures.ProcessPoolExecutor()
         futures = []
         for window in windows.ravel():
