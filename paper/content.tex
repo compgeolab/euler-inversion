@@ -1487,15 +1487,19 @@ being less than one, which is not in accordance with the geology of the area.
 \section{Conclusion}
 
 Euler deconvolution is a widely used method for locating the sources of
-potential-field data, but under-performs in real-world scenarios due to its
-dependence on the chosen value of the structural index $\eta$ and its
-sensitivity to high-frequency noise and signal overlap.
+potential-field data.
+It has its limitations in real-world scenarios due to its dependence on the
+chosen value of the structural index $\eta$ and its sensitivity to
+high-frequency noise and signal overlap from interfering sources.
 We have developed a new method to solve Euler's homogeneity equation for the
 source position, base level, and integer structural index, which we call
 \textit{Euler inversion}.
 Unlike Euler deconvolution, Euler inversion is also able to estimate the
 predicted field and its spatial derivatives, as well as assign different
 weights to each type of data.
+Our method can be applied to gridded and non-gridded data, which can
+be useful to limit the effects of smoothing from interpolation in the final
+results when the original data have large spacing between flight lines.
 The Euler inversion algorithm is computationally efficient because most of the
 large matrices involved in the computations are diagonal or block-diagonal.
 We found that, in practice, the computation time of Euler inversion and Euler
@@ -1531,7 +1535,7 @@ provided a mix of $\eta=2$ and $\eta=3$.
 These results are consistent with the synthetic data tests and show the
 benefits and limitations of the proposed method.
 
-Euler inversion outperforms other Euler-based methods in most cases.
+Euler inversion outperforms traditional Euler deconvolution in most cases.
 However, it still suffers from some of the same limitations.
 While Euler inversion is less sensitive to signal overlap, it still fails to
 correctly estimate the position and structural index when the overlap is large.
@@ -1543,6 +1547,25 @@ Euler inversion can also be coupled with other inverse problems by following
 our methodology to add Euler's equation as a non-linear constraint.
 This could help with issues of non-uniqueness and stability in traditional 3D
 inverse problems in potential-field methods.
+
+As is the case with other Euler deconvolution-based methods
+\citep{Mushayandebvu2004},
+Euler inversion suffers from instability when sources are 2D and there is
+little noise in the data.
+This issue was evident in our synthetic data tests which did not contaminate
+the data with random noise.
+However, both in the synthetic data tests with noise and the real data
+application, this did not appear to be a significant issue.
+In both cases, Euler inversion was better at outlining the 2D sources than
+Euler deconvolution.
+Nonetheless, it would be worthwhile to investigate this issue further and
+explore the use of regularization and an adaptation of the method of
+\citet{Mushayandebvu2004} to the Euler inversion mathematical formulation.
+A thorough comparison of Euler inversion with the Similarity Transform-based
+methods, like \citet{Gerovska2010}, would also be worth pursuing.
+Euler inversion could complement such methods, which often require gridded
+data, in cases where data are of poor quality or flight-line spacing is large.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Data availability statement}
