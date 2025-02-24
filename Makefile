@@ -8,10 +8,11 @@ TEXVARS = $(wildcard paper/variables/*.tex)
 BIB = $(wildcard paper/*.bib)
 FIG = $(wildcard paper/figures/*)
 
-all: $(PDF)
+preprint: paper/preprint.pdf
 
-%.pdf: %.tex $(TEX) $(BIB) $(FIG)
-	tectonic -X compile $<
+manuscript: paper/manuscript.pdf
+
+all: $(PDF)
 
 show: $(PDF)
 	@for f in $?; do xdg-open $$f; done
@@ -23,6 +24,9 @@ format:
 	black code/
 
 lock: conda-lock.yml
+
+%.pdf: %.tex $(TEX) $(BIB) $(FIG)
+	tectonic -X compile $<
 
 conda-lock.yml: environment.yml
 	conda-lock -f $<
