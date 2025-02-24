@@ -1476,6 +1476,13 @@ when they are well isolated from interfering sources.
 Otherwise, they are estimated with a mix of structural indices and depths, as
 was demonstrated in Section~\ref{sec:windows}.
 
+When compared to the Euler deconvolution and finite-difference Euler
+deconvolution results (Figure~\ref{fig:rio_comp}), the Euler inversion results
+are less dispersed and better delinear the linear features present in the data.
+The structural index results from finite-difference Euler deconvolution
+(Figure~\ref{fig:rio_comp}d) are underestimated, with most values of $\eta$
+being less than one, which is not in accordance with the geology of the area.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 
@@ -1546,17 +1553,20 @@ figures presented here are available at
 and \url{https://doi.org/\ArchiveDOI} \citep{figshare}
 under the CC-BY license and the MIT license.
 This study made use of the following open-source scientific software:
-matplotlib \citep{matplotlib} and PyGMT \citep{pygmt} for generating figures and maps,
+matplotlib \citep{matplotlib} and PyGMT \citep{pygmt} for generating figures
+and maps,
 Numpy \citep{numpy} and Scipy \citep{scipy} for linear algebra,
 Pandas for manipulating tabular data \citep{McKinney2010,pandas},
 GeoPandas for reading and plotting shapefiles \citep{geopandas},
 pyproj for data projection \citep{pyproj},
 xarray \citep{xarray} for working with gridded data,
 Verde \citep{verde} for moving windows and interpolation,
-and Harmonica \citep{harmonica} for potential-field data processing and modeling.
-The aeromagnetic and geologic data are available from Serviço Geológico do Brasil
-(\url{https://geosgb.sgb.gov.br}) under a CC-BY-NC license.
-The magnetic data are part of survey 1038 ``Projeto Aerogeofísico São Paulo -- Rio de Janeiro''.
+and Harmonica \citep{harmonica} for potential-field data processing and
+modeling.
+The aeromagnetic and geologic data are available from Serviço Geológico do
+Brasil (\url{https://geosgb.sgb.gov.br}) under a CC-BY-NC license.
+The magnetic data are part of survey 1038 ``Projeto Aerogeofísico São Paulo --
+Rio de Janeiro''.
 Both are also available in our source code and data archive \citep{figshare}.
 
 
@@ -1567,21 +1577,34 @@ Both are also available in our source code and data archive \citep{figshare}.
 
 We are indebted to the developers and maintainers of the open-source software
 without which this work would not have been possible.
-We thank Valéria C. F. Barbosa for many insightful discussions over the years which helped shape our research.
-LU would like to thank Prof. Spiros Pagiatakis for being an incredible instructor and teaching him the mathematics which formed the foundations of this work during his undergraduate exchange at York University.
-LU was supported in part by start-up grant PRPI 22.1.09345.01.2 from Universidade de São Paulo.
-GFSJ was supported by scholarship 2021/08379-5 from the Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP).
-The opinions, hypotheses, and conclusions or recommendations expressed in this material are the responsibility of the authors and do not necessarily reflect the views of FAPESP.
+We thank Valéria C. F. Barbosa for many insightful discussions over the years
+which helped shape our research.
+LU would like to thank Prof. Spiros Pagiatakis for being an incredible
+instructor and teaching him the mathematics which formed the foundations of
+this work during his undergraduate exchange at York University.
+LU was supported in part by start-up grant PRPI 22.1.09345.01.2 from
+Universidade de São Paulo.
+GFSJ was supported by scholarship 2021/08379-5 from the Fundação de Amparo
+à Pesquisa do Estado de São Paulo (FAPESP).
+The opinions, hypotheses, and conclusions or recommendations expressed in this
+material are the responsibility of the authors and do not necessarily reflect
+the views of FAPESP.
 
 \section*{CRediT author contributions}
 
-\textbf{Leonardo Uieda:} Conceptualisation, Data curation, Formal analysis, Investigation, Methodology, Pro\-ject administration, Resources, Software, Supervision, Visualisation, Writing – original draft.
+\textbf{Leonardo Uieda:} Conceptualisation, Data curation, Formal analysis,
+Investigation, Methodology, Pro\-ject administration, Resources, Software,
+Supervision, Visualisation, Writing – original draft.
 
 \noindent
-\textbf{Gelson Ferreira Souza-Junior:} Data curation, Formal analysis, Resources, Software, Visualisation, Writing - original draft, Writing - review \& editing.
+\textbf{Gelson Ferreira Souza-Junior:} Data curation, Formal analysis,
+Resources, Software, Visualisation, Writing - original draft, Writing - review
+\& editing.
 
 \noindent
-\textbf{India Uppal:} Data curation, Formal analysis, Investigation, Software, Writing - review \& editing.
+\textbf{India Uppal:} Data curation, Formal analysis, Investigation, Software,
+Writing - review \& editing.
 
 \noindent
-\textbf{Vanderlei Coelho Oliveira Jr.:} Conceptualisation, Methodology, Writing - review \& editing.
+\textbf{Vanderlei Coelho Oliveira Jr.:} Conceptualisation, Methodology, Writing
+- review \& editing.
