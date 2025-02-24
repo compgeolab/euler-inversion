@@ -1610,12 +1610,12 @@ our methodology to add Euler's equation as a non-linear constraint.
 This could help with issues of non-uniqueness and stability in traditional 3D
 inverse problems in potential-field methods.
 
-As is the case with other Euler deconvolution-based methods
-\citep{Mushayandebvu2004},
-Euler inversion suffers from instability when sources are 2D and there is
-little noise in the data.
-This issue was evident in our synthetic data tests which did not contaminate
-the data with random noise.
+As is the case with other Euler deconvolution-based methods, Euler inversion
+also suffers from instability when sources are 2D \citep{Mushayandebvu2004}
+and a lack of support for sources that are defined by multiple points, for
+example steps which have a top and bottom \citep{Gerovska2010}.
+The issue of instability was evident in our synthetic data tests which
+simulated dykes and did not contaminate the data with random noise.
 However, both in the synthetic data tests with noise and the real data
 application, this did not appear to be a significant issue.
 In both cases, Euler inversion was better at outlining the 2D sources than
