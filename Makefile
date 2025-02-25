@@ -1,16 +1,20 @@
 # Rules for compiling the PDF from the LaTeX sources and displaying the output
 
 ### Documents to build
-PDF = paper/preprint.pdf paper/manuscript.pdf
+PDF = paper/preprint.pdf paper/manuscript.pdf paper/manuscript-diff-R1.pdf
 ### File Types (for dependencies)
 TEX = $(filter-out $(PDF:.pdf=.tex), $(wildcard paper/*.tex))
 TEXVARS = $(wildcard paper/variables/*.tex)
 BIB = $(wildcard paper/*.bib)
 FIG = $(wildcard paper/figures/*)
+### Git tags for different revisions
+SUBMITTED = submitted-gji
 
 preprint: paper/preprint.pdf
 
 manuscript: paper/manuscript.pdf
+
+diff-R1: paper/manuscript-diff-R1.pdf
 
 all: $(PDF)
 
@@ -18,7 +22,8 @@ show: $(PDF)
 	@for f in $?; do xdg-open $$f; done
 
 clean:
-	rm -f $(PDF) paper/misc/cover-letter.pdf
+	rm -f $(PDF) paper/misc/cover-letter.pdf paper/content-diff-*.tex paper/abstract-diff-*.tex \
+		paper/*.aux paper/*.log paper/*.bbl paper/*.dvi paper/*.blg paper/*.out
 
 format:
 	black code/
@@ -27,6 +32,15 @@ lock: conda-lock.yml
 
 %.pdf: %.tex $(TEX) $(BIB) $(FIG)
 	tectonic -X compile $<
+
+paper/manuscript-diff-R1.pdf: paper/manuscript-diff-R1.tex paper/content-diff-R1.tex paper/abstract-diff-R1.tex $(TEX) $(BIB) $(FIG)
+	tectonic -X compile $<
+
+paper/%-diff-R1.tex: paper/%.tex
+	cd paper \
+		&& latexdiff-vc --git --flatten --force --dir R1 --rev $(SUBMITTED) `basename $<` \
+		&& cd .. \
+		&& mv paper/R1/*.tex $@
 
 conda-lock.yml: environment.yml
 	conda-lock -f $<

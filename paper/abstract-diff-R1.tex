@@ -1,0 +1,12 @@
+Locating the sources of observed disturbances in potential-field data is a challenging problem due to the non-unique nature of the inverse problem.
+The Euler deconvolution method was created to solve this issue, particularly for idealized sources (such as spheres \DIFdelbegin \DIFdel{, }\DIFdelend \DIFaddbegin \DIFadd{and }\DIFaddend planar vertical dykes).
+Euler deconvolution has become widely used in potential-field methods due, in large part, to its low computational cost and ease of implementation into software.
+However, it is widely known that Euler deconvolution suffers from some shortcomings: 1) non-uniqueness of the solution with respect to the depth of the source and the structural index (a parameter that represents the idealised shape of the source); 2) sensitivity to short-wavelength noise in the data derivatives which are used as inputs for the method.
+Here, we present a new method called \textit{Euler inversion} which is a reformulation of the inverse problem of Euler's homogeneity equation as an implicit mathematical model rather than a parametric one.
+Euler inversion is a constrained, non-linear inverse problem capable of estimating both the model parameters (location of the source and constant base level) and the predicted data (potential field and its derivatives).
+We show that Euler inversion is less sensitive than Euler deconvolution to short-wavelength noise and to the presence of interfering sources in the data window.
+By also estimating the predicted data, Euler inversion is also able to estimate the best integer structural index
+to be used for inversion.
+Our results show that the estimated structural index minimizes the data misfit and coincides with those of the simulated sources.
+Furthermore, most matrices involved in the method are either sparse or diagonal, making Euler inversion computationally efficient.
+Tests on synthetic data and a real aeromagnetic dataset from Rio de Janeiro, Brazil, demonstrate the effectiveness of Euler inversion to delineate sources with variable geometries and correctly estimate their depths.

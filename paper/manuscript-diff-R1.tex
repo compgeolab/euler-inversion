@@ -1,0 +1,154 @@
+% Manuscript with differences between two versions.
+%
+% Formatted with double space and line numbers.
+%
+% This is the document structure. The actual content is written in:
+% * abstract.tex: The abstract.
+% * content.tex: The actual manuscript text (minus the abstract).
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set a class and general configuration
+\documentclass[onecolumn,12pt,A4]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Read in the title, authors, etc
+\input{information.tex}
+\input{variables.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Import the required packages
+\usepackage[utf8]{inputenc}
+\usepackage[TU]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{siunitx}
+\usepackage[longend,linesnumbered,ruled]{algorithm2e}
+% To customize the title page
+\usepackage{titling}
+% For adding multiple authors
+\usepackage{authblk}
+% improved urls with proper hyphenation
+\usepackage{xurl}
+% Tweak the look of captions
+\usepackage{caption}
+% To control the style of section titles
+\usepackage{titlesec}
+% Import natbib and doi packages
+\usepackage[round,authoryear,sort]{natbib}
+% show dois as links on references
+\usepackage{doi}
+% Remove extra space between references
+\usepackage{natbibspacing}
+% Control the font size
+\usepackage{anyfontsize}
+\usepackage{setspace}
+% To get the number of pages in the document
+\usepackage{lastpage}
+\usepackage{ragged2e}
+% Add line numbers
+\usepackage{lineno}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math shortcuts
+
+% To be able to use matrices with more than 10 columns in amsmath
+\setcounter{MaxMatrixCols}{20}
+
+% Lagrangian
+\DeclareMathOperator{\Lagr}{\mathcal{L}}
+% Merit function
+\DeclareMathOperator{\Merit}{\mathcal{M}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Configuration of the document
+
+\geometry{%
+  left=30mm,
+  right=15mm,
+  top=15mm,
+  bottom=15mm,
+  headsep=0mm,
+  headheight=0mm,
+  footskip=10mm,
+  includehead=true,
+  includefoot=true
+}
+
+% Control line spacing
+\doublespacing
+
+% Configure captions
+\captionsetup[table]{position=below,skip=0pt}
+\captionsetup{labelfont=bf,font={small,onehalfspacing},skip=10pt}
+
+% Make urls use the same font as every other text
+\urlstyle{same}
+
+% Configure hyperref and add PDF metadata
+\hypersetup{
+    colorlinks,
+    allcolors=blue,
+    pdftitle={\Title},
+    pdfauthor={\AuthorShort},
+    breaklinks=true,
+}
+
+% Configure header and footer
+\newcommand{\Separator}{\hspace{3pt}|\hspace{3pt}}
+\newcommand{\FooterFont}{\footnotesize}
+\pagestyle{fancy}
+\fancyhf{}
+\lfoot{%
+  \FooterFont{}
+  \AuthorShort{} (\Year)
+  \Separator{}
+  \TitleShort
+}
+\rfoot{%
+  \FooterFont{}
+  Submitted to \Journal{}
+  \Separator{}
+  \thepage\space of\space \pageref*{LastPage}
+}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{FlushLeft}
+    {\Large\bfseries \Title}
+    \\[0.3cm]
+    \Authors
+    \\[0.3cm]
+    {\Affiliations}
+    \\[0.3cm]
+    {Submitted for publication to \textit{\Journal{}} on \SubmittedOn.}
+\end{FlushLeft}
+
+% Add line numbers
+\linenumbers
+
+\section*{Abstract}
+
+\input{abstract-diff-R1}
+
+\vspace{0.5cm}
+\noindent
+\textbf{Keywords:} \Keywords{}
+
+\input{content-diff-R1}
+
+\bibliographystyle{apalike-doi}
+\bibliography{references}
+
+\end{document}
