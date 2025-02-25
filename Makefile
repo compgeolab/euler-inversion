@@ -1,43 +1,58 @@
 # Rules for compiling the PDF from the LaTeX sources and displaying the output
 
+# Variables
+###############################################################################
+### Git tags for different revisions
+SUBMITTED = submitted-gji
 ### Documents to build
-PDF = paper/preprint.pdf paper/manuscript.pdf
+PDF = paper/preprint.pdf paper/manuscript.pdf paper/manuscript-diff-$(SUBMITTED).pdf paper/misc/cover-letter.pdf
 ### File Types (for dependencies)
 TEX = $(filter-out $(PDF:.pdf=.tex), $(wildcard paper/*.tex))
 TEXVARS = $(wildcard paper/variables/*.tex)
 BIB = $(wildcard paper/*.bib)
 FIG = $(wildcard paper/figures/*)
 
+# Main targets
+###############################################################################
 preprint: paper/preprint.pdf
 
 manuscript: paper/manuscript.pdf
 
+diff-submitted: paper/manuscript-diff-$(SUBMITTED).pdf
+
+letter: paper/misc/cover-letter.pdf
+
 all: $(PDF)
 
-show: $(PDF)
-	@for f in $?; do xdg-open $$f; done
-
 clean:
-	rm -f $(PDF) paper/misc/cover-letter.pdf
+	rm -rf $(PDF) paper/manuscript-diff-*.tex paper/_diff
 
 format:
 	black code/
 
 lock: conda-lock.yml
 
+# Rules for building PDFs
+###############################################################################
 %.pdf: %.tex $(TEX) $(BIB) $(FIG)
 	tectonic -X compile $<
 
-conda-lock.yml: environment.yml
-	conda-lock -f $<
-
-letter: paper/misc/cover-letter.pdf
+paper/manuscript-diff-$(SUBMITTED).tex: paper/manuscript.tex $(TEX) $(BIB) $(FIG)
+	cd paper \
+		&& latexdiff-vc --git --flatten --force --dir=_diff --rev $(SUBMITTED) `basename $<` \
+		&& cd .. \
+		&& mv paper/_diff/*.tex $@
 
 paper/misc/cover-letter.pdf: paper/misc/cover-letter.tex paper/information.tex
 	tectonic -X compile $<
 
 paper/variables.tex: $(TEXVARS)
 	cat $^ > $@
+
+# Rules for generating results and other files
+###############################################################################
+conda-lock.yml: environment.yml
+	conda-lock -f $<
 
 # paper/figures/%.png paper/variables/%.tex &: code/%.ipynb code/euler.py
 # 	jupyter execute --inplace --kernel_name=python3 $< && touch paper/figures/$*.png paper/variables/$*.tex

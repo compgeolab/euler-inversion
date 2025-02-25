@@ -73,3 +73,23 @@ above.
 
 In the base folder of the cloned repository (or downloaded and unpacked
 archive), run the `make` command to generate `paper/preprint.pdf`.
+
+## Generating PDFs of marked differences between versions
+
+The `Makefile` also includes rules for generating PDFs with marked changes
+between version of the manuscript. This is used during the review process.
+To do so, you'll need to **install
+[latexdiff](https://github.com/ftilmann/latexdiff)**.
+
+On Linux and Mac, it can be installed with `conda`:
+
+```
+conda install -c conda-forge latexdiff
+```
+
+But on Windows you'll need to install it separately (hence why it's not in the
+`environment.yml` or `env/*` files).
+
+Once install, you can use `make diff-submitted` for example to create
+a manuscript with marked differences between the current version and one tagged
+on git with the `submitted` tag (see the `Makefile` for details).
