@@ -15,7 +15,6 @@ dependencies:
   # For building latex documents
   - make
   - tectonic
-  - latexdiff==1.3.2
   # Project specific dependencies
   - xarray
   - netcdf4
