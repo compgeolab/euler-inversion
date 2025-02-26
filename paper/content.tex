@@ -1597,7 +1597,12 @@ provided a mix of $\eta=2$ and $\eta=3$.
 These results are consistent with the synthetic data tests and show the
 benefits and limitations of the proposed method.
 
-Euler inversion outperforms traditional Euler deconvolution in most cases.
+Euler inversion outperforms Euler deconvolution and finite-difference Euler 
+deconvolution in most cases.
+Its reduced sensitivity to noise and interfering sources, in particular, 
+may prove beneficial for magnetic microscopy studies, in which high-frequency 
+noise and interference from multiple dipolar sources are a significant hurdle
+\citep{SouzaJunior2024}.
 However, it still suffers from some of the same limitations.
 While Euler inversion is less sensitive to signal overlap, it still fails to
 correctly estimate the position and structural index when the overlap is large.
