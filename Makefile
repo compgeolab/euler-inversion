@@ -5,12 +5,15 @@
 ### Git tags for different revisions
 SUBMITTED = submitted-gji
 ### Documents to build
-PDF = paper/preprint.pdf paper/manuscript.pdf paper/manuscript-diff-$(SUBMITTED).pdf paper/misc/cover-letter.pdf
+PDF = paper/preprint.pdf paper/manuscript.pdf paper/manuscript-diff-$(SUBMITTED).pdf paper/cover-letter.pdf
 ### File Types (for dependencies)
 TEX = $(filter-out $(PDF:.pdf=.tex), $(wildcard paper/*.tex))
 TEXVARS = $(wildcard paper/variables/*.tex)
 BIB = $(wildcard paper/*.bib)
 FIG = $(wildcard paper/figures/*)
+# For word counting, how many words does the journal consider for each figure
+WORDS_PER_FIGURE = 300
+
 
 # Main targets
 ###############################################################################
@@ -20,7 +23,7 @@ manuscript: paper/manuscript.pdf
 
 diff-submitted: paper/manuscript-diff-$(SUBMITTED).pdf
 
-letter: paper/misc/cover-letter.pdf
+letter: paper/cover-letter.pdf
 
 all: $(PDF)
 
@@ -31,6 +34,13 @@ format:
 	black code/
 
 lock: conda-lock.yml
+
+wordcount:
+	@echo -n "Paper: "
+	@echo $$((`detex paper/content.tex | wc --words` + `detex paper/abstract.tex | wc --words` + $(WORDS_PER_FIGURE) * `ls paper/figures/*.png | wc --lines`))
+	@echo -n "Abstract: "
+	@echo $$((`detex paper/abstract.tex | wc --words`))
+
 
 # Rules for building PDFs
 ###############################################################################
