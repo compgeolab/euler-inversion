@@ -9,14 +9,14 @@ by
 This repository contains the data and source code used to produce the results
 presented in:
 
-> Uieda, L., Souza-Junior, G. F., Uppal, I., Oliveira Jr., V. C. (2024). Euler
+> Uieda, L., Souza-Junior, G. F., Uppal, I., Oliveira Jr., V. C. (2025). Euler
 > inversion: Locating sources of potential-field data through inversion of
-> Euler’s homogeneity equation. EarthArXiv.
-> doi:[10.31223/X5T41M](https://doi.org/10.31223/X5T41M).
+> Euler’s homogeneity equation. *Geophysical Journal International*.
+> doi:[10.1093/gji/ggaf114](https://doi.org/10.1093/gji/ggaf114).
 
 |  | Info |
 |-:|:-----|
-| Version of record | TBD (submitted to *Geophysical Journal International*) |
+| Version of record | https://doi.org/10.1093/gji/ggaf114 |
 | Open-access preprint on EarthArXiv | https://doi.org/10.31223/X5T41M |
 | Archive of this repository | https://doi.org/10.6084/m9.figshare.26384140 |
 | Reproducing our results | [`REPRODUCING.md`](REPRODUCING.md) |
