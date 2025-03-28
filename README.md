@@ -62,6 +62,22 @@ scientists toolbox.
   <figcaption><strong>Figure:</strong> Results of applying Euler inversion with a window size of 12 000 m and a window step of 2400 m to the aeromagnetic data from Rio de Janeiro, Brazil. Estimated source locations and structural indices obtained from Euler inversion are shown as triangles (𝜂 = 1), squares (𝜂 = 2), and circles (𝜂 = 3). The colour of each symbol represents the estimated depth below the surface of the Earth (topography). Also shown are the total-field anomaly flight-line data, the contours of the post-collisional magmatism and alkaline intrusions (solid black lines) and dykes (dashed lines). The purple squares highlight the A, B, C, and D anomalies that are discussed in the text.</figcaption>
 </figure>
 
+## Citing
+
+Please cite this work as:
+
+> Uieda, L., Souza-Junior, G. F., Uppal, I., Oliveira Jr., V. C. (2025). Euler
+> inversion: Locating sources of potential-field data through inversion of
+> Euler’s homogeneity equation. *Geophysical Journal International*.
+> doi:[10.1093/gji/ggaf114](https://doi.org/10.1093/gji/ggaf114).
+
+You can also reference the supplementary files (data and software) as:
+
+> Uieda, L., Souza-Junior, G. F., Uppal, I., Oliveira Jr., V. C. (2024).
+> Supplementary material for "Euler inversion: Locating sources of
+> potential-field data through inversion of Euler's homogeneity equation"
+> *figshare*. doi:[10.6084/m9.figshare.26384140](https://doi.org/10.6084/m9.figshare.26384140).
+
 ## License
 
 All Python source code (including `.py` and `.ipynb` files) is made available
