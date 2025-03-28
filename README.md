@@ -75,7 +75,7 @@ You can also reference the supplementary files (data and software) as:
 
 > Uieda, L., Souza-Junior, G. F., Uppal, I., Oliveira Jr., V. C. (2024).
 > Supplementary material for "Euler inversion: Locating sources of
-> potential-field data through inversion of Euler's homogeneity equation"
+> potential-field data through inversion of Euler's homogeneity equation".
 > *figshare*. doi:[10.6084/m9.figshare.26384140](https://doi.org/10.6084/m9.figshare.26384140).
 
 ## License
