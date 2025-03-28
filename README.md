@@ -14,12 +14,11 @@ presented in:
 > Euler’s homogeneity equation. *Geophysical Journal International*.
 > doi:[10.1093/gji/ggaf114](https://doi.org/10.1093/gji/ggaf114).
 
-|  | Info |
-|-:|:-----|
-| Version of record | https://doi.org/10.1093/gji/ggaf114 |
-| Open-access preprint on EarthArXiv | https://doi.org/10.31223/X5T41M |
-| Archive of this repository | https://doi.org/10.6084/m9.figshare.26384140 |
-| Reproducing our results | [`REPRODUCING.md`](REPRODUCING.md) |
+* **Version of record:** https://doi.org/10.1093/gji/ggaf114
+* **Open-access preprint on EarthArXiv:** https://doi.org/10.31223/X5T41M
+* **Archive of this repository:** https://doi.org/10.6084/m9.figshare.26384140
+* **Software Heritage ID:** [swh:1:snp:b0d1f8fdbf57f87e0ce56d5dda0f360c4a314d9d](https://archive.softwareheritage.org/swh:1:snp:b0d1f8fdbf57f87e0ce56d5dda0f360c4a314d9d;origin=https://github.com/compgeolab/euler-inversion)
+* **Reproducing our results:** [`REPRODUCING.md`](REPRODUCING.md)
 
 ## About
 
