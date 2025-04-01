@@ -44,8 +44,8 @@ Earth scientists can estimate the depth of certain rocks beneath Earth's
 surface by measuring the small disturbances that they cause in the Earth's
 gravity and magnetic fields. A popular method for this is **Euler deconvolution**,
 which is widely available in geoscience software and can be run quickly on
-a standard computer. Unfortunately, Euler deconvolution has some shortcomings:
-1) the approximate shape of the rocks must be known, for example, a sphere or
+a standard computer. Unfortunately, Euler deconvolution has some shortcomings: 1) 
+the approximate shape of the rocks must be known, for example, a sphere or
 a wide flat slab, represented by the **structural index** 2) the depth of the
 rocks is not well estimated when there is noise in our data, which is a common
 occurrence. We propose a new method, **Euler inversion**, which fixes some of
